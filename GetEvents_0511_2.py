@@ -24,11 +24,11 @@ from oauth2client.tools import argparser
 from dateutil.parser import parse
 
 # Enter your Google Developer Project number
-PROJECT_NUMBER = '883608357850'
-PROJECT_ID = 'gitarchive-new'
+PROJECT_NUMBER = <<Enter project no>>
+PROJECT_ID = <<Enter project no>>
 
 # For a user you need to create and download the client_secrets.jason file. Go to your Google API consol -> click on APIs and Auth -> Click on credentials -> Click on OAUth2.0 Client ID  -> Click Other
-FLOW = flow_from_clientsecrets('/Users/medapa/Dropbox/HEC/Summer Project/GoogleAPIKeys/client_secret_new.json',
+FLOW = flow_from_clientsecrets(<<client secret path>>,
                                scope='https://www.googleapis.com/auth/bigquery')                             
 NULL = 0
 REPOLIST_CSV = '/Users/medapa/Dropbox/HEC/Summer Project/Data/RepoList2014.csv'
