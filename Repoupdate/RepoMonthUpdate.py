@@ -2,7 +2,7 @@
 """
 Created on Fri Sep  1 14:57:43 2017
 Change a) line 5 b) lines 72-77 c) lines 110 & 111
-Updated 050618 ** Note: Microsoft bought GitHub on 040618**
+Updated 100718 ** Note: Microsoft bought GitHub on 040618**
 @author: USEREN
 """
 
@@ -69,12 +69,12 @@ def getrepoinfo(REPO_CSV,NEWREPO_CSV) :
                 repoid_url = "https://api.github.com/repositories/"+repo_id
                 repoid_req = getGitHubapi(repoid_url)
                 if repo_id == "REPO_ID":
-                    row.append("PUSHED_0618")
-                    row.append("STARS_0618")
-                    row.append("SUBSCRIBERS_0618")
-                    row.append("FORKS_0618")
-                    row.append("SIZE_0618")
-                    row.append("LICENCE_0618")
+                    row.append("PUSHED_0718")
+                    row.append("STARS_0718")
+                    row.append("SUBSCRIBERS_0718")
+                    row.append("FORKS_0718")
+                    row.append("SIZE_0718")
+                    row.append("LICENCE_0718")
                     write_handle.writerow(row)                    
                 elif repoid_req == 0 or repoid_req == None:
                     print("************************* Error Searching for repo name for repo - "+ repo_id)
@@ -107,8 +107,8 @@ def main():
      
     # For WINDOWS
     
-    REPO_CSV = 'C:/Users/Student/Dropbox/HEC/Data GitHub/2014/Integrated Super 2017 RR/PDIntegratedUpCommitSuper2014_24_Surv20180507.csv'
-    NEWREPO_CSV = 'C:/Users/Student/Dropbox/HEC/Data GitHub/2014/Integrated Super 2017 RR/PDIntegratedUpCommitSuper2014_24_Surv20180605.csv'
+    REPO_CSV = 'C:/Users/Student/Dropbox/HEC/Data GitHub/2014/Integrated Super 2017 RR/PDIntegratedUpCommitSuper2014_24_Surv20180605.csv'
+    NEWREPO_CSV = 'C:/Users/Student/Dropbox/HEC/Data GitHub/2014/Integrated Super 2017 RR/PDIntegratedUpCommitSuper2014_24_Surv20180710.csv'
     getrepoinfo(REPO_CSV,NEWREPO_CSV) 
      
 if __name__ == '__main__':
