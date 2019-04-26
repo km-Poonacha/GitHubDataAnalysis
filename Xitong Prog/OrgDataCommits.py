@@ -16,7 +16,7 @@ from poo_ghmodules import ghparse_row
 org_list = ['IBM']
 
 PW_CSV = 'C:/Users/kmpoo/Dropbox/HEC/Python/PW/PW_GitHub.csv'
-LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\Log_OrgRepo_20190424.csv'
+LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\IBMLog_OrgRepo_20190424.csv'
 
 def getcommitinfo(repoid,write_handle):
     commit_url = "https://api.github.com/repositories/"+str(repoid)+"/commits?per_page=100"
@@ -62,12 +62,12 @@ def getcommitinfo(repoid,write_handle):
 def main():
      
     # For WINDOWS 
-    REPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepo_20190425.csv'
-    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepoCommit_1.csv'
+    REPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepo_20190425_2.csv'
+    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepoCommit_2.csv'
     with open(REPO_CSV, 'rt', encoding = 'utf-8') as repolist:
         repo_handle = csv.reader(repolist)
         rcount = 1
-        sheetno = 1
+        sheetno = 2
         with open(NEWREPO_CSV, 'at', encoding = 'utf-8', newline='') as writelist:
             write_handle = csv.writer(writelist)
             for repo_row in repo_handle:
@@ -78,6 +78,8 @@ def main():
                     rcount = 1
                     sheetno = sheetno + 1
                     NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepoCommit_'+str(sheetno)+'.csv'
+                    with open(NEWREPO_CSV, 'at', encoding = 'utf-8', newline='') as writelist:
+                        write_handle = csv.writer(writelist)
                 rcount = rcount + 1
     
 #    getrepoinfo(NEWREPO_CSV) 
