@@ -20,29 +20,45 @@ def dfInit(csv):
     return dataframe
 
 def dfproc(dataframe,drop_col, ass_col):
+    """ Process the full data frame as two seperate frames. One for repos and one for commits."""
+    # Create repo_df
     repo_df = dataframe[dataframe['REPO_ID'].notnull()]
     commit_df = dataframe[dataframe['REPO_ID'].isnull()]    
     repo_df = repo_df.assign(parsedate =  (pd.to_datetime(repo_df['CREATED_AT']).dt.year - 2012)*12 + pd.to_datetime(repo_df['CREATED_AT']).dt.month)
     repo_df = repo_df.assign(year =  (pd.to_datetime(repo_df['CREATED_AT']).dt.year ))
-
+    
+    # Create commit_df
     commit_df = commit_df.drop(axis=1,columns=drop_col)
     print(commit_df)
     commit_df.columns = ass_col
     commit_df = commit_df.assign(parsedate =  (pd.to_datetime(commit_df['AUTHOR_DATE']).dt.year - 2012)*12 + pd.to_datetime(commit_df['AUTHOR_DATE']).dt.month)
     commit_df = commit_df.assign(year =  (pd.to_datetime(commit_df['AUTHOR_DATE']).dt.year))
-    
-    # calculate contributions per project
+    # Find repo name for the commit
+    commit_df = commit_df[commit_df['URL'].notna()]
+    commit_df = commit_df[commit_df['URL'] != ""]
+    commit_df = commit_df.assign(repo=  lambda x :x['URL'].str.split('/').str[5])
+    commit_df['commitrepodate'] = commit_df['parsedate'].map(str) + commit_df['repo']
+    commitrepo_df = commit_df.drop_duplicates(subset = 'commitrepodate') 
+    # calculate frequencies
     repo_freq = repo_df['parsedate'].value_counts(normalize=False, sort=False, ascending=False, bins=None, dropna=True)
-    commit_freq = commit_df['parsedate'].value_counts(normalize=False, sort=False, ascending=False, bins=None, dropna=True)
+    commit_freq = commit_df['parsedate'].value_counts(normalize=False, sort=False, ascending=False, bins=None, dropna=True)    
+    commitrepo_freq = commitrepo_df['parsedate'].value_counts(normalize=False, sort=False, ascending=False, bins=None, dropna=True)
+    
+    #Convert series to df
     df_rfreq = repo_freq.rename_axis('pdate').reset_index(name='repo_counts')
     df_rfreq = df_rfreq.sort_values(by=['pdate'])
     df_rfreq = df_rfreq.assign(cum_repocount = df_rfreq['repo_counts'].cumsum())
     df_cfreq = commit_freq.rename_axis('pdate').reset_index(name='commit_counts')
     df_cfreq=df_cfreq.sort_values(by=['pdate'])
-    df_freq = df_cfreq.merge(df_rfreq, how='inner', on='pdate', left_on=None, right_on=None, left_index=False, right_index=False, sort=False, suffixes=('_x', '_y'), copy=True, indicator=False, validate=None)
+    df_crfreq = commitrepo_freq.rename_axis('pdate').reset_index(name='commitrepo_counts')
+    df_crfreq=df_crfreq.sort_values(by=['pdate'])
+    
+    #create single frequency df
+    df_freq = df_cfreq.merge(df_crfreq, how='inner', on='pdate', left_on=None, right_on=None, left_index=False, right_index=False, sort=False, suffixes=('_x', '_y'), copy=True, indicator=False, validate=None)
+    df_freq = df_freq.merge(df_rfreq, how='inner', on='pdate', left_on=None, right_on=None, left_index=False, right_index=False, sort=False, suffixes=('_x', '_y'), copy=True, indicator=False, validate=None)
     df_freq = df_freq.assign(commit_repocum = (df_freq['commit_counts']/df_freq['cum_repocount']))
     df_freq = df_freq.assign(commit_repo = (df_freq['commit_counts']/df_freq['repo_counts']))
-
+    df_freq = df_freq.assign(commit_commitrepo = (df_freq['commit_counts']/df_freq['commitrepo_counts']))
     
     return repo_df,commit_df,df_freq
 
@@ -85,6 +101,7 @@ def main():
     MS_Com = 'D:\\Xitong proj\Xitong proj MS\\MS_Com.png'
     MS_Com_Proj = 'D:\\Xitong proj\Xitong proj MS\\MS_Com_Proj.png'
     MSCom_Projcum = 'D:\\Xitong proj\Xitong proj MS\\MS_Com_Projcum.png'
+    MSCom_repocom = 'D:\\Xitong proj\Xitong proj MS\\MS_Com_ComRepo.png'
     
     df_full = pd.DataFrame()
     for i in range(1,13):
@@ -106,9 +123,11 @@ def main():
 #    plt_histtime(repo_df['parsedate'],MS_Proj, 'Month', 'No of Repos', 'REPO CREATED PER MONTH')
 #    plt_histtime(commit_df['parsedate'],MS_Com, 'Month', 'No of Commits', 'COMMITS PER MONTH')    
 #    plt_linetime(df_freq['pdate'],df_freq['commit_repo'],MS_Com_Proj, 'Month', 'Commits per Repo', 'COMMITS PER REPO CREATED')
-    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],MSCom_Projcum , 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
-     
+#    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],MSCom_Projcum , 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
+    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],MSCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
 
+     
+#
     # For Google
     Google_rCSV = 'D:\\Xitong proj\Xitong proj Google\\GoogleRepoCommit_Repofreq.csv'
     Google_cCSV = 'D:\\Xitong proj\Xitong proj Google\\GoogleRepoCommit_Commitfreq.csv'
@@ -118,6 +137,7 @@ def main():
     Google_Com = 'D:\\Xitong proj\Xitong proj Google\\Google_Com.png'
     Google_Com_Proj = 'D:\\Xitong proj\Xitong proj Google\\Google_Com_Proj.png'
     GoogleCom_Projcum = 'D:\\Xitong proj\Xitong proj Google\\Google_Com_Projcum.png'
+    GoogleCom_repocom = 'D:\\Xitong proj\Xitong proj Google\\Google_Com_ComRepo.png'
     
     df_full = pd.DataFrame()
     for i in range(1,8):
@@ -139,7 +159,8 @@ def main():
 #    plt_histtime(repo_df['parsedate'],Google_Proj, 'Month', 'No of Repos', 'REPO CREATED PER MONTH')
 #    plt_histtime(commit_df['parsedate'],Google_Com, 'Month', 'No of Commits', 'COMMITS PER MONTH')    
 #    plt_linetime(df_freq['pdate'],df_freq['commit_repo'],Google_Com_Proj, 'Month', 'Commits per Repo', 'COMMITS PER REPO CREATED')
-    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],GoogleCom_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
+#    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],GoogleCom_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
+    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],GoogleCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
 
    
     # For IBM 
@@ -152,7 +173,8 @@ def main():
     IBM_Proj = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Proj.png'
     IBM_Com = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com.png'
     IBM_Com_Proj = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_Proj.png'
-    IBMCom_Projcum = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_Projcum.png'
+    IBM_Com_Proj = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_Proj.png'
+    IBMCom_repocom = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_ComRepo.png'
 
     dataframe = dfInit(REPO_CSV)
     drop_col = ['HAS_ISSUES','HAS_PROJECTS',	'HAS_DOWNLOADS',	'HAS_WIKI','HAS_PAGES','FORKS',	'MIRROR_URL',	'ARCHIVED','DISABLED','OPEN_ISSUES',	'LICENSE',	'FORKS.1',	'OPEN_ISSUES.1',	'WATCHERS.1','DEFAULT_BRANCH',	'PERMISSIONS']
@@ -165,7 +187,9 @@ def main():
 #    plt_histtime(repo_df['parsedate'],IBM_Proj, 'Month', 'No of Repos', 'REPO CREATED PER MONTH')
 #    plt_histtime(commit_df['parsedate'],IBM_Com, 'Month', 'No of Commits', 'COMMITS PER MONTH' )    
 #    plt_linetime(df_freq['pdate'],df_freq['commit_repo'],IBM_Com_Proj, 'Month', 'Commits per Repo', 'COMMITS PER REPO CREATED')
-    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],IBMCom_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')    
+#    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],IBMCom_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')    
+    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],IBMCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
+       
     plt.legend(['MS', 'Google', 'IBM'])
     
     
