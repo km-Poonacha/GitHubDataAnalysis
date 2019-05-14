@@ -13,10 +13,9 @@ if "C:\\Users\\kmpoo\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
 from poo_ghmodules import ghparse_row
-org_list = ['IBM']
 
 PW_CSV = 'C:/Users/kmpoo/Dropbox/HEC/Python/PW/PW_GitHub.csv'
-LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\IBMLog_OrgRepo_20190424.csv'
+LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaLog_OrgRepo_20190514.csv'
 
 def getcommitinfo(repoid,write_handle):
     commit_url = "https://api.github.com/repositories/"+str(repoid)+"/commits?per_page=100"
@@ -33,41 +32,18 @@ def getcommitinfo(repoid,write_handle):
             with open(LOG_CSV, 'at', encoding = 'utf-8', newline ="") as loglist:
                 log_handle = csv.writer(loglist)
                 log_handle.writerow(["Error getting commit",commit_url,"UNKNOWN"])
-            return
-
-#def getrepoinfo(NEWREPO_CSV):
-#    """Update the repo inforation with,  PUSHED,STARS, SUBSCRIBERS,  FORKS, SIZE, LICENCE """
-#    with open(NEWREPO_CSV, 'wt', encoding = 'utf-8', newline='') as writelist:
-#        write_handle = csv.writer(writelist)
-#        for org in org_list:
-#            repo_url = 'https://api.github.com/orgs/'+org+'/repos?per_page=100&page=1'            
-#            while repo_url:
-#                repoid_req = getGitHubapi(repo_url,PW_CSV,LOG_CSV)
-##                print(repoid_req.headers['link'])
-#                if repoid_req:
-#                    repo_json = repoid_req.json()
-#                    for repo in repo_json:
-#                        repo_row = ghparse_row(repo,"id", "full_name","description","fork","url","created_at","updated_at","pushed_at","homepage","size","stargazers_count","watchers_count","language","has_issues","has_projects","has_downloads","has_wiki","has_pages","forks_count","mirror_url","archived","disabled","open_issues_count","license*name","forks","open_issues","watchers","default_branch","permissions")
-#                        write_handle.writerow(repo_row)
-#                        # get commits
-#                        getcommitinfo(repo['id'],write_handle)
-#                        #end get commits
-#                    repo_url = ghpaginate(repoid_req)
-#                else: break
-#                print(repo_url)
-##                    write_handle.writerow(row)
-#                        
+            return                    
         
 
 def main():
      
     # For WINDOWS 
-    REPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepo_20190425_2.csv'
-    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepoCommit_2.csv'
+    REPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepo_20190514.csv'
+    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepoCommit_1.csv'
     with open(REPO_CSV, 'rt', encoding = 'utf-8') as repolist:
         repo_handle = csv.reader(repolist)
         rcount = 1
-        sheetno = 2
+        sheetno = 1
         with open(NEWREPO_CSV, 'at', encoding = 'utf-8', newline='') as writelist:
             write_handle = csv.writer(writelist)
             for repo_row in repo_handle:
@@ -77,7 +53,7 @@ def main():
                 if rcount == 200:
                     rcount = 1
                     sheetno = sheetno + 1
-                    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MSRepoCommit_'+str(sheetno)+'.csv'
+                    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepoCommit_'+str(sheetno)+'.csv'
                     with open(NEWREPO_CSV, 'at', encoding = 'utf-8', newline='') as writelist:
                         write_handle = csv.writer(writelist)
                 rcount = rcount + 1
