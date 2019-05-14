@@ -13,10 +13,10 @@ if "C:\\Users\\kmpoo\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
 from poo_ghmodules import ghparse_row
-org_list = ['IBM']
+org_list = ['Mozilla']
 
 PW_CSV = 'C:/Users/kmpoo/Dropbox/HEC/Python/PW/PW_GitHub.csv'
-LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\Log_OrgRepo_20190424.csv'
+LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaLog_OrgRepo_20190514.csv'
 
 def getcommitinfo(repoid,write_handle):
     commit_url = "https://api.github.com/repositories/"+str(repoid)+"/commits?per_page=100"
@@ -50,7 +50,7 @@ def getrepoinfo(NEWREPO_CSV):
                         repo_row = ghparse_row(repo,"id", "full_name","description","fork","url","created_at","updated_at","pushed_at","homepage","size","stargazers_count","watchers_count","language","has_issues","has_projects","has_downloads","has_wiki","has_pages","forks_count","mirror_url","archived","disabled","open_issues_count","license*name","forks","open_issues","watchers","default_branch","permissions")
                         write_handle.writerow(repo_row)
                         # get commits
-                        getcommitinfo(repo['id'],write_handle)
+                        #getcommitinfo(repo['id'],write_handle)
                         #end get commits
                     repo_url = ghpaginate(repoid_req)
                 else: break
@@ -62,7 +62,7 @@ def getrepoinfo(NEWREPO_CSV):
 def main():
      
     # For WINDOWS    
-    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\IBMRepo_20190425.csv'
+    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepo_20190514.csv'
     getrepoinfo(NEWREPO_CSV) 
   
 if __name__ == '__main__':
