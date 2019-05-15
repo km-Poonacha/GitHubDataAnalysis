@@ -123,8 +123,8 @@ def main():
 #    plt_histtime(repo_df['parsedate'],MS_Proj, 'Month', 'No of Repos', 'REPO CREATED PER MONTH')
 #    plt_histtime(commit_df['parsedate'],MS_Com, 'Month', 'No of Commits', 'COMMITS PER MONTH')    
 #    plt_linetime(df_freq['pdate'],df_freq['commit_repo'],MS_Com_Proj, 'Month', 'Commits per Repo', 'COMMITS PER REPO CREATED')
-#    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],MSCom_Projcum , 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
-    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],MSCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
+    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],MSCom_Projcum , 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
+#    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],MSCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
 
      
 #
@@ -159,8 +159,8 @@ def main():
 #    plt_histtime(repo_df['parsedate'],Google_Proj, 'Month', 'No of Repos', 'REPO CREATED PER MONTH')
 #    plt_histtime(commit_df['parsedate'],Google_Com, 'Month', 'No of Commits', 'COMMITS PER MONTH')    
 #    plt_linetime(df_freq['pdate'],df_freq['commit_repo'],Google_Com_Proj, 'Month', 'Commits per Repo', 'COMMITS PER REPO CREATED')
-#    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],GoogleCom_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
-    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],GoogleCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
+    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],GoogleCom_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')
+#    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],GoogleCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
 
    
     # For IBM 
@@ -173,7 +173,7 @@ def main():
     IBM_Proj = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Proj.png'
     IBM_Com = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com.png'
     IBM_Com_Proj = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_Proj.png'
-    IBM_Com_Proj = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_Proj.png'
+    IBM_Com_Projcum = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_Proj.png'
     IBMCom_repocom = 'D:\\Xitong proj\Xitong proj IBM\\IBM_Com_ComRepo.png'
 
     dataframe = dfInit(REPO_CSV)
@@ -187,8 +187,8 @@ def main():
 #    plt_histtime(repo_df['parsedate'],IBM_Proj, 'Month', 'No of Repos', 'REPO CREATED PER MONTH')
 #    plt_histtime(commit_df['parsedate'],IBM_Com, 'Month', 'No of Commits', 'COMMITS PER MONTH' )    
 #    plt_linetime(df_freq['pdate'],df_freq['commit_repo'],IBM_Com_Proj, 'Month', 'Commits per Repo', 'COMMITS PER REPO CREATED')
-#    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],IBMCom_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')    
-    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],IBMCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
+    plt_linetime(df_freq['pdate'],df_freq['commit_repocum'],IBM_Com_Projcum, 'Month', 'Commits per Repo', 'COMMITS PER REPO (CUMMULATIVE)')    
+#    plt_linetime(df_freq['pdate'],df_freq['commit_commitrepo'],IBMCom_repocom, 'Month', 'Commits per Commit Repo', 'COMMITS PER COMMITED REPOS')    
        
     plt.legend(['MS', 'Google', 'IBM'])
     
