@@ -24,7 +24,7 @@ def getcommitinfo(repoid,NEWREPO_CSV):
         if commit_req:
             commit_json = commit_req.json()
             for commit in commit_json:
-                commit_row = ghparse_row(commit,"sha", "commit*author*name","commit*author*email","commit*author*date", "commit*committer*name","commit*committer*email","commit*committer*date","commit*message","commit*comment_count","commit*verification","url","parents", prespace = 1)
+                commit_row = ghparse_row(commit,"sha", "commit*author*name","commit*author*email","commit*author*date", "commit*committer*name","commit*committer*email","commit*committer*date","commit*comment_count","url", prespace = 1)
                 appendrowincsv(NEWREPO_CSV, commit_row) 
             commit_url = ghpaginate(commit_req)
         else:
@@ -50,7 +50,7 @@ def main():
         rcount = 1
         sheetno = 1
         for repo_row in repo_handle:
-            repoid = repo_row[1]     
+            repoid = repo_row[0]     
             appendrowincsv(NEWREPO_CSV, repo_row)
             getcommitinfo(repoid,NEWREPO_CSV)
             if rcount == 200:
