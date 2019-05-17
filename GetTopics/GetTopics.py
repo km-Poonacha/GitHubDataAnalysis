@@ -25,12 +25,13 @@ def main():
                 'Accept': 'application/vnd.github.mercy-preview+json'
              }
     new_row = list()
-    with open(NEWREPO_CSV, 'wt', encoding= 'utf-8') as writeobj:
+    with open(NEWREPO_CSV, 'wt', encoding= 'utf-8', newline ='') as writeobj:
         repo_writer = csv.writer(writeobj)
         with open( REPO_CSV, 'rt', encoding= 'utf-8') as fileobj:
             repo_struct = csv.reader(fileobj)
             for row in repo_struct:
-                new_row.append(row)
+                del new_row[:]
+                new_row= row
                 repo_id = row[0]
                 repo_url = 'https://api.github.com/repositories/'+repo_id+'/topics'            
                 topic_req = getGitHubapi(repo_url,PW_CSV,LOG_CSV , header = d_header)
