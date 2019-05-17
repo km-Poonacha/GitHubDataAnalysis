@@ -13,10 +13,10 @@ if "C:\\Users\\kmpoo\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
 from poo_ghmodules import ghparse_row
-org_list = ['Mozilla']
+org_list = ['apache']
 
 PW_CSV = 'C:/Users/kmpoo/Dropbox/HEC/Python/PW/PW_GitHub.csv'
-LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaLog_OrgRepo_20190514.csv'
+LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\ApacheLog_OrgRepo_20190514.csv'
 
 def getcommitinfo(repoid,write_handle):
     commit_url = "https://api.github.com/repositories/"+str(repoid)+"/commits?per_page=100"
