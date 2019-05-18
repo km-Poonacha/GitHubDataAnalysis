@@ -13,10 +13,10 @@ if "C:\\Users\\kmpoo\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
 from poo_ghmodules import ghparse_row
-org_list = ['apache']
+org_list = ['facebook']
 
 PW_CSV = 'C:/Users/kmpoo/Dropbox/HEC/Python/PW/PW_GitHub.csv'
-LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\ApacheLog_OrgRepo_20190514.csv'
+LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\FacebookLog_OrgRepo_20190518.csv'
 
 def getcommitinfo(repoid,write_handle):
     commit_url = "https://api.github.com/repositories/"+str(repoid)+"/commits?per_page=100"
@@ -62,7 +62,7 @@ def getrepoinfo(NEWREPO_CSV):
 def main():
      
     # For WINDOWS    
-    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepo_20190514.csv'
+    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\FacebookRepo_20190518.csv'
     getrepoinfo(NEWREPO_CSV) 
   
 if __name__ == '__main__':
