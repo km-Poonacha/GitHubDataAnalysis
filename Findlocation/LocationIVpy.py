@@ -27,14 +27,13 @@ def dfcleancountry(df):
     df['OWNER_COUNTRY'] = df['OWNER_COUNTRY'].replace(['Hawaii'], 'US')
     df['OWNER_COUNTRY'] = df['OWNER_COUNTRY'].replace(['-'], '')
     df['OWNER_COUNTRY'] = df['OWNER_COUNTRY'].replace(['??'], '')
-    print(df['OWNER_COUNTRY'])
     return df
 
   
 def main():
     csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190603.csv"
-    country_csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\Country.csv"
-    IVdata = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\IVdata.csv"
+    country_csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\Country_Final.csv"
+    IVdata = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190603IV.csv"
     df = dfInit(csv)
     df_country = dfInit(country_csv)
     df = dfcleancountry(df)
