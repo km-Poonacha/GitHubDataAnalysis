@@ -31,9 +31,9 @@ def dfcleancountry(df):
 
   
 def main():
-    csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190603.csv"
+    csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190604.csv"
     country_csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\Country_Final.csv"
-    IVdata = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190603IV.csv"
+    IVdata = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190604IV.csv"
     df = dfInit(csv)
     df_country = dfInit(country_csv)
     df = dfcleancountry(df)
