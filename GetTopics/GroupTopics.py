@@ -21,23 +21,23 @@ def dfInit(csv):
 
   
 def main():
-    csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190604.csv"
-    Topicdata = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190604T.csv"
-    df = dfInit(csv)
+    full_csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190604IV.csv"
+    lang_csv = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\P_Topic.csv"
+    Topicdata = "C:\\Users\kmpoo\Dropbox\HEC\Project 2 -   License\EJIS\Data\FullData_20190604IVT.csv"
+    df = dfInit(full_csv)
     df_t = pd.DataFrame()
-    df = df.assign(DESC_WORDS = lambda x: df['DESCRIPTION'].str.lower().str.split())
-    df = df.assign(TD_WORDS = lambda x: df['DESC_WORDS'].append(df['TOPICS']))
-    print(df['TD_WORDS'])
-#    for index, row in df['OWNER_COUNTRY'].iteritems():        
-#        if df_country['COUNTRY'].isin([row]).any():
-#            df_c = df_c.append((df_country.loc[df_country['COUNTRY'] == row]), ignore_index = True)
-#        else:
-#            df_e = pd.DataFrame(["","","","","","","","",""]).T
-#            df_e.columns = ['COUNTRY','GH_IND','GH_MAS','EUROPE','SP_2014','SP_2015','SP_MISC','SP','GH_AVG']
-#            df_c = df_c.append(df_e, ignore_index = True)
-#    n_df = pd.concat([df.reset_index(drop=True),df_c.reset_index(drop=True)], axis=1)
-#    
-#    n_df.to_csv(IVdata)
+    df_lang = dfInit(lang_csv)
+    
+    for index, row in df['MAIN_LANGUAGE'].iteritems():        
+        if df_lang['PROGRAMMING_LANGUAGE'].isin([row]).any():
+            df_t = df_t.append((df_lang.loc[df_lang['PROGRAMMING_LANGUAGE'] == row]), ignore_index = True)
+        else:
+            df_e = pd.DataFrame(["",""]).T
+            df_e.columns = ['PROGRAMMING_LANGUAGE','P_TOPIC']
+            df_t = df_t.append(df_e, ignore_index = True)
+    n_df = pd.concat([df.reset_index(drop=True),df_t.reset_index(drop=True)], axis=1)
+    
+    n_df.to_csv(Topicdata)
     
     
 main()   
