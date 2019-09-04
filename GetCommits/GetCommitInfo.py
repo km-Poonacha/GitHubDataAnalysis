@@ -10,20 +10,51 @@ Search for all the PRs for a repository that have been created before 2015. Find
 
 import csv
 import sys
-if "C:\\Users\\kmpoo\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
-    sys.path.append('C:\\Users\kmpoo\Dropbox\HEC\Python\CustomLib\PooLIB')
+if "C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
+    sys.path.append('C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB')
     print(sys.path)
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
 from poo_ghmodules import ghparse_row
 
-PW_CSV = 'C:/Users/kmpoo/Dropbox/HEC/Python/PW/PW_GitHub.csv'
-LOG_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaLog_OrgRepo_20190514.csv'
+PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW/\PW_GitHub.csv'
+LOG_CSV = 'C:\\Data\\092019 CommitInfo\RepoCommit_log.csv'
 
 def getmorecommitinfo(c_url):
     """Get data on individual commit"""
-    commit_res = getGitHubapi(c_url,PW_CSV,LOG_CSV)
+    commit_row = []
+    del commit_row[:]
+    commit_res = getGitHubapi(c_url,PW_CSV,LOG_CSV).json()
+
+    if commit_res is None:
+        print("No commit information available", c_url)
+        return []
+    commit_row = ghparse_row(commit_res,"stats*total", "stats*additions",prespace = 0)
+    parents = commit_res['parents']
+    p_no = 0
+    for parent in parents:
+        p_no= p_no+1    
+    commit_row.append(p_no)    
     
+    files = commit_res['files']
+    f_name =[]
+    f_stat =[]
+    f_pat =[]
+    f_no = 0
+    del f_name[:]
+    del f_stat[:]
+    del f_pat[:]
+    
+    for file in files:
+        f_no = f_no+1
+        f_name.append(file['filename'])
+        f_stat.append(file['status'])
+        f_pat.append(file['patch'])
+    commit_row.append(f_no)  
+    commit_row.append(f_name)  
+    commit_row.append(f_stat)  
+    commit_row.append(f_pat)
+    return commit_row
 
 def getcommitinfo(repoid,NEWREPO_CSV):
     commit_url = "https://api.github.com/repositories/"+str(repoid)+"/commits?per_page=100"
@@ -54,8 +85,8 @@ def appendrowincsv(csvfile, row):
 def main():
      
     # For WINDOWS 
-    REPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepo_20190514.csv'
-    NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepoCommit_1.csv'
+    REPO_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_TEST.csv'
+    NEWREPO_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.csv'
     with open(REPO_CSV, 'rt', encoding = 'utf-8') as repolist:
         repo_handle = csv.reader(repolist)
         rcount = 1
@@ -67,7 +98,7 @@ def main():
             if rcount == 500:
                 rcount = 1
                 sheetno = sheetno + 1
-                NEWREPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Project 6 - MS Acquire Github Allies and Competitors\Data\MozillaRepoCommit_'+str(sheetno)+'.csv'
+                NEWREPO_CSV = 'C:\\Data\092019 CommitInfo\RepoCommit_'+str(sheetno)+'.csv'
             rcount = rcount + 1
     
 #    getrepoinfo(NEWREPO_CSV) 
