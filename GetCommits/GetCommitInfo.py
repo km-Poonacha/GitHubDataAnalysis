@@ -60,7 +60,7 @@ def getmorecommitinfo(c_url):
     commit_row.append(f_pat)
     return commit_row
 
-def getcommitinfo(repoid,df):
+def getcommitinfo(repoid,NEWREPO_xl):
     commit_url = "https://api.github.com/repositories/"+str(repoid)+"/commits?per_page=100"
     while commit_url:
         commit_req = getGitHubapi(commit_url,PW_CSV,LOG_CSV)
@@ -72,15 +72,15 @@ def getcommitinfo(repoid,df):
                 for e in c_list:
                     commit_row.append(e)
 #                appendrowincsv(NEWREPO_CSV, commit_row) 
-                df = appendrowindf(df, commit_row)
+                appendrowindf(NEWREPO_xl, commit_row)
             commit_url = ghpaginate(commit_req)
         else:
             print("Error getting commit info ",commit_url)
             with open(LOG_CSV, 'at', encoding = 'utf-8', newline ="") as loglist:
                 log_handle = csv.writer(loglist)
                 log_handle.writerow(["Error getting commit",commit_url,"UNKNOWN"])
-            return df
-    return df                   
+            return 1
+    return 0                   
 
 def appendrowincsv(csvfile, row):
     """This code appends a row into the csv file"""
@@ -88,12 +88,11 @@ def appendrowincsv(csvfile, row):
         write_handle = csv.writer(writelist)
         write_handle.writerow(row)
 
-def appendrowindf(df, row):
+def appendrowindf(NEWREPO_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
-    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.xlsx'
+    df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
     df= df.append(pd.Series(row), ignore_index = True)
-    df.to_excel(NEWREPO_xl) 
-    return df
+    df.to_excel(NEWREPO_xl, index = False) 
         
 def main():
      
@@ -102,7 +101,7 @@ def main():
 #    NEWREPO_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.csv'
     NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.xlsx'
     df_full = pd.DataFrame()
-    
+    df_full.to_excel(NEWREPO_xl, index = False) 
     with open(REPO_CSV, 'rt', encoding = 'utf-8') as repolist:
         repo_handle = csv.reader(repolist)
         rcount = 1
@@ -110,8 +109,8 @@ def main():
         for repo_row in repo_handle:
             repoid = repo_row[0]     
 #            appendrowincsv(NEWREPO_CSV, repo_row)
-            df_full = appendrowindf(df_full, repo_row)
-            df_full = getcommitinfo(repoid,df_full)
+            appendrowindf(NEWREPO_xl, repo_row)
+            getcommitinfo(repoid,NEWREPO_xl)
             
 #            getcommitinfo(repoid,NEWREPO_CSV)
 #            if rcount == 500:
@@ -119,7 +118,7 @@ def main():
 #                sheetno = sheetno + 1
 #                NEWREPO_CSV = 'C:\\Data\092019 CommitInfo\RepoCommit_'+str(sheetno)+'.csv'
 #            rcount = rcount + 1
-    df_full.to_excel(NEWREPO_xl)    
+
   
 if __name__ == '__main__':
   main()
