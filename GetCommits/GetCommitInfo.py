@@ -114,12 +114,10 @@ def main():
 #            appendrowincsv(NEWREPO_CSV, repo_row)
             appendrowindf(NEWREPO_xl, repo_row)
             getcommitinfo(repoid,NEWREPO_xl)
-            
-            getcommitinfo(repoid,NEWREPO_CSV)
             if rcount == 500:
                 rcount = 1
                 sheetno = sheetno + 1
-                NEWREPO_CSV = 'C:\\Data\092019 CommitInfo\RepoCommit398_'+str(sheetno)+'.xlsx'
+                NEWREPO_xl = 'C:\\Data\092019 CommitInfo\RepoCommit398_'+str(sheetno)+'.xlsx'
             rcount = rcount + 1
 
   
