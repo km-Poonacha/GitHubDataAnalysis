@@ -21,7 +21,7 @@ import pandas as pd
 import numpy as np
 
 
-PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW/\PW_GitHub.csv'
+PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
 LOG_CSV = 'C:\\Data\\092019 CommitInfo\RepoCommit_log.csv'
 
 def getmorecommitinfo(c_url):
@@ -53,7 +53,10 @@ def getmorecommitinfo(c_url):
         f_no = f_no+1
         f_name.append(file['filename'])
         f_stat.append(file['status'])
-        f_pat.append(file['patch'])
+        if "patch" in file:
+            f_pat.append(file['patch'])
+        else: f_pat.append("")
+
     commit_row.append(f_no)  
     commit_row.append(f_name)  
     commit_row.append(f_stat)  
@@ -97,9 +100,9 @@ def appendrowindf(NEWREPO_xl, row):
 def main():
      
     # For WINDOWS 
-    REPO_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_TEST.csv'
+    REPO_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_201-398.csv'
 #    NEWREPO_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.csv'
-    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.xlsx'
+    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit398_1.xlsx'
     df_full = pd.DataFrame()
     df_full.to_excel(NEWREPO_xl, index = False) 
     with open(REPO_CSV, 'rt', encoding = 'utf-8') as repolist:
@@ -107,17 +110,17 @@ def main():
         rcount = 1
         sheetno = 1
         for repo_row in repo_handle:
-            repoid = repo_row[0]     
+            repoid = repo_row[1]     
 #            appendrowincsv(NEWREPO_CSV, repo_row)
             appendrowindf(NEWREPO_xl, repo_row)
             getcommitinfo(repoid,NEWREPO_xl)
             
-#            getcommitinfo(repoid,NEWREPO_CSV)
-#            if rcount == 500:
-#                rcount = 1
-#                sheetno = sheetno + 1
-#                NEWREPO_CSV = 'C:\\Data\092019 CommitInfo\RepoCommit_'+str(sheetno)+'.csv'
-#            rcount = rcount + 1
+            getcommitinfo(repoid,NEWREPO_CSV)
+            if rcount == 500:
+                rcount = 1
+                sheetno = sheetno + 1
+                NEWREPO_CSV = 'C:\\Data\092019 CommitInfo\RepoCommit398_'+str(sheetno)+'.xlsx'
+            rcount = rcount + 1
 
   
 if __name__ == '__main__':
