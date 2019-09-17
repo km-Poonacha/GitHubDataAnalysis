@@ -99,6 +99,7 @@ def get_name(repo_id):
 def main():
     """Main function"""   
     repo_csv = "C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_Test5.csv"
+    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit398_1.xlsx'
     with open(repo_csv, 'rt', encoding = 'utf-8') as repolist:
         repo_handle = csv.reader(repolist)
         rcount = 1
