@@ -77,7 +77,7 @@ def get_name(repo_id):
 def main():
     """Main function"""     
 #    name, owner = get_name(repo_id)  
-    name = None
+    name = "sickvim"
     owner = "jonathansick"
     result = "0"
     if name:                
