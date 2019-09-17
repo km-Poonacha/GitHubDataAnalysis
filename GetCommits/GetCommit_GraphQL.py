@@ -17,7 +17,7 @@ import pandas as pd
 import numpy as np
 import requests
 PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
-LOG_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\RepoCommit_log.csv'
+LOG_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_log.csv'
 
 def run_query(name, owner): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
@@ -96,14 +96,23 @@ def get_name(repo_id):
     else:
         return None, None
 
+def appendrowindf(NEWREPO_xl, row):
+    """This code appends a row into the dataframe and returns the updated dataframe"""
+    df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
+    df= df.append(pd.Series(row), ignore_index = True)
+    df.to_excel(NEWREPO_xl, index = False) 
+    
 def main():
     """Main function"""   
     repo_csv = "C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_Test5.csv"
     NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit398_1.xlsx'
+    df_full = pd.DataFrame()
+    df_full.to_excel(NEWREPO_xl, index = False) 
     with open(repo_csv, 'rt', encoding = 'utf-8') as repolist:
         repo_handle = csv.reader(repolist)
         rcount = 1
         for repo_row in repo_handle:
+            appendrowindf(NEWREPO_xl, repo_row)
             repo_id = repo_row[1]            
             name, owner = get_name(repo_id)  
             result = "0"
