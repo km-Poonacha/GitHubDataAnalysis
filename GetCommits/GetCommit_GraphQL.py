@@ -22,56 +22,70 @@ LOG_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\RepoCommit_
 def run_query(name, owner): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
     headers = {"Authorization": "Bearer "+"dfb9844388015057b2bb8331c562068b04d9807f"}  
-    query = """
-                query{
-                  rateLimit {
-                    cost
-                    remaining
-                    resetAt
-                  }
-                  repository(name: """+name+""", owner: """+owner+""") {
-                    ref(qualifiedName: "master") {
-                      target {
-                        ... on Commit {
-                          history(first:100 until: "2016-01-01T00:00:00Z"){
-                            totalCount
-                            pageInfo {
-                              endCursor
-                              hasNextPage
-                            }
-                                edges {
-                                  node {
-                                    comments{
-                                      totalCount
-                                    }
-                                    parents{
-                                      totalCount
-                                    }
-                                    changedFiles
-                                    additions
-                                    deletions
-                                    messageHeadline
-                                    oid
-                                    message
-                                    author {
-                                      name
-                                      email
-                                      date                        
-                                      }
+    endc = ""
+    commit_df = pd.DataFrame()
+    while True:
+        query = """
+                    query{
+                      rateLimit {
+                        cost
+                        remaining
+                        resetAt
+                      }
+                      repository(name: """+name+""", owner: """+owner+""") {
+                        ref(qualifiedName: "master") {
+                          target {
+                            ... on Commit {
+                              history(first:2 until: "2016-01-01T00:00:00Z" """+endc+"""){
+                                totalCount
+                                pageInfo {
+                                  endCursor
+                                  hasNextPage
+                                }
+                                    edges {
+                                      node {
+                                        comments{
+                                          totalCount
+                                        }
+                                        parents{
+                                          totalCount
+                                        }
+                                        changedFiles
+                                        additions
+                                        deletions
+                                        messageHeadline
+                                        oid
+                                        message
+                                        author {
+                                          name
+                                          email
+                                          date                        
+                                          }
+                                  }
+                                }
                               }
                             }
                           }
                         }
                       }
                     }
-                  }
-                }
-                """
-    try:
-        request = requests.post('https://api.github.com/graphql', json={'query': query}, headers=headers)
-        return request.json()
-    except:
-        return '404'
+                    """
+        try:
+            request = requests.post('https://api.github.com/graphql', json={'query': query}, headers=headers)
+            req_json = request.json()
+
+            endcursor = req_json['data']['repository']['ref']['target']['history']['pageInfo']['endCursor']            
+            print(endcursor)
+            commits = req_json['data']['repository']['ref']['target']['history']['edges']
+            for commit in commits:
+                print(commit['node']['changedFiles'])
+            return req_json
+        except:
+            break
+        
+    return "404"
+       
+
 
 def get_name(repo_id):
     repo_url = "https://api.github.com/repositories/"+str(repo_id)
@@ -93,9 +107,9 @@ def main():
             name, owner = get_name(repo_id)  
             result = "0"
             if name:  
-                 print(name, " " , owner)
-#                result = run_query(name, owner)
-            
-#            print(result)
+                result = run_query(name, owner)            
+#                print(result)
+                if result == '404':
+                    print("Error runnig graphql")
             
 main()
