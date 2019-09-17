@@ -16,6 +16,8 @@ from poo_ghmodules import ghparse_row
 import pandas as pd
 import numpy as np
 import requests
+PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
+LOG_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\RepoCommit_log.csv'
 
 def run_query(name, owner): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
@@ -72,17 +74,28 @@ def run_query(name, owner):
         return '404'
 
 def get_name(repo_id):
-    return
+    repo_url = "https://api.github.com/repositories/"+str(repo_id)
+    repo_req = getGitHubapi(repo_url,PW_CSV,LOG_CSV)
+    if repo_req:
+        repo_json = repo_req.json()
+        return repo_json['name'], repo_json['owner']['login']
+    else:
+        return None, None
 
 def main():
-    """Main function"""     
-#    name, owner = get_name(repo_id)  
-    name = "sickvim"
-    owner = "jonathansick"
-    result = "0"
-    if name:                
-        result = run_query(name, owner)
-    
-    print(result)
-    
+    """Main function"""   
+    repo_csv = "C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_Test5.csv"
+    with open(repo_csv, 'rt', encoding = 'utf-8') as repolist:
+        repo_handle = csv.reader(repolist)
+        rcount = 1
+        for repo_row in repo_handle:
+            repo_id = repo_row[1]            
+            name, owner = get_name(repo_id)  
+            result = "0"
+            if name:  
+                 print(name, " " , owner)
+#                result = run_query(name, owner)
+            
+#            print(result)
+            
 main()
