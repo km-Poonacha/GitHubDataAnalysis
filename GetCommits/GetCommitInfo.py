@@ -10,8 +10,8 @@ Search for all the PRs for a repository that have been created before 2015. Find
 
 import csv
 import sys
-if "C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
-    sys.path.append('C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB')
+if "C:\\Users\\kmpoo\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
+    sys.path.append('C:\\Users\\kmpoo\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB')
     print(sys.path)
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
@@ -20,27 +20,29 @@ from poo_ghmodules import ghparse_row
 import pandas as pd
 import numpy as np
 
-
-PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
+DF_REPO = pd.DataFrame()
+DF_COUNT = 0
+PW_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
 LOG_CSV = 'C:\\Data\\092019 CommitInfo\RepoCommit_log.csv'
 
 def getmorecommitinfo(c_url):
     """Get data on individual commit"""
     commit_row = []
     del commit_row[:]
-    commit_res = getGitHubapi(c_url,PW_CSV,LOG_CSV).json()
+    commit_res = getGitHubapi(c_url,PW_CSV,LOG_CSV)
 
     if commit_res is None:
         print("No commit information available", c_url)
-        return []
-    commit_row = ghparse_row(commit_res,"stats*total", "stats*additions",prespace = 0)
-    parents = commit_res['parents']
+        return ["","","","",""]
+    commit_json = commit_res.json()
+    commit_row = ghparse_row(commit_json,"stats*total", "stats*additions",prespace = 0)
+    parents = commit_json['parents']
     p_no = 0
     for parent in parents:
         p_no= p_no+1    
     commit_row.append(p_no)    
     
-    files = commit_res['files']
+    files = commit_json['files']
     f_name =[]
     f_stat =[]
     f_pat =[]
@@ -70,7 +72,7 @@ def getcommitinfo(repoid,NEWREPO_xl):
         if commit_req:
             commit_json = commit_req.json()
             for commit in commit_json:
-                commit_row = ghparse_row(commit,"sha", "commit*author*name","commit*author*email","commit*author*date", "commit*committer*name","commit*committer*email","commit*committer*date","commit*comment_count","url","commit*message", prespace = 1)
+                commit_row = ghparse_row(commit,"sha", "commit*author*name","commit*author*email","commit*author*date", "commit*committer*name","commit*committer*email","commit*committer*date","commit*comment_count","commit*message", prespace = 1)
                 c_list = getmorecommitinfo(commit['url'])                
                 for e in c_list:
                     commit_row.append(e)
@@ -93,16 +95,23 @@ def appendrowincsv(csvfile, row):
 
 def appendrowindf(NEWREPO_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
-    df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
-    df= df.append(pd.Series(row), ignore_index = True)
-    df.to_excel(NEWREPO_xl, index = False) 
+    global DF_REPO 
+    global DF_COUNT
+    DF_REPO= DF_REPO.append(pd.Series(row), ignore_index = True)
+    DF_COUNT = DF_COUNT + 1
+    if DF_COUNT == 1000:
+        df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
+        df= df.append(DF_REPO, ignore_index = True)
+        df.to_excel(NEWREPO_xl, index = False) 
+        DF_COUNT = 0
+        DF_REPO = pd.DataFrame()
         
 def main():
      
     # For WINDOWS 
-    REPO_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_201-398.csv'
+    REPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_50.csv'
 #    NEWREPO_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.csv'
-    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit398_1.xlsx'
+    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.xlsx'
     df_full = pd.DataFrame()
     df_full.to_excel(NEWREPO_xl, index = False) 
     with open(REPO_CSV, 'rt', encoding = 'utf-8') as repolist:
@@ -117,7 +126,7 @@ def main():
             if rcount == 500:
                 rcount = 1
                 sheetno = sheetno + 1
-                NEWREPO_xl = 'C:\\Data\092019 CommitInfo\RepoCommit398_'+str(sheetno)+'.xlsx'
+                NEWREPO_xl = 'C:\\Data\092019 CommitInfo\RepoCommit_'+str(sheetno)+'.xlsx'
             rcount = rcount + 1
 
   
