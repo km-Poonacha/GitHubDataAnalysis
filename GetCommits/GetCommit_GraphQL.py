@@ -19,11 +19,11 @@ import requests
 PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
 LOG_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_log.csv'
 
-def run_query(name, owner): 
+def run_query(name, owner, NEWREPO_xl): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
     headers = {"Authorization": "Bearer "+"dfb9844388015057b2bb8331c562068b04d9807f"}  
     endc = ""
-    commit_df = pd.DataFrame()
+    commit_row = list() 
     while True:
         query = """
                     query{
@@ -36,7 +36,7 @@ def run_query(name, owner):
                         ref(qualifiedName: "master") {
                           target {
                             ... on Commit {
-                              history(first:2 until: "2016-01-01T00:00:00Z" """+endc+"""){
+                              history(first:100 until: "2016-01-01T00:00:00Z" """+endc+"""){
                                 totalCount
                                 pageInfo {
                                   endCursor
@@ -61,6 +61,11 @@ def run_query(name, owner):
                                           email
                                           date                        
                                           }
+                                        committer {
+                                          name
+                                          email
+                                          date                        
+                                          }
                                   }
                                 }
                               }
@@ -73,16 +78,33 @@ def run_query(name, owner):
         try:
             request = requests.post('https://api.github.com/graphql', json={'query': query}, headers=headers)
             req_json = request.json()
-
-            endcursor = req_json['data']['repository']['ref']['target']['history']['pageInfo']['endCursor']            
-            print(endcursor)
-            commits = req_json['data']['repository']['ref']['target']['history']['edges']
-            for commit in commits:
-                print(commit['node']['changedFiles'])
-            return req_json
         except:
+            print("Error runnig graphql")
             break
         
+        endcursor = req_json['data']['repository']['ref']['target']['history']['pageInfo']['endCursor']            
+        commits = req_json['data']['repository']['ref']['target']['history']['edges']
+        del commit_row[:]
+        for commit in commits:
+            print(commit['node']['oid'])
+            commit_row.append("")
+            commit_row.append(commit['node']['oid'])
+            commit_row.append(commit['node']['author']['name']) 
+            commit_row.append(commit['node']['author']['email']) 
+            commit_row.append(commit['node']['author']['date']) 
+            commit_row.append(commit['node']['committer']['name']) 
+            commit_row.append(commit['node']['committer']['email']) 
+            commit_row.append(commit['node']['committer']['date']) 
+            commit_row.append(commit['node']['comments']['totalCount'])
+            commit_row.append(commit['node']['additions'])
+            commit_row.append(commit['node']['deletions'])
+            commit_row.append(commit['node']['changedFiles'])
+            commit_row.append(commit['node']['parents']['totalCount']) 
+            commit_row.append(commit['node']['message'])
+            
+            appendrowindf(NEWREPO_xl, commit_row)
+        return req_json
+
     return "404"
        
 
@@ -105,7 +127,7 @@ def appendrowindf(NEWREPO_xl, row):
 def main():
     """Main function"""   
     repo_csv = "C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_Test5.csv"
-    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit398_1.xlsx'
+    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_Test.xlsx'
     df_full = pd.DataFrame()
     df_full.to_excel(NEWREPO_xl, index = False) 
     with open(repo_csv, 'rt', encoding = 'utf-8') as repolist:
@@ -117,7 +139,7 @@ def main():
             name, owner = get_name(repo_id)  
             result = "0"
             if name:  
-                result = run_query(name, owner)            
+                result = run_query(name, owner, NEWREPO_xl )            
 #                print(result)
                 if result == '404':
                     print("Error runnig graphql")
