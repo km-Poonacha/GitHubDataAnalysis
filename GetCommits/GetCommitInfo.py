@@ -10,19 +10,20 @@ Search for all the PRs for a repository that have been created before 2015. Find
 
 import csv
 import sys
-if "C:\\Users\\kmpoo\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
-    sys.path.append('C:\\Users\\kmpoo\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB')
+if "C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
+    sys.path.append('C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB')
     print(sys.path)
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
 from poo_ghmodules import ghparse_row
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
 
 DF_REPO = pd.DataFrame()
 DF_COUNT = 0
-PW_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
+PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
 LOG_CSV = 'C:\\Data\\092019 CommitInfo\RepoCommit_log.csv'
 
 def getmorecommitinfo(c_url):
@@ -73,6 +74,8 @@ def getcommitinfo(repoid,NEWREPO_xl):
             commit_json = commit_req.json()
             for commit in commit_json:
                 commit_row = ghparse_row(commit,"sha", "commit*author*name","commit*author*email","commit*author*date", "commit*committer*name","commit*committer*email","commit*committer*date","commit*comment_count","commit*message", prespace = 1)
+                commit_datetime = datetime.strptime(commit['commit']['author']['date'], "%Y-%m-%dT%H:%M:%SZ")
+                print(commit_datetime.year)
                 c_list = getmorecommitinfo(commit['url'])                
                 for e in c_list:
                     commit_row.append(e)
@@ -109,7 +112,7 @@ def appendrowindf(NEWREPO_xl, row):
 def main():
      
     # For WINDOWS 
-    REPO_CSV = 'C:\\Users\kmpoo\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_50.csv'
+    REPO_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_50.csv'
 #    NEWREPO_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.csv'
     NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.xlsx'
     df_full = pd.DataFrame()
