@@ -87,7 +87,6 @@ def getcommitinfo(repoid,NEWREPO_xl,owner,name):
                         commit_row.append(e)
                 appendrowindf(NEWREPO_xl, commit_row)
             commit_url = ghpaginate(commit_req)
-            print(commit_url)
         else:
             print("Error getting commit info ",commit_url)
             with open(LOG_CSV, 'at', encoding = 'utf-8', newline ="") as loglist:
@@ -134,7 +133,7 @@ def main():
 #            appendrowincsv(NEWREPO_CSV, repo_row)
             appendrowindf(NEWREPO_xl, repo_row)
             getcommitinfo(repoid,NEWREPO_xl,rowner,rname)
-            if rcount == 500:
+            if rcount == 1:
                 if DF_COUNT <MAX_ROWS_PERWRITE :
                     df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
                     df= df.append(DF_REPO, ignore_index = True)
