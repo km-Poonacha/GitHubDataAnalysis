@@ -115,13 +115,14 @@ def appendrowindf(NEWREPO_xl, row):
         DF_REPO = pd.DataFrame()
         
 def main():
-     
+    global DF_REPO 
+    global DF_COUNT
     # For WINDOWS 
     REPO_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_TEST.csv'
 #    NEWREPO_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_1.csv'
     NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_TEST.xlsx'
-    df_full = pd.DataFrame()
-    df_full.to_excel(NEWREPO_xl, index = False) 
+    df_new = pd.DataFrame()
+    df_new.to_excel(NEWREPO_xl, index = False) 
     with open(REPO_CSV, 'rt', encoding = 'utf-8') as repolist:
         repo_handle = csv.reader(repolist)
         rcount = 1
@@ -133,14 +134,18 @@ def main():
 #            appendrowincsv(NEWREPO_CSV, repo_row)
             appendrowindf(NEWREPO_xl, repo_row)
             getcommitinfo(repoid,NEWREPO_xl,rowner,rname)
-            if rcount == 1:
-                if DF_COUNT <MAX_ROWS_PERWRITE :
+            if rcount == 500:
+                if DF_COUNT < MAX_ROWS_PERWRITE:
                     df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
                     df= df.append(DF_REPO, ignore_index = True)
                     df.to_excel(NEWREPO_xl, index = False) 
+                    DF_COUNT = 0
+                    DF_REPO = pd.DataFrame()
                 rcount = 1
                 sheetno = sheetno + 1
-                NEWREPO_xl = 'C:\\Data\092019 CommitInfo\RepoCommit_TEST'+str(sheetno)+'.xlsx'
+                NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\RepoCommit_TEST'+str(sheetno)+'.xlsx'
+                print(NEWREPO_xl)
+                df_new.to_excel(NEWREPO_xl, index = False) 
             rcount = rcount + 1
     if DF_COUNT < MAX_ROWS_PERWRITE:
         df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
