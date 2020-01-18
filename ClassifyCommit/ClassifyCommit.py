@@ -124,8 +124,9 @@ def geticommit(x):
             l = i.split('.')
             if len(l) > 1:
                 if l[1].lower() not in text_file:
-                    return 1
-    return 0
+                    return x['PUSHED_DATE'],x['MAIN_LANGUAGE'],x['NO_LANGUAGES'],x['SCRIPT_SIZE'],x['STARS'],x['SUBSCRIPTIONS']
+
+    return np.NaN,np.NaN,np.NaN,np.NaN,np.NaN,np.NaN
     
 def getVDF(TRAIN_CSV):
     """Get data from the training sample CSV and perform various cleaning and data preprocessing"""
@@ -303,9 +304,9 @@ def main():
 #        if macc[1] > 0.5: return
     
         #Run untill max accuracy in 70%
-#    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
-#    dataframe_write = df.assign(flag = df.apply(geticommit, axis =1 ))
-#    dataframe_write.to_excel(COMMIT2_XLSX)
+    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
+    dataframe_classify = df_write.apply(geticommit, axis =1 )
+    dataframe_classify.to_excel(COMMIT2_XLSX)
 if __name__ == '__main__':
   main()
   
