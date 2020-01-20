@@ -124,9 +124,9 @@ def geticommit(x):
             l = i.split('.')
             if len(l) > 1:
                 if l[1].lower() not in text_file:
-                    return x['PUSHED_DATE'],x['MAIN_LANGUAGE'],x['NO_LANGUAGES'],x['SCRIPT_SIZE'],x['STARS'],x['SUBSCRIPTIONS']
+                    return pd.Series([x['PUSHED_DATE'],x['MAIN_LANGUAGE'],x['NO_LANGUAGES'],x['SCRIPT_SIZE'],x['STARS'],x['SUBSCRIPTIONS']], index=['Comments','Message','Added','Deleted','Parents','Files'])
 
-    return np.NaN,np.NaN,np.NaN,np.NaN,np.NaN,np.NaN
+    return pd.Series([np.NaN,np.NaN,np.NaN,np.NaN,np.NaN,np.NaN], index=['Comments','Message','Added','Deleted','Parents','Files'])
     
 def getVDF(TRAIN_CSV):
     """Get data from the training sample CSV and perform various cleaning and data preprocessing"""
@@ -185,7 +185,7 @@ def vectordsc(corpus, train_text, test_text):
     word_vectorizer.fit(corpus)
     train_word_features = word_vectorizer.transform(train_text)
     test_word_features = word_vectorizer.transform(test_text)
-    return train_word_features, test_word_features
+    return train_word_features, test_word_features, word_vectorizer
 
 def MLPmodel(train_x, train_y, test_x, test_y, LCurve = False):
     """MLP classifier model"""
@@ -228,7 +228,7 @@ def main():
     df_train.to_csv(TRAINSET_CSV)
     df_test.to_csv(TESTSET_CSV)
     #Convert description text into a vetor of features. Train_x,test_x are in sparse matrix format
-    train_x, test_x = vectordsc(vector_dataframe['Description'], df_train['Description'], df_test['Description'] )
+    train_x, test_x, word_vectorizer = vectordsc(vector_dataframe['Description'], df_train['Description'], df_test['Description'] )
     acuracy = list()
     macc = list()
     macc_l = list()
@@ -238,49 +238,50 @@ def main():
         del acuracy[:] 
         del macc[:] 
         #Stage 1  
-        print("*** MLP Classifier - One stage - "+i+"5 ***")
-        p_train,p_test, acc, classifier = MLPmodel(train_x, df_train[i+' '], test_x, df_test[i+' '])
-        acuracy.append(["MLP Classifier - One stage - "+i+"5", float(acc)])
+#        print("*** MLP Classifier - One stage - "+i+"5 ***")
+#        p_train,p_test, acc, classifier1s5n = MLPmodel(train_x, df_train[i+' '], test_x, df_test[i+' '])
+#        acuracy.append(["MLP Classifier - One stage - "+i+"5", float(acc)])
         print("*** MLP Classifier - One stage - "+i+"3 ***")
-        p_train2,p_test2, acc, classifier = MLPmodel(train_x, df_train[i+'3'], test_x, df_test[i+'3'])
-        acuracy.append(["MLP Classifier - One stage - "+i+"3", float(acc), classifier])
+        p_train2,p_test2, acc, classifier_mlp1s3 = MLPmodel(train_x, df_train[i+'3'], test_x, df_test[i+'3'])
+#        acuracy.append(["MLP Classifier - One stage - "+i+"3", float(acc), classifier_mlp1s3])
         
         #Stage 2
-        df_train_prob = pd.DataFrame(p_train, columns = ['p1','p2','p3','p4','p5'])
+        df_train_prob = pd.DataFrame(p_train2, columns = ['p1','p2','p3'])
         train_x_s2 = pd.concat([df_train_prob,df_train['Files Changed'],df_train['nAdditions'],df_train['nDeletions'],df_train['Parents'],df_train['nWords']], axis=1)
-        df_test_prob = pd.DataFrame(p_test, columns = ['p1','p2','p3','p4','p5'])
+        df_test_prob = pd.DataFrame(p_test2, columns = ['p1','p2','p3'])
         test_x_s2 = pd.concat([df_test_prob,df_test['Files Changed'],df_test['nAdditions'],df_test['nDeletions'],df_test['Parents'],df_test['nWords']], axis=1)
         print("*** MLP Classifier - Two stage - "+i+"3 ***")
-        p_train_s2,p_test_s2, acc, classifier = MLPmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
-        acuracy.append(["MLP Classifier - Two stage - "+i+"3", float(acc), classifier])
+        p_train_s2,p_test_s2, acc, classifier_mlp2s3 = MLPmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
+        acuracy.append(["MLP Classifier - Two stage - "+i+"3", float(acc),classifier_mlp1s3, classifier_mlp2s3])
         #Stage 2 in RF Model
-        print("*** MLP stage one, RF stage two classifier - Two stage - "+i+"3 ***")
-        p_train_s2,p_test_s2, acc, classifier = RFCmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
-        acuracy.append(["MLP stage one, RF stage two classifier - Two stage - "+i+"3", float(acc), classifier])
+#        print("*** MLP stage one, RF stage two classifier - Two stage - "+i+"3 ***")
+#        p_train_s2,p_test_s2, acc, classifier = RFCmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
+#        acuracy.append(["MLP stage one, RF stage two classifier - Two stage - "+i+"3", float(acc), classifier])
+       
         # Single stage
         train_x_1s = hstack((train_x,df_train['Files Changed'].astype(float).values[:, None], df_train['nAdditions'].astype(float).values[:, None], df_train['nDeletions'].astype(float).values[:, None], df_train['Parents'].astype(float).values[:, None] ,df_train['nWords'].astype(float).values[:, None]))
         test_x_1s = hstack((test_x,df_test['Files Changed'].astype(float).values[:, None], df_test['nAdditions'].astype(float).values[:, None], df_test['nDeletions'].astype(float).values[:, None], df_test['Parents'].astype(float).values[:, None], df_test['nWords'].astype(float).values[:, None]))
-        print("*** MLP Classifier - One stage - All features - "+i+"5 ***")
+#        print("*** MLP Classifier - One stage - All features - "+i+"5 ***")
         p_train_1s,p_test_1s, acc, classifier = RFCmodel(train_x_1s, df_train[i+' '], test_x_1s, df_test[i+' '], LCurve = False)
         acuracy.append(["MLP Classifier - One stage - All features - "+i+"5", float(acc), classifier])
         print("*** MLP Classifier - One stage - All features - "+i+"3 ***")
-        p_train3_1s,p_test3_1s, acc, classifier = MLPmodel(train_x_1s, df_train[i+'3'], test_x_1s, df_test[i+'3'], LCurve = True)
+        p_train3_1s,p_test3_1s, acc, classifier_mlp = MLPmodel(train_x_1s, df_train[i+'3'], test_x_1s, df_test[i+'3'], LCurve = True)
         acuracy.append(["MLP Classifier - One stage - All features - "+i+"3", float(acc), classifier])
         
         '''Random Forest'''
         print("************ Random Forest *************")
         #Stage 1  
-        print("*** RF Classifier - One stage - "+i+"5 ***")
-        p_train,p_test,acc, classifier = RFCmodel(train_x, df_train[i+' '], test_x, df_test[i+' '])
-        acuracy.append(["RF Classifier - One stage - "+i+"5", float(acc), classifier])
+#        print("*** RF Classifier - One stage - "+i+"5 ***")
+#        p_train,p_test,acc, classifier = RFCmodel(train_x, df_train[i+' '], test_x, df_test[i+' '])
+#        acuracy.append(["RF Classifier - One stage - "+i+"5", float(acc), classifier])
         print("*** RF Classifier - One stage - "+i+"3 ***")
         p_train2,p_test2,acc, classifier = RFCmodel(train_x, df_train[i+'3'], test_x, df_test[i+'3'])
         acuracy.append(["RF Classifier - One stage - "+i+"3", float(acc), classifier])
         
         #Stage 2
-        df_train_prob = pd.DataFrame(p_train, columns = ['p1','p2','p3','p4','p5'])
+        df_train_prob = pd.DataFrame(p_train2, columns = ['p1','p2','p3'])
         train_x_s2 = pd.concat([df_train_prob,df_train['Files Changed'],df_train['nAdditions'],df_train['nDeletions'],df_train['Parents'],df_train['nWords']], axis=1)
-        df_test_prob = pd.DataFrame(p_test, columns = ['p1','p2','p3','p4','p5'])
+        df_test_prob = pd.DataFrame(p_test2, columns = ['p1','p2','p3'])
         test_x_s2 = pd.concat([df_test_prob,df_test['Files Changed'],df_test['nAdditions'],df_test['nDeletions'],df_test['Parents'],df_test['nWords']], axis=1)
         print("*** RF Classifier - Two stage - "+i+"3 ***")
         p_train_s2,p_test_s2,acc, classifier = RFCmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
@@ -290,9 +291,9 @@ def main():
         p_train_s2,p_test_s2,acc, classifier = MLPmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
         acuracy.append(["RF stage  one and MLP stage 2 - Two stage - "+i+"3", float(acc), classifier])        
         # Single stage
-        print("*** RF Classifier - One stage - All features - "+i+"5 ***")
-        p_train_1s,p_test_1s, acc, classifier = RFCmodel(train_x_1s, df_train[i+' '], test_x_1s, df_test[i+' '], LCurve = False)
-        acuracy.append([" RF Classifier - One stage - All features - "+i+"5", float(acc), classifier]) 
+#        print("*** RF Classifier - One stage - All features - "+i+"5 ***")
+#        p_train_1s,p_test_1s, acc, classifier = RFCmodel(train_x_1s, df_train[i+' '], test_x_1s, df_test[i+' '], LCurve = False)
+#        acuracy.append([" RF Classifier - One stage - All features - "+i+"5", float(acc), classifier]) 
         print("*** RF Classifier - One stage - All features - "+i+"3 ***")
         p_train3_1s,p_test3_1s, acc, classifier = RFCmodel(train_x_1s, df_train[i+'3'], test_x_1s, df_test[i+'3'], LCurve = True)
         acuracy.append(["RF Classifier - One stage - All features - "+i+"3", float(acc), classifier])  
@@ -306,7 +307,11 @@ def main():
         #Run untill max accuracy in 70%
     df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
     dataframe_classify = df_write.apply(geticommit, axis =1 )
-    dataframe_classify.to_excel(COMMIT2_XLSX)
+    dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['Message'].str.split().str.len() )
+    word_features = word_vectorizer.transform(dataframe_classify['Message'].astype(str))
+    df_classify = hstack((word_features, dataframe_classify['nWords'].astype(float).values[:, None]))
+    print(df_classify)
+    df_classify.to_excel(COMMIT2_XLSX, engine='openpyxl')
 if __name__ == '__main__':
   main()
   
