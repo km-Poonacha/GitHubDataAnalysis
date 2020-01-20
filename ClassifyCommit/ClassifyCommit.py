@@ -232,6 +232,7 @@ def main():
     acuracy = list()
     macc = list()
     macc_l = list()
+    df_classify = pd.DataFrame()
     df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
     dataframe_classify = df_write.apply(geticommit, axis =1 )
     dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['Message'].str.split().str.len() )
@@ -318,23 +319,24 @@ def main():
 #        #Print Max accuracy scores and models
         
         p_classify5 = classifier_mlp1s5.predict_proba(word_features)
-        df_classify_prob = pd.DataFrame(p_classify5, columns = ['p1','p2','p3','p4','p5'])
+        df_classify_prob = pd.DataFrame(p_classify5, columns = [i+'p1',i+'p2',i+'p3',i+'p4',i+'p5'])
         classify_x_s1 = pd.DataFrame(pd.concat([df_classify_prob,dataframe_classify['Files'],dataframe_classify['Added'],dataframe_classify['Deleted'],dataframe_classify['Parents'],dataframe_classify['nWords']], axis=1) ).fillna(0)
-        classify_x_s1.to_excel(COMMIT2_XLSX)
         p_classify_s2  = classifier_mlp2s5.predict_proba(classify_x_s1)
-        classify_x_s2  = pd.DataFrame(p_classify_s2, columns = ['s2p1','s2p2','s2p3'])
-        df_classify = pd.concat([classify_x_s1, classify_x_s2], axis=1)
-        df_classify.to_excel(COMMIT2_XLSX)
+        classify_x_s2  = pd.DataFrame(p_classify_s2, columns = [i+'s2p1',i+'s2p2',i+'s2p3'])
+        df_classify = pd.concat([df_classify, classify_x_s2], axis=1)
+        
         macc = max(acuracy, key=lambda x: x[1])
         print("MAX ACCURACY - = ",macc)
-        macc_l.append([macc[0],macc[1],macc[2]])
-        
+        macc_l.append([macc[0],macc[1],macc[2]]) 
+    
+
+    df_write = pd.concat([df_write,df_classify], axis=1)
+    df_write.to_excel(COMMIT2_XLSX)   
     print(macc_l)
 #        if macc[1] > 0.5: return
     
         #Run untill max accuracy in 70%
 #    df_classify = hstack((word_features, dataframe_classify['nWords'].astype(float).values[:, None]))
-    df_classify.to_excel(COMMIT2_XLSX)
 if __name__ == '__main__':
   main()
   
