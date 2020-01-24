@@ -15,7 +15,7 @@ import ast
 COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
 CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
 TEST_XLSX = "C:/Data/092019 CommitInfo/Test.xlsx"
-
+TEST2_XLSX = "C:/Data/092019 CommitInfo/Test2.xlsx"
 def consolidate_prob(x, a1, a2,a3):
     text_file = ['txt','md']
     if pd.isna(x['PINDEX']) and pd.notna(x['OPEN_ISSUES']):
@@ -29,11 +29,13 @@ def consolidate_prob(x, a1, a2,a3):
     return np.NaN
 
 def consolidate_commits(df):
-    print(df.groupby('c_month')['con_novelty', 'con_usefulness'].sum())
+    df.dropna(subset=['con_novelty'],inplace = True)
+    df2 = df.groupby('c_month')['con_novelty', 'con_usefulness'].sum()
+    
     print(df.groupby('c_month')['con_novelty', 'con_usefulness'].mean())
     print(df.groupby('c_month')['con_novelty', 'con_usefulness'].count())
-    print(df.groupby(['c_month','SIZE'])['con_novelty', 'con_usefulness'].count()) 
-    
+    df2 = df.groupby(['c_month','SIZE'])['con_novelty', 'con_usefulness'].mean()
+    df2.unstack(1).to_excel(TEST2_XLSX)
 def main():
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
