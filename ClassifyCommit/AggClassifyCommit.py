@@ -16,7 +16,9 @@ COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
 CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
 TEST_XLSX = "C:/Data/092019 CommitInfo/Test.xlsx"
 TEST2_XLSX = "C:/Data/092019 CommitInfo/Test2.xlsx"
+
 def consolidate_prob(x, a1, a2,a3):
+    "Aggregae the probabilities calculated into a single construct"
     text_file = ['txt','md']
     if pd.isna(x['PINDEX']) and pd.notna(x['OPEN_ISSUES']):
         files = ast.literal_eval(x['OPEN_ISSUES'])
@@ -29,13 +31,14 @@ def consolidate_prob(x, a1, a2,a3):
     return np.NaN
 
 def consolidate_commits(df):
+    """ COnsolidate commits monthly"""
     df.dropna(subset=['con_novelty'],inplace = True)
     df2 = df.groupby('c_month')['con_novelty', 'con_usefulness'].sum()
+    df2= pd.concat([df2, df.groupby('c_month')['con_novelty'].count(),df.groupby(['c_month'])['SIZE'].nunique()], axis = 1)
+    df2.columns = ['m_novelty','m_usefulness','c_count','n_contributors']
+    df2= df2.reset_index()
+    return df2
     
-    print(df.groupby('c_month')['con_novelty', 'con_usefulness'].mean())
-    print(df.groupby('c_month')['con_novelty', 'con_usefulness'].count())
-    df2 = df.groupby(['c_month','SIZE'])['con_novelty', 'con_usefulness'].mean()
-    df2.unstack(1).to_excel(TEST2_XLSX)
 def main():
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
@@ -56,14 +59,18 @@ def main():
     #get commits of a repo
     repo_commits = pd.DataFrame()
     repo_details = pd.Series()
+    write_commits = pd.DataFrame()
     
     for i,row in df_commit.iterrows():
         if pd.notna(row['PINDEX']):
+            write_commits = write_commits.append(row, sort = False, ignore_index = True)
+            write_commits = write_commits.reindex(df_commit.columns, axis=1)
             if i > 1: 
-                repo_details = row
-                repo_commits = repo_commits.reindex(df_commit.columns, axis=1)
+                
                 repo_commits.to_excel(TEST_XLSX)
-                consolidate_commits(repo_commits)
+                df_mcommit = consolidate_commits(repo_commits)
+                write_commits = write_commits.append(df_mcommit, sort = False, ignore_index = True)                
+                write_commits.to_excel(TEST2_XLSX)
                 return
             repo_commits = pd.DataFrame()
             continue
