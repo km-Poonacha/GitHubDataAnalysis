@@ -12,7 +12,7 @@ import numpy as np
 import ast
 
 
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
+COMMIT2_XLSX ="C:/Data/092019 CommitInfo/newtestRepoCommit1_287_1.xlsx"
 CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
 TEST_XLSX = "C:/Data/092019 CommitInfo/Test.xlsx"
 TEST2_XLSX = "C:/Data/092019 CommitInfo/Test2.xlsx"
@@ -31,12 +31,15 @@ def consolidate_prob(x, a1, a2,a3):
     return np.NaN
 
 def consolidate_commits(df):
-    """ COnsolidate commits monthly"""
+    """ Consolidate commits monthly"""
+    if int(df.shape[0]) <1: return pd.DataFrame()
     df.dropna(subset=['con_novelty'],inplace = True)
     df2 = df.groupby('c_month')['con_novelty', 'con_usefulness'].sum()
     df2= pd.concat([df2, df.groupby('c_month')['con_novelty'].count(),df.groupby(['c_month'])['SIZE'].nunique()], axis = 1)
-    df2.columns = ['m_novelty','m_usefulness','c_count','n_contributors']
+    
+    # Change index from c_months 
     df2= df2.reset_index()
+    df2.columns = ['nc_month','m_novelty','m_usefulness','c_count','c_contributors']
     return df2
     
 def main():
@@ -58,28 +61,27 @@ def main():
     
     #get commits of a repo
     repo_commits = pd.DataFrame()
-    repo_details = pd.Series()
     write_commits = pd.DataFrame()
-    
+    indx = df_commit.columns
+    indx = indx.append(pd.Index(['nc_month','m_novelty','m_usefulness','c_count','c_contributors']))
+    print(indx)
     for i,row in df_commit.iterrows():
         if pd.notna(row['PINDEX']):
+            #get the monthly aggregate commit info
+            df_mcommit = consolidate_commits(repo_commits)
+            write_commits = write_commits.append(df_mcommit, sort = False, ignore_index = True)                           
+            #append repo row info
             write_commits = write_commits.append(row, sort = False, ignore_index = True)
-            write_commits = write_commits.reindex(df_commit.columns, axis=1)
-            if i > 1: 
-                
-                repo_commits.to_excel(TEST_XLSX)
-                df_mcommit = consolidate_commits(repo_commits)
-                write_commits = write_commits.append(df_mcommit, sort = False, ignore_index = True)                
-                write_commits.to_excel(TEST2_XLSX)
-                return
             repo_commits = pd.DataFrame()
             continue
 
+        
+
         repo_commits = repo_commits.append(row, sort = False)
     
-    
-    print(df_commit)
-    df_commit.to_excel(CLEAN_XLSX)
+    write_commits = write_commits.reindex(indx, axis=1)
+    write_commits = write_commits.drop(axis=1,columns=['REPO_ID.1', 'yhat','opt_deg_sup_ind','opt_deg_sup_org','Unnamed: 104','UNKNOWN','c_month','c_day','con_novelty','con_usefulness'])
+    write_commits.to_excel(TEST2_XLSX)
     # Save the full labeled data sample post processing in CSV
    
 if __name__ == '__main__':
