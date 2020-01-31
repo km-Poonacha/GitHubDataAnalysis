@@ -4,7 +4,7 @@ Created on Wed Jan  2 10:30:42 2019
 
 @author: kmpoo
 
-Aggregate commit creativity at the level of months. Remove projects for which no commits were found. 
+Get all commits corresponding to java projects 
 """
 
 import pandas as pd
@@ -26,8 +26,7 @@ REPOCOMMIT_LIST =[
                    "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
                    "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
                   ]
-CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
-TEST_XLSX = "C:/Data/092019 CommitInfo/Test.xlsx"
+
 MC_XLSX = "C:/Data/092019 CommitInfo/Java_RepoCommit1_287_1.xlsx"
 
 
