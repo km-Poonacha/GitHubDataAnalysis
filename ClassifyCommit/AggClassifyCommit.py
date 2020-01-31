@@ -12,10 +12,10 @@ import numpy as np
 import ast
 
 
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/newtestRepoCommit1_287_1.xlsx"
+COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
 CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
 TEST_XLSX = "C:/Data/092019 CommitInfo/Test.xlsx"
-TEST2_XLSX = "C:/Data/092019 CommitInfo/Test2.xlsx"
+MC_XLSX = "C:/Data/092019 CommitInfo/MC_RepoCommit1_287_1.xlsx"
 
 def consolidate_prob(x, a1, a2,a3):
     "Aggregae the probabilities calculated into a single construct"
@@ -64,7 +64,7 @@ def main():
     write_commits = pd.DataFrame()
     indx = df_commit.columns
     indx = indx.append(pd.Index(['nc_month','m_novelty','m_usefulness','c_count','c_contributors']))
-    print(indx)
+
     for i,row in df_commit.iterrows():
         if pd.notna(row['PINDEX']):
             #get the monthly aggregate commit info
@@ -81,7 +81,7 @@ def main():
     
     write_commits = write_commits.reindex(indx, axis=1)
     write_commits = write_commits.drop(axis=1,columns=['REPO_ID.1', 'yhat','opt_deg_sup_ind','opt_deg_sup_org','Unnamed: 104','UNKNOWN','c_month','c_day','con_novelty','con_usefulness'])
-    write_commits.to_excel(TEST2_XLSX)
+    write_commits.to_excel(MC_XLSX)
     # Save the full labeled data sample post processing in CSV
    
 if __name__ == '__main__':
