@@ -12,18 +12,19 @@ import numpy as np
 import ast
 
 
-REPOCOMMIT_LIST =["C:/Data/092019 CommitInfo/RepoCommit1_287_1.xlsx",
-                  "C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx"
-                  # "C:/Data/092019 CommitInfo/RRepoCommit501_1000_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit1001_1500_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit1501_2000_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit2002_2500_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit2501_3250_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit3251_4000_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit4001_5000_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit5001_5202_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
-                  # "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
+REPOCOMMIT_LIST =[
+                   "C:/Data/092019 CommitInfo/RepoCommit1_287_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit1001_1500_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit1501_2000_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit2002_2500_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit2501_3250_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit3251_4000_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit4001_5000_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit5001_5202_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
+                   "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
                   ]
 CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
 TEST_XLSX = "C:/Data/092019 CommitInfo/Test.xlsx"
