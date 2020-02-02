@@ -13,18 +13,18 @@ import ast
 
 
 REPOCOMMIT_LIST =[
-                   "C:/Data/092019 CommitInfo/RepoCommit1_287_1.xlsx"
-                   # "C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit1001_1500_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit1501_2000_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit2002_2500_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit2501_3250_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit3251_4000_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit4001_5000_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit5001_5202_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
-                   # "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
+                   "C:/Data/092019 CommitInfo/RepoCommit1_287_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit1001_1500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit1501_2000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit2002_2500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit2501_3250_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit3251_4000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit4001_5000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit5001_5202_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
                   ]
 
 MC_XLSX = "C:/Data/092019 CommitInfo/Java_RepoCommit1_287_1.xlsx"
@@ -65,6 +65,7 @@ def main():
     r_commits = pd.DataFrame()
 
     for xl_sheet in REPOCOMMIT_LIST:
+        print(xl_sheet)
         df_commit= pd.read_excel(xl_sheet, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
         #clean_df(df_commit)
         df_commit.drop(df_commit[(df_commit.PINDEX.notna()) & (df_commit.PINDEX.shift(-1).notna())].index, inplace= True)
