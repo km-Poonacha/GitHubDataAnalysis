@@ -14,7 +14,7 @@ import numpy as np
 import ast
 
 
-EVENT_CSV ="C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/MergeEvents/NewEvent2014_15_test.csv"
+EVENT_CSV ="C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/MergeEvents/NewEvent2014_15_"
 
 TEST_CSV = "C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ContributorInfo/12_CollabExportedISRDataCollab_22012018_2_Complete.csv"
 MC_XLSX = "C:/Data/092019 CommitInfo/MC_RepoCommit1_287_1.xlsx"
@@ -25,34 +25,51 @@ def find_events(df_row):
 
 def main():
     """Get data from the training sample CSV and perform various cleaning and data preprocessing"""
-    year_list = ['2014','2015']
+
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
     repo_id = 15814446
 
-    e_df = pd.read_csv(EVENT_CSV, sep=",",error_bad_lines=False,header= None, low_memory=False, encoding = "Latin1")
+    e_df = pd.read_csv(EVENT_CSV+"test.csv", sep=",",error_bad_lines=False,header= None, low_memory=False, encoding = "Latin1")
+    repo_df = e_df[e_df[0].notna()]
     e_df[0] = e_df[0].fillna(method='ffill')
-    events = e_df[e_df[0]==repo_id]
-    events= events.drop(events[events[1] != '2014'].index)
-    contributors = events[2].unique()
-    write_events = events.drop(events[events[3] == 'PullRequestEvent'].index)
-    collaborators = write_events[2].unique()
-    print(contributors)
-    print(collaborators)
+    write_xl = pd.DataFrame()
     
-    # find first occurance of collborators
-    for c in collaborators:
-        c_events = write_events.drop(write_events[write_events[2] != c].index)
-        fl_events = c_events[4].iloc[[0, -1]]
-        print(fl_events)
+    for i, repo in repo_df.iterrows():
         
+        write_xl = write_xl.append(repo, sort = False, ignore_index = True)
+        events = e_df[e_df[0]==repo[0]]
+        events= events.drop(events[(events[1] != '2014') & (events[1] != '2015')].index)
+        events[4] = pd.to_datetime(events[4], format='%d/%m/%y %H:%M')
+        events[5] = pd.to_datetime(events[5], format='%d/%m/%y %H:%M')
+        contributors = events[2].unique()
+
+        write_events = events.drop(events[events[3] == 'PullRequestEvent'].index)
+
+        collaborators = write_events[2].unique()
+        print(contributors)
+        print(collaborators)
         
-    
+        # find first occurance of collborators
+        for c in collaborators:
+            c_events = write_events.drop(write_events[write_events[2] != c].index)
+            fl_events = c_events[4].iloc[[0, -1]]
+            print(fl_events)
+            write_xl = write_xl.append(pd.Series(["", c ,c_events.shape[0], c_events[4].iloc[[0]].values[0], c_events[4].iloc[[-1]].values[0] ]), sort = False, ignore_index = True)
+            contributors = contributors[contributors != c]
+        print(contributors)
+        for co in contributors:
+            c_events = events.drop(events[events[2] != co].index)
+            fl_events = c_events[4].iloc[[0, -1]]
+            print(fl_events)
+            write_xl = write_xl.append(pd.Series(["", co ,c_events.shape[0], c_events[4].iloc[[0]].values[0], c_events[4].iloc[[-1]].values[0] ]), sort = False, ignore_index = True)
+
+        
     # events[6] = pd.to_datetime(events[4])
     # repo_event = pd.DataFrame()
 
     # repo_event = e_df.apply(find_events, axis = 1)
-    events.to_excel(COL_MC_XLSX, sheet_name='Sheet1', index=False)
+    write_xl.to_excel(COL_MC_XLSX, sheet_name='Sheet1', index=False)
     
 if __name__ == '__main__':
   main()
