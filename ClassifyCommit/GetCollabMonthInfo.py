@@ -18,7 +18,7 @@ EVENT_CSV ="C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Dat
 
 TEST_CSV = "C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ContributorInfo/12_CollabExportedISRDataCollab_22012018_2_Complete.csv"
 MC_XLSX = "C:/Data/092019 CommitInfo/MC_RepoCommit1_287_1.xlsx"
-COL_MC_XLSX = "C:/Data/092019 CommitInfo/COL_MC_RepoCommit.xlsx"
+COL_MC_XLSX = "C:/Data/092019 CommitInfo/NEWCOL_MC_RepoCommit.xlsx"
 
 def find_events(df_row):
     return df_row
@@ -41,10 +41,14 @@ def main():
             
             write_xl = write_xl.append(repo, sort = False, ignore_index = True)
             events = e_df[e_df[0]==repo[0]]
-            events= events.drop(events[(events[1] != '2014') & (events[1] != '2015')].index)
+            events= events.drop(events[(events[1] != '2014')].index)
             try:
                 events[4] = pd.to_datetime(events[4], format='%Y-%m-%d %H:%M:%S')
-            except: pass
+            except: 
+                try: events[4] = pd.to_datetime(events[4], format='%d/%m/%Y %H:%M:%S')
+                except: 
+                    try: events[4] = pd.to_datetime(events[4], format='%d/%m/%y %H:%M:%S')
+                    except: pass
 
                 
             # events[5] = pd.to_datetime(events[5], format='%Y-%m-%d %H:%M:%S')
