@@ -4,7 +4,7 @@ Created on Wed Jan  2 10:30:42 2019
 
 @author: kmpoo
 
-This is the code that tries to build a clasifier model for creativity and uses it to label any commit
+This is the code that tries to build a clasifier model for creativity and uses it to label any commit.
 """
 
 import pandas as pd

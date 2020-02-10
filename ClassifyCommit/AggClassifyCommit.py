@@ -14,8 +14,9 @@ import ast
 
 COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
 CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
-TEST_XLSX = "C:/Data/092019 CommitInfo/Test.xlsx"
+
 MC_XLSX = "C:/Data/092019 CommitInfo/MC_RepoCommit1_287_1.xlsx"
+NEW_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/Final_COL_MC_RepoCommit.xlsx"
 
 def consolidate_prob(x, a1, a2,a3):
     "Aggregae the probabilities calculated into a single construct"
