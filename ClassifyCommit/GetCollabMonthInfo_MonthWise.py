@@ -14,24 +14,21 @@ import numpy as np
 import ast
 
 
-EVENT_CSV ="C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/MergeEvents/TESTNewEvent2014_15_"
+EVENT_CSV ="C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/MergeEvents/NewEvent2014_15_"
 
-MC_XLSX = "C:/Data/092019 CommitInfo/testMC_RepoCommit1_287_1.xlsx"
-COL_MC_XLSX = "C:/Data/092019 CommitInfo/testNEWCOL_MC_RepoCommit.xlsx"
-NEW_XLSX = "C:/Data/092019 CommitInfo/testFinal_COL_MC_RepoCommit1_287_1.xlsx"
-
+COL_MC_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/COL_MC_RepoCommit.xlsx"
+NEW_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/Final_COL_MC_RepoCommit.xlsx"
+DT_ERROR_LOG = "C:/Data/092019 CommitInfo/Contributors_monthwise/DT_ERROR_LOG.xlsx"
 
 def monthwise(contri):
     #get month information for each commit
     contri.columns = ['NAN', 'C_TYPE','C_NAME','CONTRIBUTIONS','PULLS','S_DATE','E_DATE']
 
-    contri= contri.assign( s_month =   pd.to_numeric(contri['S_DATE'].str.split('/').str[1]))
-    
+    contri= contri.assign( s_month =   pd.to_numeric(contri['S_DATE'].str.split('-').str[1]))
     # contri= contri.assign( s_month =   pd.DatetimeIndex(pd.to_datetime(contri['S_DATE'], infer_datetime_format=True,errors='coerce')).month)
     # contri = contri.assign( s_day =   pd.DatetimeIndex(pd.to_datetime(contri['S_DATE'], infer_datetime_format=True,errors='coerce')).day)
     
-    contri= contri.assign( e_month =   pd.to_numeric(contri['E_DATE'].str.split('/').str[1]))
-
+    contri= contri.assign( e_month =   pd.to_numeric(contri['E_DATE'].str.split('-').str[1]))
     # contri= contri.assign( e_month =   pd.DatetimeIndex(pd.to_datetime(contri['E_DATE'], infer_datetime_format=True,errors='coerce')).month)
     # contri = contri.assign( e_day =   pd.DatetimeIndex(pd.to_datetime(contri['E_DATE'], infer_datetime_format=True,errors='coerce')).day)
 
@@ -56,7 +53,8 @@ def main():
     pd.options.display.float_format = '{:.3f}'.format
     writer = pd.ExcelWriter(COL_MC_XLSX , engine='xlsxwriter')
     writer2 = pd.ExcelWriter(NEW_XLSX , engine='xlsxwriter')
-    for iterate in range(1,2):
+    writer3 = pd.ExcelWriter(DT_ERROR_LOG  , engine='xlsxwriter')
+    for iterate in range(1,8):
         print("******** File ", iterate," ********")
 
         e_df = pd.read_csv(EVENT_CSV+str(iterate)+".csv", sep=",",error_bad_lines=False,header= None, low_memory=False, encoding = "Latin1")
@@ -64,6 +62,7 @@ def main():
         e_df[0] = e_df[0].fillna(method='ffill')
         write_xl = pd.DataFrame()
         month_colab = pd.DataFrame()
+        e_log = pd.DataFrame()
         for i, repo in repo_df.iterrows():
             # print(repo)
             write_xl = write_xl.append(repo, sort = False, ignore_index = True)
@@ -74,9 +73,9 @@ def main():
             temp_df = pd.DataFrame()
 
             # events[4] = pd.to_datetime(events[4], format='%Y-%m-%d %H:%M:%S')
-            events['event_month'] = pd.to_numeric(events[4].str.split('/').str[1])
-
-             
+            events['event_month'] = pd.to_numeric(events[4].str.split('-').str[1])
+            e_log = e_log.append(events[events['event_month'].isna()],sort = False, ignore_index = True)
+            
             # try:
             #     events[4] = pd.to_datetime(events[4], format='%Y-%m-%d %H:%M:%S')
             # except: 
@@ -125,6 +124,8 @@ def main():
         writer.save()
         month_colab.to_excel(writer2 , sheet_name='Sheet1', index=False)
         writer2.save()
+        e_log.to_excel(writer3 , sheet_name='Sheet1', index=False)
+        writer3.save()
 if __name__ == '__main__':
   main()
   
