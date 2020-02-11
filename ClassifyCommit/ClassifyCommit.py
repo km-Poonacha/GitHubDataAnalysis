@@ -21,10 +21,10 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import learning_curve
 
 
-TRAIN_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Commit Creativity - Train2.csv'
+TRAIN_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Commit Creativity - Train3_Details.xlsx'
 LABELFULL_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainout.csv'
-TRAINSET_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.csv'
-TESTSET_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.csv'
+TRAINSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.xlsx'
+TESTSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.xlsx'
 COMMIT_XLSX ="C:/Data/092019 CommitInfo/testRepoCommit1_287_1.xlsx"
 COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
 
@@ -130,11 +130,11 @@ def geticommit(x):
 
     return pd.Series([np.NaN,np.NaN,np.NaN,np.NaN,np.NaN,np.NaN], index=['Comments','Message','Added','Deleted','Parents','Files'])
     
-def getVDF(TRAIN_CSV):
+def getVDF(TRAIN_XL):
     """Get data from the training sample CSV and perform various cleaning and data preprocessing"""
-    dataframe = pd.read_csv(TRAIN_CSV, sep=",",error_bad_lines=False,header= 0, low_memory=False, encoding = "Latin1")
+    dataframe = pd.read_excel(TRAIN_XL, sep=",",error_bad_lines=False,header= 0,  encoding = "Latin1")
 
-    dataframe = dataframe.drop(axis=1,columns=['Commit URL', 'Sha','URL','Committer Name','Committer Email','Commit Date ','Verification','Author Date'])
+    dataframe = dataframe.drop(axis=1,columns=['Commit URL', 'Sha','URL','Author Name','Author Email','Commit Date','Verification','Author Date'])
     # Shuffle the dataframe
     dataframe = shuffle(dataframe)
     # Encode type of commit
@@ -157,14 +157,14 @@ def getVDF(TRAIN_CSV):
     dataframe = dataframe.assign(nDeletions = lambda x : x['Lines of Code Changed'].str.split(':').str.get(3).str.split('}').str.get(0) )
     # Create three class labeld for novelty and usefulness
     conditions = [
-        (dataframe['Novelty '] > 3),
-        (dataframe['Novelty '] < 3),]
+        (dataframe['Novelty'] > 3),
+        (dataframe['Novelty'] < 3),]
     choices = ['High', 'Low']
     dataframe['Novelty3'] = np.select(conditions, choices, default='Medium')
     
     conditions = [
-        (dataframe['Usefulness '] > 3),
-        (dataframe['Usefulness '] < 3),]
+        (dataframe['Usefulness'] > 3),
+        (dataframe['Usefulness'] < 3),]
     choices = ['High', 'Low']
     dataframe['Usefulness3'] = np.select(conditions, choices, default='Medium')
     #Create count of words feature
@@ -218,7 +218,7 @@ def RFCmodel(train_x, train_y, test_x, test_y, LCurve = False):
 def main():
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
-    vector_dataframe, vector_dataframe_sd = getVDF(TRAIN_CSV)
+    vector_dataframe, vector_dataframe_sd = getVDF(TRAIN_XL)
     # Save the full labeled data sample post processing in CSV
     vector_dataframe.to_csv(LABELFULL_CSV)
     #Split vector data frame into training and test samples
@@ -227,8 +227,8 @@ def main():
     df_train=df_train.reset_index()
     df_test = df_test.reset_index()
     #Create new CSV represnting the training and testing samples
-    df_train.to_csv(TRAINSET_CSV)
-    df_test.to_csv(TESTSET_CSV)
+    df_train.to_excel(TRAINSET_XL)
+    df_test.to_excel(TESTSET_XL)
     #Convert description text into a vetor of features. Train_x,test_x are in sparse matrix format
     train_x, test_x, word_vectorizer = vectordsc(vector_dataframe['Description'], df_train['Description'], df_test['Description'] )
     acuracy = list()
@@ -247,7 +247,7 @@ def main():
         del macc[:] 
         #Stage 1  
         print("*** MLP Classifier - One stage - "+i+"5 ***")
-        p_train5,p_test5, acc, classifier_mlp1s5 = MLPmodel(train_x, df_train[i+' '], test_x, df_test[i+' '])
+        p_train5,p_test5, acc, classifier_mlp1s5 = MLPmodel(train_x, df_train[i], test_x, df_test[i])
         #Stage 2
         df_train_prob = pd.DataFrame(p_train5, columns = ['p1','p2','p3','p4','p5'])
         train_x_s2 = pd.concat([df_train_prob,df_train['Files Changed'],df_train['nAdditions'],df_train['nDeletions'],df_train['Parents'],df_train['nWords']], axis=1)
