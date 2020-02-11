@@ -27,8 +27,8 @@ TEST_SET = 'C:\\Data\\092019 CommitInfo\Classifiers\Classifier 66 62\Testset.xls
 LABELFULL_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainout.csv'
 TRAINSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.xlsx'
 TESTSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.xlsx'
-COMMIT_XLSX ="C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx"
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx"
+COMMIT_XLSX ="C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx"
+COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx"
 
 def plot_learning_curve_std(estimator, X, y):
     """
@@ -240,7 +240,7 @@ def main():
     macc = list()
     macc_l = list()
     df_classify = pd.DataFrame()
-    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
+    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0)
     dataframe_classify = df_write.apply(geticommit, axis =1 )
     dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['Message'].str.split().str.len() )
     word_features = word_vectorizer.transform(dataframe_classify['Message'].astype(str))
