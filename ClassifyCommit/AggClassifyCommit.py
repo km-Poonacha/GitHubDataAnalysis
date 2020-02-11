@@ -12,15 +12,14 @@ import numpy as np
 import ast
 
 
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
-CLEAN_XLSX = "C:/Data/092019 CommitInfo/CleanRepoCommit1_287_1.xlsx"
+COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx"
 
-MC_XLSX = "C:/Data/092019 CommitInfo/MC_RepoCommit1_287_1.xlsx"
-NEW_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/Final_COL_MC_RepoCommit.xlsx"
+MC_XLSX = "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/MC_RepoCommit288_500_1.xlsx"
+# NEW_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/Final_COL_MC_RepoCommit.xlsx"
 
 def consolidate_prob(x, a1, a2,a3):
     "Aggregae the probabilities calculated into a single construct"
-    text_file = ['txt','md']
+    text_file = ['txt','md','doc','docx']
     if pd.isna(x['PINDEX']) and pd.notna(x['OPEN_ISSUES']):
         files = ast.literal_eval(x['OPEN_ISSUES'])
         for i in files:
@@ -35,7 +34,7 @@ def consolidate_commits(df):
     """ Consolidate commits monthly"""
     if int(df.shape[0]) <1: return pd.DataFrame()
     df.dropna(subset=['con_novelty'],inplace = True)
-    df2 = df.groupby('c_month')['con_novelty', 'con_usefulness'].sum()
+    df2 = df.groupby('c_month')['con_novelty', 'con_usefulness'].mean()
     df2= pd.concat([df2, df.groupby('c_month')['con_novelty'].count(),df.groupby(['c_month'])['SIZE'].nunique()], axis = 1)
     
     # Change index from c_months 
@@ -79,7 +78,8 @@ def main():
         
 
         repo_commits = repo_commits.append(row, sort = False)
-    
+        
+    write_commits = write_commits.append(df_mcommit, sort = False, ignore_index = True)  
     write_commits = write_commits.reindex(indx, axis=1)
     write_commits = write_commits.drop(axis=1,columns=['REPO_ID.1', 'yhat','opt_deg_sup_ind','opt_deg_sup_org','Unnamed: 104','UNKNOWN','c_month','c_day','con_novelty','con_usefulness'])
     write_commits.to_excel(MC_XLSX)
