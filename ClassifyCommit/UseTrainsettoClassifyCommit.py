@@ -27,23 +27,24 @@ TEST_SET = 'C:\\Data\\092019 CommitInfo\Classifiers\Classifier 66 62\Testset.xls
 LABELFULL_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainout.csv'
 TRAINSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.xlsx'
 TESTSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.xlsx'
+COMMIT_XLSX ="C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
+COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
 
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit_Full.xlsx"
-
+"""
 REPOCOMMIT_LIST =[
                    "C:/Data/092019 CommitInfo/RepoCommit1_287_1.xlsx",
-                    "C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx"
-                    # "C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit1001_1500_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit1501_2000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit2002_2500_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit2501_3250_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit3251_4000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit4001_5000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit5001_5202_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
-                  ]
+                    "C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit1001_1500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit1501_2000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit2002_2500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit2501_3250_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit3251_4000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit4001_5000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit5001_5202_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
+                  ] """
 def plot_learning_curve_std(estimator, X, y):
     """
     Generate a simple plot of the test and training learning curve.
@@ -260,9 +261,9 @@ def main():
     macc_l = list()
     df_classify = pd.DataFrame()
     df_write = pd.DataFrame()
-    for COMMIT_XLSX in REPOCOMMIT_LIST:
-        df_write = df_write.append(pd.read_excel(COMMIT_XLSX,error_bad_lines=False,header=0),sort = False, ignore_index = True)
-        print(COMMIT_XLSX," rows "df_write.shape[0])
+
+    df_write = pd.read_excel(COMMIT_XLSX,error_bad_lines=False,header=0)
+    print(COMMIT_XLSX," rows ",df_write.shape[0])
 
     dataframe_classify = df_write.apply(geticommit, axis =1 )
 
@@ -302,7 +303,7 @@ def main():
         acuracy.append(["MLP Classifier - Two stage - "+i+"3", float(acc),classifier_mlp1s3, classifier_mlp2s3])
         print("MLP Classifier - Two stage - "+i+"3 ", acc)
     
-        
+        # USE 1S-5p, 2S - 3p MLP classifier for classifying the commits
         p_classify5 = classifier_mlp1s5.predict_proba(word_features)
         df_classify_prob = pd.DataFrame(p_classify5, columns = [i+'p1',i+'p2',i+'p3',i+'p4',i+'p5'])
         classify_x_s1 = pd.DataFrame(pd.concat([df_classify_prob,dataframe_classify['Files'],dataframe_classify['Added'],dataframe_classify['Deleted'],dataframe_classify['Parents'],dataframe_classify['nWords']], axis=1) ).fillna(0)
@@ -315,8 +316,9 @@ def main():
         print("MAX ACCURACY - = ",macc)
         macc_l.append([macc[0],macc[1],macc[2]]) 
     
-
+    print(df_write.shape[0],df_classify.shape[0])
     df_write = pd.concat([df_write,df_classify], axis=1)
+    print(df_write.shape[0])
     df_write.to_excel(COMMIT2_XLSX)   
     print(macc_l)
 
