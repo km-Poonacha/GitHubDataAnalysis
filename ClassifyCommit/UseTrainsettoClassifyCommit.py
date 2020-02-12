@@ -27,9 +27,23 @@ TEST_SET = 'C:\\Data\\092019 CommitInfo\Classifiers\Classifier 66 62\Testset.xls
 LABELFULL_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainout.csv'
 TRAINSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.xlsx'
 TESTSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.xlsx'
-COMMIT_XLSX ="C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx"
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx"
 
+COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit_Full.xlsx"
+
+REPOCOMMIT_LIST =[
+                   "C:/Data/092019 CommitInfo/RepoCommit1_287_1.xlsx",
+                    "C:/Data/092019 CommitInfo/RepoCommit288_500_1.xlsx"
+                    # "C:/Data/092019 CommitInfo/RepoCommit501_1000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit1001_1500_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit1501_2000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit2002_2500_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit2501_3250_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit3251_4000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit4001_5000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit5001_5202_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit5203_6000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
+                  ]
 def plot_learning_curve_std(estimator, X, y):
     """
     Generate a simple plot of the test and training learning curve.
@@ -121,9 +135,14 @@ def getnoelements(x):
     return no_parents
 
 def geticommit(x):
-    text_file = ['txt','md']
+    text_file = ['txt','md','doc','docx','png','gif','jpg','avi','mpg','ppt','pptx']
     if pd.isna(x['PINDEX']) and pd.notna(x['OPEN_ISSUES']):
-        files = ast.literal_eval(x['OPEN_ISSUES'])
+        try:
+            # Check for EOL issues
+            files = ast.literal_eval(x['OPEN_ISSUES'])
+        except:
+            return pd.Series([np.NaN,np.NaN,np.NaN,np.NaN,np.NaN,np.NaN], index=['Comments','Message','Added','Deleted','Parents','Files'])
+
         for i in files:
             l = i.split('.')
             if len(l) > 1:
@@ -240,11 +259,16 @@ def main():
     macc = list()
     macc_l = list()
     df_classify = pd.DataFrame()
-    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0)
+    df_write = pd.DataFrame()
+    for COMMIT_XLSX in REPOCOMMIT_LIST:
+        df_write = df_write.append(pd.read_excel(COMMIT_XLSX,error_bad_lines=False,header=0),sort = False, ignore_index = True)
+        print(COMMIT_XLSX," rows "df_write.shape[0])
+
     dataframe_classify = df_write.apply(geticommit, axis =1 )
+
     dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['Message'].str.split().str.len() )
     word_features = word_vectorizer.transform(dataframe_classify['Message'].astype(str))
-
+    
     for i in ["Novelty", "Usefulness"]:
         '''MLPClassifier'''
         print("************ MLP Classifier *************")
