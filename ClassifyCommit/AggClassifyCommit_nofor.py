@@ -12,27 +12,32 @@ import numpy as np
 import ast
 
 REPOCOMMIT_LIST =[
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1_287_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1001_1500_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1501_2000_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2002_2500_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2501_3250_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit3251_4000_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit4001_5000_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5001_5202_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5203_6000_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1_287_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1001_1500_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1501_2000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2002_2500_1.xlsx"
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2501_3250_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit3251_4000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit4001_5000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5001_5202_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5203_6000_1.xlsx",
+                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
                   ] 
 MC_XLSX = "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/MC_RepoCommit1_287_1.xlsx"
 COMMITERS_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/Final_COL_MC_RepoCommit.xlsx"
 TEMP= "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/temp.xlsx"
 def consolidate_prob(x, a1, a2,a3):
     "Aggregae the probabilities calculated into a single construct"
-    text_file = ['txt','md','doc','docx','png','gif','jpg']
+    text_file = ['txt','md','doc','docx','png','gif','jpg',"csv","xlsx"]
     if pd.isna(x['PINDEX']) and pd.notna(x['OPEN_ISSUES']):
-        files = ast.literal_eval(x['OPEN_ISSUES'])
+        try:
+            # Check for EOL issues
+            files = ast.literal_eval(x['OPEN_ISSUES'])
+        except:
+            return np.NaN
+
         for i in files:
             l = i.split('.')
             if len(l) > 1:
