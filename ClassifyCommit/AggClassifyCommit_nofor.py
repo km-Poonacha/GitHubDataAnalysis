@@ -12,18 +12,18 @@ import numpy as np
 import ast
 
 REPOCOMMIT_LIST =[
-                   "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1_287_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx"
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1001_1500_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1501_2000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2002_2500_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2501_3250_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit3251_4000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit4001_5000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5001_5202_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5203_6000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1_287_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1001_1500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1501_2000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2002_2500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2501_3250_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit3251_4000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit4001_5000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5001_5202_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5203_6000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
                   ] 
 MC_XLSX = "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/MC_RepoCommit1_287_1.xlsx"
 COMMITERS_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/Final_COL_MC_RepoCommit.xlsx"
@@ -120,6 +120,8 @@ def append_df_to_excel(filename, df, sheet_name='Sheet1', startrow=None,
         startrow = 0
 
     # write out the new sheet
+    df = df.applymap(lambda x: x.encode('unicode_escape').
+                 decode('utf-8') if isinstance(x, str) else x)
     df.to_excel(writer, sheet_name, startrow=startrow, **to_excel_kwargs)
 
     # save the workbook
