@@ -12,18 +12,18 @@ import numpy as np
 import ast
 
 REPOCOMMIT_LIST =[
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1_287_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1001_1500_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1501_2000_1.xlsx",
-                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2002_2500_1.xlsx"
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2501_3250_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit3251_4000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit4001_5000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5001_5202_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5203_6000_1.xlsx",
-                    # "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1_287_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit288_500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit501_1000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1001_1500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit1501_2000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2002_2500_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit2501_3250_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit3251_4000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit4001_5000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5001_5202_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit5203_6000_1.xlsx",
+                    "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
                   ] 
 MC_XLSX = "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/MC_RepoCommit1_287_1.xlsx"
 COMMITERS_XLSX = "C:/Data/092019 CommitInfo/Contributors_monthwise/Final_COL_MC_RepoCommit.xlsx"
@@ -195,7 +195,9 @@ def main():
             write_commits = write_commits.append(repo_commiters, sort = False, ignore_index = True)                               
     
         write_commits = write_commits.reindex(indx, axis=1)
-        write_commits = write_commits.drop(axis=1,columns=['REPO_ID.1', 'yhat','opt_deg_sup_ind','opt_deg_sup_org','Unnamed: 104','UNKNOWN','c_month','c_day','con_novelty','con_usefulness','Noveltys2p1',	'Noveltys2p2',	'Noveltys2p3',	'Usefulnesss2p1',	'Usefulnesss2p2',	'Usefulnesss2p3'])
+        write_commits = write_commits.drop(axis=1,columns=['REPO_ID.1', 'yhat','opt_deg_sup_ind','opt_deg_sup_org','Unnamed: 104','UNKNOWN','c_month','c_day','con_novelty','con_usefulness','Noveltys2p1',	'Noveltys2p2',	'Noveltys2p3',	'Usefulnesss2p1',	'Usefulnesss2p2',	
+                                                           'Usefulnesss2p3','PUSHED_0917', 'STARS_0917', 'SUBSCRIBERS_0917', 'FORKS_0917', 'SIZE_0917	', 'LICENCE_0917', 'PUSHED_1017	', 'STARS_1017', 'SUBSCRIBERS_1017	', 'FORKS_1017', 'SIZE_1017', 'LICENCE_1017', 'int_sup', 
+                                                           'int_sup_sq', 'month_jan_flag', 'month_feb_flag', 'month_mar_flag', 'month_apr_flag', 'month_may_flag', 'month_jun_flag','script_size_kb', 'script_size_mb', 'logsize_kb'])
 
         append_df_to_excel(MC_XLSX, write_commits,index=False)
         print("number of rows : ", write_commits.shape[0])
