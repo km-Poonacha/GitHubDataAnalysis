@@ -9,7 +9,7 @@ Created on Sun Feb 16 00:07:14 2020
 import pandas as pd
 
 MC_XLSX = "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/MC_RepoCommit_Full2.xlsx"
-CLEAN_XLSX = "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/nFinalCleanData_Full.xlsx"
+CLEAN_XLSX = "C:/Data/092019 CommitInfo/ClassifiedRepoCommit/2nFinalCleanData_Full.xlsx"
 
 def main():
     pd.options.display.max_rows = 10
