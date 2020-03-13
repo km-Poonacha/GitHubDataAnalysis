@@ -26,7 +26,7 @@ LOG_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_log.csv'
 
 def run_query(name, owner, NEWREPO_xl): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
-    headers = {"Authorization": "Bearer "+"dfb9844388015057b2bb8331c562068b04d9807f"}  
+    headers = {"Authorization": "Bearer "+"fa0fcc3a388a5801ec11dacb55bed2509febbd9d"}  
     endc = None
     commit_row = list() 
     end = False

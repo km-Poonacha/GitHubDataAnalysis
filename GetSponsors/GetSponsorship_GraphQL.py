@@ -16,118 +16,183 @@ from poo_ghmodules import ghparse_row
 import pandas as pd
 import numpy as np
 import requests
-PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub3.csv'
-LOG_CSV = 'C:\\Data\\092019 CommitInfo\\RepoCommit_log.csv'
 
-def run_query(name, owner, NEWREPO_xl): 
+MAX_ROWS_PERWRITE = 1000
+
+DF_REPO = pd.DataFrame()
+DF_COUNT = 0
+
+PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub.csv'
+LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSpon_log.csv'
+user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Users_USCAN.xlsx'
+
+def appendrowindf(NEWREPO_xl, row):
+    """This code appends a row into the dataframe and returns the updated dataframe"""
+    global DF_REPO 
+    global DF_COUNT
+    DF_REPO= DF_REPO.append(pd.Series(row), ignore_index = True)
+    DF_COUNT = DF_COUNT + 1
+    if DF_COUNT == MAX_ROWS_PERWRITE :
+        df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
+        df= df.append(DF_REPO, ignore_index = True)
+        df.to_excel(NEWREPO_xl, index = False) 
+        DF_COUNT = 0
+        DF_REPO = pd.DataFrame()
+
+def run_query(loc, period): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
-    headers = {"Authorization": "Bearer "+"dfb9844388015057b2bb8331c562068b04d9807f"}  
-    endc = ""
-    commit_row = list() 
-    while True:
+    headers = {"Authorization": "Bearer "+"fa0fcc3a388a5801ec11dacb55bed2509febbd9d"} 
+    q = "location:"+loc+" repos:>5 created:"+period
+    
+    query = """
+    query{
+      search(query: \""""+q+"""\", type: USER, first: 1) {
+        userCount
+        pageInfo {
+          startCursor
+          hasNextPage
+        }}}"""
+    
+    
+    try:
+        request = requests.post('https://api.github.com/graphql', json={'query':query}, headers=headers)
+        req_json = request.json()
+        endc = req_json['data']['search']['pageInfo']['startCursor']
+    except:
+        print("Error getting starting cursor")
+        return 404
+    
+    
+
+    end = False
+    while not end:
         query = """
-                    query{
-                      rateLimit {
-                        cost
-                        remaining
-                        resetAt
-                      }
-                      repository(name: """+name+""", owner: """+owner+""") {
-                        ref(qualifiedName: "master") {
-                          target {
-                            ... on Commit {
-                              history(first:100 until: "2016-01-01T00:00:00Z" """+endc+"""){
-                                totalCount
-                                pageInfo {
-                                  endCursor
-                                  hasNextPage
-                                }
-                                    edges {
-                                      node {
-                                        comments{
-                                          totalCount
-                                        }
-                                        parents{
-                                          totalCount
-                                        }
-                                        changedFiles
-                                        additions
-                                        deletions
-                                        messageHeadline
-                                        oid
-                                        message
-                                        author {
-                                          name
-                                          email
-                                          date                        
-                                          }
-                                        committer {
-                                          name
-                                          email
-                                          date                        
-                                          }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                    """
-        try:
-            request = requests.post('https://api.github.com/graphql', json={'query': query}, headers=headers)
-            req_json = request.json()
-        except:
-            print("Error runnig graphql")
-            break
-        
-        endcursor = req_json['data']['repository']['ref']['target']['history']['pageInfo']['endCursor']            
-        commits = req_json['data']['repository']['ref']['target']['history']['edges']
-        del commit_row[:]
-        for commit in commits:
-            print(commit['node']['oid'])
-            commit_row.append("")
-            commit_row.append(commit['node']['oid'])
-            commit_row.append(commit['node']['author']['name']) 
-            commit_row.append(commit['node']['author']['email']) 
-            commit_row.append(commit['node']['author']['date']) 
-            commit_row.append(commit['node']['committer']['name']) 
-            commit_row.append(commit['node']['committer']['email']) 
-            commit_row.append(commit['node']['committer']['date']) 
-            commit_row.append(commit['node']['comments']['totalCount'])
-            commit_row.append(commit['node']['additions'])
-            commit_row.append(commit['node']['deletions'])
-            commit_row.append(commit['node']['changedFiles'])
-            commit_row.append(commit['node']['parents']['totalCount']) 
-            commit_row.append(commit['node']['message'])
+query($cursor:String! ) {
+  rateLimit {
+    cost
+    remaining
+    resetAt
+  }
+  search(query: \""""+q+"""\", type: USER, first: 100, after:$cursor) {
+    userCount
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    edges {
+      node {
+        ... on User {
+          name
+          id
+          email
+          company
+          bio
+          location
+          createdAt
+          isHireable
+          followers {
+            totalCount
+          }
+          following {
+            totalCount
+          }
+          repositories {
+            totalCount
+          }
+          sponsorsListing {
+            createdAt
+            shortDescription
+            name
+            tiers(first: 100) {
+              totalCount
+              edges {
+                node {
+                  name
+                  description
+                  monthlyPriceInDollars
+                  updatedAt
+                }
+              }
+            }
+          }
+          sponsorshipsAsMaintainer(first: 100) {
+            totalCount
+            nodes {
+              createdAt
+              sponsor {
+                login
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+"""
+        variables = {
+                 "cursor" : endc
+                 }
             
-            appendrowindf(NEWREPO_xl, commit_row)
+        body = {
+                "query": query,
+                "variables": variables
+                    }
+        try:
+            request = requests.post('https://api.github.com/graphql', json=body, headers=headers)
+            req_json = request.json()
+            print(loc," ",period," ",req_json['data']['search']['userCount'] )
+            print(req_json['data']['rateLimit']['remaining'])
+        except:
+            print("Error running graphql")
+            end = True
+        
+        if req_json['data']['search']['pageInfo']['hasNextPage']:     
+            endc= req_json['data']['search']['pageInfo']['endCursor']
+            print("Endcursor : ", endc)
+        else:
+            end = True   
+            
+        users = req_json['data']['search']['edges']
+
+        for user in users:
+            if(user['node']):
+                print(user['node']['name'])
+                if user['node']['sponsorsListing']:
+                    print(user['node']['name']," ",user['node']['sponsorsListing']['createdAt'])
+            
+            # appendrowindf(NEWREPO_xl, commit_row)
         return req_json
 
     return "404"
        
 
 
-def get_name(repo_id):
-    repo_url = "https://api.github.com/repositories/"+str(repo_id)
-    repo_req = getGitHubapi(repo_url,PW_CSV,LOG_CSV)
-    if repo_req:
-        repo_json = repo_req.json()
-        return repo_json['name'], repo_json['owner']['login']
-    else:
-        return None, None
 
-def appendrowindf(NEWREPO_xl, row):
-    """This code appends a row into the dataframe and returns the updated dataframe"""
-    df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
-    df= df.append(pd.Series(row), ignore_index = True)
-    df.to_excel(NEWREPO_xl, index = False) 
     
 def main():
     """Main function"""   
-    repo_csv = "C:\\Users\pmedappa\Dropbox\HEC\\2014GithubRepoData_Latest\FullData_20190604IVT_COLAB_Test5.csv"
-    NEWREPO_xl = 'C:\\Data\\092019 CommitInfo\\RepoCommit_Test.xlsx'
+    global DF_REPO 
+    global DF_COUNT
+    search_key = ['us']#,'usa','states','america','canada','california','ca']
+    period = ['2018-05-31..2019-01-01','2018-01-01..2018-06-01',
+              '2017-05-31..2018-01-01','2017-01-01..2017-06-01',
+              '2016-05-31..2017-01-01','2016-01-01..2016-06-01',
+              '2015-05-31..2016-01-01','2015-01-01..2015-06-01',
+              '2014-05-31..2015-01-01','2014-01-01..2014-06-01',
+              '2013-05-31..2014-01-01','2013-01-01..2013-06-01',
+              '2012-05-31..2013-01-01','2012-01-01..2012-06-01',
+              '2011-05-31..2012-01-01','2011-01-01..2011-06-01',
+              '2010-05-31..2011-01-01','2010-01-01..2010-06-01',
+              '2009-05-31..2010-01-01','2009-01-01..2009-06-01',
+              '2008-05-31..2009-01-01','2008-01-01..2008-06-01',]
+
+    for loc in search_key:
+        for p in period:        
+            run_query(loc, p) 
+
+
+"""
     df_full = pd.DataFrame()
     df_full.to_excel(NEWREPO_xl, index = False) 
     with open(repo_csv, 'rt', encoding = 'utf-8') as repolist:
@@ -143,5 +208,10 @@ def main():
 #                print(result)
                 if result == '404':
                     print("Error runnig graphql")
-            
+                  
+    if DF_COUNT < MAX_ROWS_PERWRITE:
+        df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
+        df= df.append(DF_REPO, ignore_index = True)
+        df.to_excel(user_xl, index = False) 
+"""              
 main()
