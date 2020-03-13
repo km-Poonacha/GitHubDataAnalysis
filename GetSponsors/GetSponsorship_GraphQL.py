@@ -24,24 +24,24 @@ DF_COUNT = 0
 
 PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub.csv'
 LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSpon_log.csv'
-user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Users_USCAN.xlsx'
+user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSponsor_USCAN.xlsx'
 
-def appendrowindf(NEWREPO_xl, row):
+def appendrowindf(user_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
     global DF_REPO 
     global DF_COUNT
     DF_REPO= DF_REPO.append(pd.Series(row), ignore_index = True)
     DF_COUNT = DF_COUNT + 1
     if DF_COUNT == MAX_ROWS_PERWRITE :
-        df = pd.read_excel(NEWREPO_xl,error_bad_lines=False,header= 0, index = False)
+        df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
         df= df.append(DF_REPO, ignore_index = True)
-        df.to_excel(NEWREPO_xl, index = False) 
+        df.to_excel(user_xl, index = False) 
         DF_COUNT = 0
         DF_REPO = pd.DataFrame()
 
 def run_query(loc, period): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
-    headers = {"Authorization": "Bearer "+"fa0fcc3a388a5801ec11dacb55bed2509febbd9d"} 
+    headers = {"Authorization": "Bearer "+"5fd7233063311b454a03e106b1a4439e87f368d1"} 
     q = "location:"+loc+" repos:>5 created:"+period
     
     query = """
@@ -156,12 +156,15 @@ query($cursor:String! ) {
         users = req_json['data']['search']['edges']
 
         for user in users:
+            user_row = list()
             if(user['node']):
                 print(user['node']['name'])
                 if user['node']['sponsorsListing']:
                     print(user['node']['name']," ",user['node']['sponsorsListing']['createdAt'])
-            
-            # appendrowindf(NEWREPO_xl, commit_row)
+                user_row.append(user['node']['name'])
+                user_row.append(user['node']['location'])
+                user_row.append(user['node']['sponsorsListing']['createdAt'])
+            appendrowindf(user_xl, user_row)
         return req_json
 
     return "404"
@@ -192,26 +195,10 @@ def main():
             run_query(loc, p) 
 
 
-"""
-    df_full = pd.DataFrame()
-    df_full.to_excel(NEWREPO_xl, index = False) 
-    with open(repo_csv, 'rt', encoding = 'utf-8') as repolist:
-        repo_handle = csv.reader(repolist)
-        rcount = 1
-        for repo_row in repo_handle:
-            appendrowindf(NEWREPO_xl, repo_row)
-            repo_id = repo_row[1]            
-            name, owner = get_name(repo_id)  
-            result = "0"
-            if name:  
-                result = run_query(name, owner, NEWREPO_xl )            
-#                print(result)
-                if result == '404':
-                    print("Error runnig graphql")
                   
     if DF_COUNT < MAX_ROWS_PERWRITE:
         df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
         df= df.append(DF_REPO, ignore_index = True)
         df.to_excel(user_xl, index = False) 
-"""              
+             
 main()
