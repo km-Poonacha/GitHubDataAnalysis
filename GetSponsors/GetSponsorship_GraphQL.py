@@ -158,12 +158,12 @@ query($cursor:String! ) {
         for user in users:
             user_row = list()
             if(user['node']):
-                print(user['node']['name'])
-                if user['node']['sponsorsListing']:
-                    print(user['node']['name']," ",user['node']['sponsorsListing']['createdAt'])
                 user_row.append(user['node']['name'])
                 user_row.append(user['node']['location'])
-                user_row.append(user['node']['sponsorsListing']['createdAt'])
+                if user['node']['sponsorsListing']:
+                    print(user['node']['name']," ",user['node']['sponsorsListing']['createdAt'])                
+                    user_row.append(user['node']['sponsorsListing']['createdAt'])
+                else: user_row.append("")
             appendrowindf(user_xl, user_row)
         return req_json
 
