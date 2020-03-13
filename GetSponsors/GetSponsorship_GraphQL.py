@@ -41,7 +41,7 @@ def appendrowindf(user_xl, row):
 
 def run_query(loc, period): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
-    headers = {"Authorization": "Bearer "+"5fd7233063311b454a03e106b1a4439e87f368d1"} 
+    headers = {"Authorization": "Bearer "+"7633f54ab65c035021288936308a0a8b7c45ff5a"} 
     q = "location:"+loc+" repos:>5 created:"+period
     
     query = """
@@ -82,6 +82,7 @@ query($cursor:String! ) {
     edges {
       node {
         ... on User {
+          login
           name
           id
           email
@@ -146,6 +147,7 @@ query($cursor:String! ) {
         except:
             print("Error running graphql")
             end = True
+            return 404
         
         if req_json['data']['search']['pageInfo']['hasNextPage']:     
             endc= req_json['data']['search']['pageInfo']['endCursor']
@@ -158,16 +160,18 @@ query($cursor:String! ) {
         for user in users:
             user_row = list()
             if(user['node']):
-                user_row.append(user['node']['name'])
-                user_row.append(user['node']['location'])
-                if user['node']['sponsorsListing']:
-                    print(user['node']['name']," ",user['node']['sponsorsListing']['createdAt'])                
+                user_row = ghparse_row(user,"node*login", "node*name", "node*email", "node*company", "node*bio", "node*location",
+                                       "node*createdAt", "node*isHireable", "node*followers*totalCount", "node*following*totalCount",
+                                       "node*repositories*totalCount")
+                if user['node']['sponsorsListing']:               
                     user_row.append(user['node']['sponsorsListing']['createdAt'])
+                    user_row.append(user['node']['sponsorsListing']['shortDescription'])
+                    user_row.append(user['node']['sponsorsListing']['name'])
                 else: user_row.append("")
             appendrowindf(user_xl, user_row)
-        return req_json
+        
 
-    return "404"
+    return 0
        
 
 
