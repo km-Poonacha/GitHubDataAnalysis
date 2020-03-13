@@ -24,6 +24,7 @@ DF_COUNT = 0
 
 PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub.csv'
 LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSpon_log.csv'
+headers = {"Authorization": "Bearer "+"0ffc36287e794f02657627c790aae04572035a65"} 
 
 def appendrowindf(user_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
@@ -40,7 +41,6 @@ def appendrowindf(user_xl, row):
 
 def run_query(loc, period,user_xl): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
-    headers = {"Authorization": "Bearer "+"c6c1556f74d7890f258f7c0961591fbae75645af"} 
     q = "location:"+loc+" repos:>5 created:"+period
     
     query = """
@@ -50,9 +50,7 @@ def run_query(loc, period,user_xl):
         pageInfo {
           startCursor
           hasNextPage
-        }}}"""
-    
-    
+        }}}"""    
     try:
         request = requests.post('https://api.github.com/graphql', json={'query':query}, headers=headers)
         req_json = request.json()
@@ -62,8 +60,6 @@ def run_query(loc, period,user_xl):
         print(req_json)
         return 404
     
-    
-
     end = False
     while not end:
         query = """
@@ -188,8 +184,41 @@ query($cursor:String! ) {
     return 0
        
 
-def find_i_curosor(loc,y):
-    retrun cursor, i_m
+def find_i_split(loc,y):    
+    q = "location:"+loc+" repos:>5 created:"+str(y)+"-01-01.."+str(y)+"-12-31"
+    print(q)
+    query = """
+    query{
+      search(query: \""""+q+"""\", type: USER, first: 1) {
+        userCount
+        pageInfo {
+          startCursor
+          hasNextPage
+        }}}"""
+    
+    
+    try:
+        request = requests.post('https://api.github.com/graphql', json={'query':query}, headers=headers)
+        req_json = request.json()
+        cursor = req_json['data']['search']['pageInfo']['startCursor']
+        u_count = int(req_json['data']['search']['userCount'])
+        print("Year ",y," Total count = ", u_count)
+        if u_count  < 1000:
+            i_m = 0
+        elif u_count < 1500:
+            i_m = 1
+        elif u_count > 1500 and u_count <= 3000:
+            i_m = 2
+        elif u_count > 3000 and u_count <= 5000:
+            i_m = 3
+        else:
+            i_m = 4
+        
+    except:
+        print("Error getting starting cursor")
+        print(req_json)
+        return 404,404
+    return cursor, i_m
 
     
 def main():
@@ -217,8 +246,11 @@ def main():
         # for p in period:
         #     ret_val = run_query(loc, p,user_xl)         
         for y in range(len(year)):  
-            i_m = 0
-            find_i_curosor(loc,y)
+            cursor, i_m = find_i_split(loc,year[y])
+            print("Split found ", month[i_m])
+            if int(i_m) == 404: 
+                print("Ending .........")
+                return
             for m in range(len(month[i_m])):        
                 if m != len(month[i_m])-1: 
                     p = year[y]+'-'+month[i_m][m]+'-01..'+year[y]+'-'+month[i_m][m+1]+'-01'
@@ -227,11 +259,6 @@ def main():
                 ret_val = run_query(loc, p,user_xl)
 
                         
-                    
-
-
-
-                  
     if DF_COUNT < MAX_ROWS_PERWRITE:
         df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
         df= df.append(DF_REPO, ignore_index = True)
