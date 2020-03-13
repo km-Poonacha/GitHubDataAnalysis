@@ -24,7 +24,6 @@ DF_COUNT = 0
 
 PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub.csv'
 LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSpon_log.csv'
-user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSponsor_USCAN.xlsx'
 
 def appendrowindf(user_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
@@ -39,9 +38,9 @@ def appendrowindf(user_xl, row):
         DF_COUNT = 0
         DF_REPO = pd.DataFrame()
 
-def run_query(loc, period): 
+def run_query(loc, period,user_xl): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
-    headers = {"Authorization": "Bearer "+"7633f54ab65c035021288936308a0a8b7c45ff5a"} 
+    headers = {"Authorization": "Bearer "+"c6c1556f74d7890f258f7c0961591fbae75645af"} 
     q = "location:"+loc+" repos:>5 created:"+period
     
     query = """
@@ -60,6 +59,7 @@ def run_query(loc, period):
         endc = req_json['data']['search']['pageInfo']['startCursor']
     except:
         print("Error getting starting cursor")
+        print(req_json)
         return 404
     
     
@@ -143,15 +143,25 @@ query($cursor:String! ) {
             request = requests.post('https://api.github.com/graphql', json=body, headers=headers)
             req_json = request.json()
             print(loc," ",period," ",req_json['data']['search']['userCount'] )
+            if  int(req_json['data']['search']['userCount']) > 1000:
+                # log if the total user count is greater than 1000
+                with open(LOG_CSV, 'at') as logobj:                    
+                    log = csv.writer(logobj)
+                    l_data = list()
+                    l_data.append("Search Results Exceeds 1000")
+                    l_data.append(loc)
+                    l_data.append(period)
+                    l_data.append(req_json['data']['search']['userCount'])
+                    log.writerow(l_data)
             print(req_json['data']['rateLimit']['remaining'])
         except:
             print("Error running graphql")
             end = True
+            print(req_json)
             return 404
         
         if req_json['data']['search']['pageInfo']['hasNextPage']:     
             endc= req_json['data']['search']['pageInfo']['endCursor']
-            print("Endcursor : ", endc)
         else:
             end = True   
             
@@ -167,6 +177,10 @@ query($cursor:String! ) {
                     user_row.append(user['node']['sponsorsListing']['createdAt'])
                     user_row.append(user['node']['sponsorsListing']['shortDescription'])
                     user_row.append(user['node']['sponsorsListing']['name'])
+                    user_row.append(user['node']['sponsorsListing']['tiers']['totalCount'])
+                    user_row.append(user['node']['sponsorsListing']['tiers']['edges'])
+                    user_row.append(user['node']['sponsorshipsAsMaintainer']['totalCount'])
+                    user_row.append(user['node']['sponsorshipsAsMaintainer']['nodes'])
                 else: user_row.append("")
             appendrowindf(user_xl, user_row)
         
@@ -174,14 +188,15 @@ query($cursor:String! ) {
     return 0
        
 
-
+def find_i_curosor(loc,y):
+    retrun cursor, i_m
 
     
 def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    search_key = ['us']#,'usa','states','america','canada','california','ca']
+    search_key = ['usa']#us,'usa','states','america','canada','california','ca']
     period = ['2018-05-31..2019-01-01','2018-01-01..2018-06-01',
               '2017-05-31..2018-01-01','2017-01-01..2017-06-01',
               '2016-05-31..2017-01-01','2016-01-01..2016-06-01',
@@ -192,11 +207,28 @@ def main():
               '2011-05-31..2012-01-01','2011-01-01..2011-06-01',
               '2010-05-31..2011-01-01','2010-01-01..2010-06-01',
               '2009-05-31..2010-01-01','2009-01-01..2009-06-01',
-              '2008-05-31..2009-01-01','2008-01-01..2008-06-01',]
-
+              '2008-05-31..2009-01-01','2008-01-01..2008-06-01']
+    year=['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018']
+    month = [['01'],['01','06'],['01','04','07','10'],['01','03','05','07','09','11'],['01','02','03','04','05','06','07','08','09','10','11','12']]
     for loc in search_key:
-        for p in period:        
-            run_query(loc, p) 
+        user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSponsor_'+loc+'.xlsx'
+        df_test = pd.DataFrame()
+        df_test.to_excel(user_xl, index = False) 
+        # for p in period:
+        #     ret_val = run_query(loc, p,user_xl)         
+        for y in range(len(year)):  
+            i_m = 0
+            find_i_curosor(loc,y)
+            for m in range(len(month[i_m])):        
+                if m != len(month[i_m])-1: 
+                    p = year[y]+'-'+month[i_m][m]+'-01..'+year[y]+'-'+month[i_m][m+1]+'-01'
+                else: 
+                    p = year[y]+'-'+month[i_m][m]+'-01..'+year[y]+'-'+'12'+'-31'
+                ret_val = run_query(loc, p,user_xl)
+
+                        
+                    
+
 
 
                   
