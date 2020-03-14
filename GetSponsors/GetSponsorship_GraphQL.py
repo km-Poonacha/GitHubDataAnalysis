@@ -22,7 +22,7 @@ MAX_ROWS_PERWRITE = 1000
 DF_REPO = pd.DataFrame()
 DF_COUNT = 0
 
-LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Other_Stripe\UserSpon_log.csv'
+LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\World\UserSpon_log.csv'
 headers = {"Authorization": "Bearer "+"fd0d249af046e16822667bf32460d7a83fcb413c"} 
 
 def appendrowindf(user_xl, row):
@@ -241,11 +241,11 @@ def main():
               'GERMANY','berlin','munich','GREECE','athens','HUNGARY','IRELAND','dublin','ITALY','rome','LATVIA','LITHUANIA','LUXEMBOURG','MALTA','NETHERLANDS', 'amsterdam','rotterdam','POLAND',
               'PORTUGAL','lisbon','porto','ROMANIA','SLOVAK','SLOVENIA','SPAIN','madrid','barcelona','SWEDEN','UNITED KINGDOM','uk','britan','england','scotland','wales','london','northern ireland']
     other_stripe = ['fr','germany','switzerland','zurich','bern','geneva','japan','tokyo','kyoto','australia','sydney','perth','melbourne','zealand','singapore','hong kong','hk','sar']
-    world = ['world','earth','global','worldwide','multiple','europe']
+    world = ['world','earth','global','worldwide','multiple','europe','thailand']
     year=['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018']
     month = [['01'],['01','06'],['01','04','07','10'],['01','03','05','07','09','11'],['01','02','03','04','05','06','07','08','09','10','11','12']]
-    for loc in other_stripe:
-        user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Other_Stripe\UserSponsor_'+loc+'.xlsx'
+    for loc in world:
+        user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\World\UserSponsor_'+loc+'.xlsx'
         df_test = pd.DataFrame()
         df_test.to_excel(user_xl, index = False) 
         # for p in period:
@@ -274,7 +274,7 @@ def main():
          
         df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
         if df.shape[1] > 10:
-            consolidate_sponsors = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Other_Stripe\ConsolidatedSponsors.xlsx'       
+            consolidate_sponsors = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\World\ConsolidatedSponsors.xlsx'       
             df_con = pd.read_excel(consolidate_sponsors,error_bad_lines=False,header= 0, index = False)
             df_con= df_con.append(df.dropna(subset=[11]), ignore_index=True)
             # df_con.columns=["login", "name", "email", "company", "bio", "location",
