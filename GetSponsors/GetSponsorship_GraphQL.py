@@ -24,7 +24,7 @@ DF_COUNT = 0
 
 PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub.csv'
 LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSpon_log.csv'
-headers = {"Authorization": "Bearer "+"0ffc36287e794f02657627c790aae04572035a65"} 
+headers = {"Authorization": "Bearer "+"b4b9ee84c8fea3f27268b3152acd2c67e366d8f8"} 
 
 def appendrowindf(user_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
@@ -225,11 +225,23 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    search_key = ['usa']#us,'usa','states','america','canada','california','ca']
+    search_key = [ 'Alabama','Alaska','Arizona','Arkansas','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii',
+                'Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts',
+                'Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey',
+                'New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania',
+                'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington',
+                'West Virginia','Wisconsin','Wyoming']
+    #us,'usa','states','america','canada','california','ca']
+    # states = [ 'Alabama','Alaska','Arizona','Arkansas','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii',
+    #             'Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts',
+    #             'Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey',
+    #             'New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania',
+    #             'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington',
+    #             'West Virginia','Wisconsin','Wyoming']
     year=['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018']
     month = [['01'],['01','06'],['01','04','07','10'],['01','03','05','07','09','11'],['01','02','03','04','05','06','07','08','09','10','11','12']]
     for loc in search_key:
-        user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSponsor_'+loc+'.xlsx'
+        user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\States\UserSponsor_'+loc+'.xlsx'
         df_test = pd.DataFrame()
         df_test.to_excel(user_xl, index = False) 
         # for p in period:
@@ -248,9 +260,24 @@ def main():
                 ret_val = run_query(loc, p,user_xl)
 
                         
-    if DF_COUNT < MAX_ROWS_PERWRITE:
+        if DF_COUNT < MAX_ROWS_PERWRITE:
+            df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
+            df= df.append(DF_REPO, ignore_index = True)
+            df.to_excel(user_xl, index = False) 
+            DF_COUNT = 0
+            DF_REPO = pd.DataFrame()
+        
+         
         df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
-        df= df.append(DF_REPO, ignore_index = True)
-        df.to_excel(user_xl, index = False) 
-             
+        if df.shape[1] > 10:
+            consolidate_sponsors = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\States\ConsolidatedSponsors.xlsx'       
+            df_con = pd.read_excel(consolidate_sponsors,error_bad_lines=False,header= 0, index = False)
+            df_con= df_con.append(df.dropna(subset=[11]), ignore_index=True)
+            df_con.columns=["login", "name", "email", "company", "bio", "location",
+                                       "createdAt", "isHireable", "followers_totalCount", "following_totalCount","repositories_totalCount",
+                                       "sponsorsListing_createdAt","sponsorsListing_shortDescription","sponsorsListing_name",
+                                       "sponsorsListing_tiers_totalCount","sponsorsListing_tiers_edges","sponsorshipsAsMaintainer_totalCount",
+                                       "sponsorshipsAsMaintainer_nodes"]
+            df_con.to_excel(consolidate_sponsors, index = False)  
+    
 main()
