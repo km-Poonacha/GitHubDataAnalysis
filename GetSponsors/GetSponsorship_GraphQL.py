@@ -273,11 +273,11 @@ def main():
             consolidate_sponsors = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\States\ConsolidatedSponsors.xlsx'       
             df_con = pd.read_excel(consolidate_sponsors,error_bad_lines=False,header= 0, index = False)
             df_con= df_con.append(df.dropna(subset=[11]), ignore_index=True)
-            df_con.columns=["login", "name", "email", "company", "bio", "location",
-                                       "createdAt", "isHireable", "followers_totalCount", "following_totalCount","repositories_totalCount",
-                                       "sponsorsListing_createdAt","sponsorsListing_shortDescription","sponsorsListing_name",
-                                       "sponsorsListing_tiers_totalCount","sponsorsListing_tiers_edges","sponsorshipsAsMaintainer_totalCount",
-                                       "sponsorshipsAsMaintainer_nodes"]
+            # df_con.columns=["login", "name", "email", "company", "bio", "location",
+            #                            "createdAt", "isHireable", "followers_totalCount", "following_totalCount","repositories_totalCount",
+            #                            "sponsorsListing_createdAt","sponsorsListing_shortDescription","sponsorsListing_name",
+            #                            "sponsorsListing_tiers_totalCount","sponsorsListing_tiers_edges","sponsorshipsAsMaintainer_totalCount",
+            #                            "sponsorshipsAsMaintainer_nodes"]
             df_con.to_excel(consolidate_sponsors, index = False)  
     
 main()
