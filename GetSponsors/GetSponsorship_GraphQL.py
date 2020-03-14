@@ -22,8 +22,7 @@ MAX_ROWS_PERWRITE = 1000
 DF_REPO = pd.DataFrame()
 DF_COUNT = 0
 
-PW_CSV = 'C:\\Users\pmedappa\Dropbox\HEC\Python\PW\PW_GitHub.csv'
-LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\UserSpon_log.csv'
+LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Europe\UserSpon_log.csv'
 headers = {"Authorization": "Bearer "+"b4b9ee84c8fea3f27268b3152acd2c67e366d8f8"} 
 
 def appendrowindf(user_xl, row):
@@ -238,10 +237,13 @@ def main():
     #             'New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania',
     #             'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington',
     #             'West Virginia','Wisconsin','Wyoming']
+    europe = ['AUSTRIA','BELGIUM','brussels','BULGARIA','CROATIA','CYPRUS','CZECH','DENMARK','copenhagen','ESTONIA','FINLAND','FRANCE','paris','fr'
+              'GERMANY','berlin','munich','GREECE','athens','HUNGARY','IRELAND','dublin','ITALY','rome','LATVIA','LITHUANIA','LUXEMBOURG','MALTA','NETHERLANDS', 'amsterdam','rotterdam','POLAND',
+              'PORTUGAL','lisbon','porto','ROMANIA','SLOVAK','SLOVENIA','SPAIN','madrid','barcelona','SWEDEN','UNITED KINGDOM','uk','britan','england','scotland','wales','london','northern ireland']
     year=['2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018']
     month = [['01'],['01','06'],['01','04','07','10'],['01','03','05','07','09','11'],['01','02','03','04','05','06','07','08','09','10','11','12']]
-    for loc in search_key:
-        user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\States\UserSponsor_'+loc+'.xlsx'
+    for loc in europe:
+        user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Europe\UserSponsor_'+loc+'.xlsx'
         df_test = pd.DataFrame()
         df_test.to_excel(user_xl, index = False) 
         # for p in period:
@@ -270,7 +272,7 @@ def main():
          
         df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
         if df.shape[1] > 10:
-            consolidate_sponsors = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\States\ConsolidatedSponsors.xlsx'       
+            consolidate_sponsors = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Europe\ConsolidatedSponsors.xlsx'       
             df_con = pd.read_excel(consolidate_sponsors,error_bad_lines=False,header= 0, index = False)
             df_con= df_con.append(df.dropna(subset=[11]), ignore_index=True)
             # df_con.columns=["login", "name", "email", "company", "bio", "location",
