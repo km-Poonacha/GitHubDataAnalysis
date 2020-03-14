@@ -23,7 +23,7 @@ DF_REPO = pd.DataFrame()
 DF_COUNT = 0
 
 LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Europe\UserSpon_log.csv'
-headers = {"Authorization": "Bearer "+"b4b9ee84c8fea3f27268b3152acd2c67e366d8f8"} 
+headers = {"Authorization": "Bearer "+"fd0d249af046e16822667bf32460d7a83fcb413c"} 
 
 def appendrowindf(user_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
@@ -230,13 +230,13 @@ def main():
                 'New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania',
                 'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington',
                 'West Virginia','Wisconsin','Wyoming']
-    #us,'usa','states','america','canada','california','ca']
-    # states = [ 'Alabama','Alaska','Arizona','Arkansas','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii',
-    #             'Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts',
-    #             'Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey',
-    #             'New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania',
-    #             'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington',
-    #             'West Virginia','Wisconsin','Wyoming']
+    country =  ['us','usa','states','america','canada','california','ca']
+    states = [ 'Alabama','Alaska','Arizona','Arkansas','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii',
+                'Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts',
+                'Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey',
+                'New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania',
+                'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington',
+                'West Virginia','Wisconsin','Wyoming']
     europe = ['AUSTRIA','BELGIUM','brussels','BULGARIA','CROATIA','CYPRUS','CZECH','DENMARK','copenhagen','ESTONIA','FINLAND','FRANCE','paris','fr'
               'GERMANY','berlin','munich','GREECE','athens','HUNGARY','IRELAND','dublin','ITALY','rome','LATVIA','LITHUANIA','LUXEMBOURG','MALTA','NETHERLANDS', 'amsterdam','rotterdam','POLAND',
               'PORTUGAL','lisbon','porto','ROMANIA','SLOVAK','SLOVENIA','SPAIN','madrid','barcelona','SWEDEN','UNITED KINGDOM','uk','britan','england','scotland','wales','london','northern ireland']
