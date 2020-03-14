@@ -15,7 +15,7 @@ print(df.shape)
 df = df.drop_duplicates(subset = [0])
 print(df.shape)
 print(df[df[16] > 0].shape)
-print(df[(df[17].transform(ast.literal_eval).str.len() > 0)].shape)
+# print(df[(df[17].transform(ast.literal_eval).str.len() > 0)].shape)
 print(df[16].sum())
 
 
