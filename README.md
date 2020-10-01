@@ -1,2 +1,2 @@
-# GitHubDataAnalysis
-Various code used for data collection and analysis of GitHub data
+# GitHub Data Analysis
+From Various code collect data and analysis of GitHub data
