@@ -23,11 +23,11 @@ from numpy import array
 from numpy import float32
 from sklearn.metrics import f1_score
 
-TRAIN_XL = r'C:\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\LabelDatset.xlsx'
-TRAIN_XL_TEXT = r'C:\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\LabelDatset_Text.xlsx'
-LABELFULL_XL = r'C:\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\PreProcessed.xlsx'
-TRAINSET_XL = r'C:\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\Trainset.xlsx'
-TESTSET_XL = r'C:\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\Testset.xlsx'
+TRAIN_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\LabelDatset.xlsx'
+TRAIN_XL_TEXT = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\LabelDatset_Text.xlsx'
+LABELFULL_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\PreProcessed.xlsx'
+TRAINSET_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\Trainset.xlsx'
+TESTSET_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\Testset.xlsx'
 
 
 def plot_learning_curve_std(estimator, X, y):
