@@ -21,14 +21,14 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import learning_curve
 
 
-TRAIN_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Commit Creativity - Train3_Details.xlsx'
-TRAIN_SET = 'C:\\Data\\092019 CommitInfo\Classifiers\Classifier 66 62\Trainset.xlsx'
-TEST_SET = 'C:\\Data\\092019 CommitInfo\Classifiers\Classifier 66 62\Testset.xlsx'
-LABELFULL_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainout.csv'
-TRAINSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.xlsx'
-TESTSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.xlsx'
-COMMIT_XLSX ="C:/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
+TRAIN_CSV = r'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Commit Creativity - Train3_Details.xlsx'
+TRAIN_SET = r'C:/Users/pmedappa/Dropbox\\Data\\092019 CommitInfo\Classifiers\Classifier 66 62\Trainset.xlsx'
+TEST_SET = r'C:/Users/pmedappa/Dropbox\\Data\\092019 CommitInfo\Classifiers\Classifier 66 62\Testset.xlsx'
+LABELFULL_CSV = r'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainout.csv'
+TRAINSET_XL = r'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.xlsx'
+TESTSET_XL = r'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.xlsx'
+COMMIT_XLSX =r"C:/Users/pmedappa/Dropbox/Data/092019 CommitInfo/RepoCommit6001_6570_1.xlsx"
+COMMIT2_XLSX =r"C:/Users/pmedappa/Dropbox/Data/092019 CommitInfo/ClassifiedRepoCommit/ClassifiedRepoCommit6001_6570_1.xlsx"
 
 """
 REPOCOMMIT_LIST =[
