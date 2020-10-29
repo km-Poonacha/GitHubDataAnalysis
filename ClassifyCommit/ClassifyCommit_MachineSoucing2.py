@@ -247,11 +247,6 @@ def main():
     t_train_x, t_test_x, word_vectorizer = vectordsc(text_dataframe['C_Description'], t_df_train['C_Description'], t_df_test ['C_Description'] )
 
 
-#    df_classify = pd.DataFrame()
-#    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
-#    dataframe_classify = df_write.apply(geticommit, axis =1 )
-#    dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['Message'].str.split().str.len() )
-#    word_features = word_vectorizer.transform(dataframe_classify['Message'].astype(str))
 
     for i in ["Novelty", "Usefulness"]:
         '''MLPClassifier'''
