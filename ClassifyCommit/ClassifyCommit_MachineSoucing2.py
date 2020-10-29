@@ -243,13 +243,10 @@ def main():
     df_train.to_excel(TRAINSET_XL)
     df_test.to_excel(TESTSET_XL)
     #Convert description text into a vetor of features. Train_x,test_x are in sparse matrix format
-    v_train_x, v_test_x, v_word_vectorizer = vectordsc(vector_dataframe['C_Description'], df_train['C_Description'], df_test['C_Description'] )
-    t_train_x, t_test_x, t_word_vectorizer = vectordsc(text_dataframe['C_Description'], t_df_train['C_Description'], t_df_test ['C_Description'] )
+    #Use different file since number of textual descriptions available is greater 
+    t_train_x, t_test_x, word_vectorizer = vectordsc(text_dataframe['C_Description'], t_df_train['C_Description'], t_df_test ['C_Description'] )
 
 
-    acuracy = list()
-    macc = list()
-    macc_l = list()
 #    df_classify = pd.DataFrame()
 #    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
 #    dataframe_classify = df_write.apply(geticommit, axis =1 )
@@ -260,8 +257,7 @@ def main():
         '''MLPClassifier'''
         print("************ TEXT ONLY *************")
         print("************ MLP Classifier *************")
-        del acuracy[:] 
-        del macc[:] 
+
         #Stage 1  
         print("*** MLP Classifier - One stage - "+i+"5 ***")
         print("*** TEXT ***")
@@ -314,61 +310,41 @@ def main():
 
     for i in ["Novelty", "Usefulness"]:
         '''MLPClassifier'''
-        print("************ TEXT + CODE ONLY *************")
-        print("************ MLP Classifier *************")
+        print("************ TEXT + CODE + METADATA *************")
+        print("************ MLP Classifier  - "+i+"5 *** *************")
         #Stage 1  
-        print("*** MLP Classifier - One stage - "+i+"5 ***")
+        print("*** Stage One - Text ***")
+
+
+        train_text_vec= word_vectorizer.transform(df_train['C_Description'])
+        test_text_vec = word_vectorizer.transform(df_test['C_Description'])
+        tp_train5,tp_test5, acc, classifier_mlp1s5_vec = MLPmodel(train_text_vec, df_train[i], test_text_vec , df_test[i])
+        text_train_prob = pd.DataFrame(tp_train5, columns = ['p1','p2','p3','p4','p5'])
+        text_test_prob = pd.DataFrame(tp_test5, columns = ['p1','p2','p3','p4','p5'])
+ 
+        print("*** Stage Two - Text + Code + Metadata  - "+i+"5 ***")
         c_vec_train = organizevectors(df_train)
-        
+        c_vec_train['C_Additions'] = df_train['C_Additions'] 
+        c_vec_train['C_Deletions'] = df_train['C_Deletions'] 
+        c_vec_train['C_nParents'] = df_train['C_nParents'] 
+        c_vec_train['C_nFiles'] = df_train['C_nFiles'] 
+        c_vec_train['nWords'] = df_train['nWords']       
+        c_vec_train = pd.concat([c_vec_train,text_train_prob], axis=1)
 
         c_vec_test = organizevectors(df_test)   
+        c_vec_test['C_Additions'] = df_test['C_Additions'] 
+        c_vec_test['C_Deletions'] = df_test['C_Deletions'] 
+        c_vec_test['C_nParents'] = df_test['C_nParents'] 
+        c_vec_test['C_nFiles'] = df_test['C_nFiles'] 
+        c_vec_test['nWords'] = df_test['nWords'] 
+        c_vec_test = pd.concat([c_vec_test,text_test_prob], axis=1)
 
-
-        print("*** CODE ***")
         vp_train5,vp_test5, acc, classifier_mlp1s5_vec = MLPmodel(c_vec_train, df_train[i], c_vec_test, df_test[i])
 
-        """       
-        print("*** MLP Classifier - Two stage - "+i+"5 ***")        #Stage 2
-        print("*** TEXTPROB + CVEC ***")
-        df_train_prob = pd.DataFrame(tp_train5, columns = ['p1','p2','p3','p4','p5'])
-        train_x_s2 = pd.concat([df_train_prob,c_vec_train], axis=1)
-        df_test_prob = pd.DataFrame(tp_test5, columns = ['p1','p2','p3','p4','p5'])
-        test_x_s2 = pd.concat([df_test_prob,c_vec_test], axis=1)
-        tvp_train_s2,tvp_test_s2, acc, classifier_mlp2s5 = MLPmodel(train_x_s2, df_train[i], test_x_s2, df_test[i], LCurve = False)
-#        acuracy.append(["MLP Classifier - Two stage - "+i+"5", float(acc),classifier_mlp1s5, classifier_mlp2s5])
-        
-        df_train_prob_vec = pd.DataFrame(vp_train5, columns = ['cp1','cp2','cp3','cp4','cp5'])
-        train_x_s2_cv = pd.concat([df_train_prob,df_train_prob_vec], axis=1)
-        df_test_prob_vec = pd.DataFrame(vp_test5, columns = ['cp1','cp2','cp3','cp4','cp5'])
-        test_x_s2_cv = pd.concat([df_test_prob,df_test_prob_vec], axis=1)
-        print("*** TEXTPROB + CVECPROB ***")
-        tvp2_train_s2,tvp2_test_s2, acc, classifier_mlp2s5 = MLPmodel(train_x_s2_cv, df_train[i], test_x_s2_cv, df_test[i], LCurve = False)
-        
-        """      
-        print("*** MLP Classifier - One stage - "+i+"3 ***")
-        print("*** CODE ***")
+        print("*** Stage Two - Text + Code + Metadata  - "+i+"3 ***")
+
         tp2_train3,tp2_test3, acc, classifier_mlp1s5 = MLPmodel(c_vec_train,  df_train[i+'3'], c_vec_test, df_test[i+'3'])
 
-        """        
-#        acuracy.append(["MLP Classifier - One stage - "+i+"3", float(acc), classifier_mlp1s3])
-        
-        #Stage 2
-        df_train_prob = pd.DataFrame(p_train3, columns = ['p1','p2','p3'])
-        df_train_prob_vec = pd.DataFrame(p2_train3, columns = ['cp1','cp2','cp3'])
-        train_x_s2 = pd.concat([df_train_prob,c_vec_train], axis=1)
-        df_test_prob = pd.DataFrame(p_test3, columns = ['p1','p2','p3'])
-        df_test_prob_vec = pd.DataFrame(p2_test3, columns = ['cp1','cp2','cp3'])
-        test_x_s2 = pd.concat([df_test_prob,c_vec_test], axis=1)
-        print("*** MLP Classifier - Two stage - "+i+"3 ***")
-        print("*** TEXTPROB + CVEC ***")
-        p3_train_s2,p3_test_s2, acc6, classifier_mlp2s3 = MLPmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
-#        acuracy.append(["MLP Classifier - Two stage - "+i+"3", float(acc),classifier_mlp1s3, classifier_mlp2s3])
-        print("*** TEXTPROB + CVECPROB ***")
-        train_x_s2_2 = pd.concat([df_train_prob,df_train_prob_vec ], axis=1)
-        test_x_s2_2 = pd.concat([df_test_prob, df_test_prob_vec], axis=1)
-        p3_train_s2,p3_test_s2, acc6, classifier_mlp2s3 = MLPmodel(train_x_s2_2, df_train[i+'3'], test_x_s2_2, df_test[i+'3'], LCurve = False)
- 
-        """
 if __name__ == '__main__':
   main()
   
