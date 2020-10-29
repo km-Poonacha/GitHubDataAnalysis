@@ -217,7 +217,7 @@ def organizevectors(df):
     
     df['lVec'] = df['VECTORS'].apply(lambda x : dict(eval(x))).apply(pd.Series)
     df= pd.concat([df,(df['lVec'].apply(pd.Series))], axis = 1)
-#    print (df)
+    print (df)
     return df['lVec'].apply(pd.Series)
     
 def main():
