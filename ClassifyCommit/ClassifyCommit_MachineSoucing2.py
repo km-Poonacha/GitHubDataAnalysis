@@ -148,8 +148,7 @@ def getVDF(TRAIN_XL):
                                                                        'Testing': 6})
     dataframe = dataframe.drop(axis=1,columns=['Type of Commit (Primary)','Optional Type of Commit (Secondary)'])
     
-    # Convert the number of lines of code into nChanges, nAdditions, nDeletions
-
+ 
     # Create three class labeld for novelty and usefulness
     conditions = [
         (dataframe['Novelty'] > 3),
@@ -176,7 +175,7 @@ def vectordsc(corpus, train_text, test_text):
                                         analyzer='word',
                                         token_pattern=r'\w{1,}',
                                         stop_words='english',
-                                        ngram_range=(1, 2),
+                                        ngram_range=(1, 3),
                                         max_features=10000)
 
     word_vectorizer.fit(corpus)
@@ -217,7 +216,7 @@ def organizevectors(df):
     
     df['lVec'] = df['VECTORS'].apply(lambda x : dict(eval(x))).apply(pd.Series)
     df= pd.concat([df,(df['lVec'].apply(pd.Series))], axis = 1)
-    print (df)
+
     return df['lVec'].apply(pd.Series)
     
 def main():
@@ -267,7 +266,7 @@ def main():
         print("*** MLP Classifier - One stage - "+i+"5 ***")
         print("*** TEXT ***")
         tp_train5,tp_test5, acc, classifier_mlp1s5 = MLPmodel(t_train_x, t_df_train[i], t_test_x, t_df_test[i])
-        
+        print(tp_train5)
         print("*** MLP Classifier - One stage - "+i+"3 ***")
         print("*** TEXT ***")
         tp_train3,tp_test3, acc, classifier_mlp1s3 = MLPmodel(t_train_x, t_df_train[i+'3'], t_test_x, t_df_test[i+'3'])
@@ -288,7 +287,30 @@ def main():
         print("*** CODE ***")
         tp2_train3,tp2_test3, acc, classifier_mlp1s5 = MLPmodel(c_vec_train,  df_train[i+'3'], c_vec_test, df_test[i+'3'])
 
+    for i in ["Novelty", "Usefulness"]:
+        '''MLPClassifier'''
+        print("************ CODE + META DATA *************")
+        print("************ MLP Classifier *************")
+        #Stage 1  
+        print("*** MLP Classifier - One stage - "+i+"5 ***")
+        c_vec_train = organizevectors(df_train)
+        c_vec_train['C_Additions'] = df_train['C_Additions'] 
+        c_vec_train['C_Deletions'] = df_train['C_Deletions'] 
+        c_vec_train['C_nParents'] = df_train['C_nParents'] 
+        c_vec_train['C_nFiles'] = df_train['C_nFiles'] 
+        c_vec_train['nWords'] = df_train['nWords'] 
+        c_vec_test = organizevectors(df_test) 
+        c_vec_test['C_Additions'] = df_test['C_Additions'] 
+        c_vec_test['C_Deletions'] = df_test['C_Deletions'] 
+        c_vec_test['C_nParents'] = df_test['C_nParents'] 
+        c_vec_test['C_nFiles'] = df_test['C_nFiles'] 
+        c_vec_test['nWords'] = df_test['nWords'] 
 
+        vp_train5,vp_test5, acc, classifier_mlp1s5_vec = MLPmodel(c_vec_train, df_train[i], c_vec_test, df_test[i])
+     
+        print("*** MLP Classifier - One stage - "+i+"3 ***")
+
+        tp2_train3,tp2_test3, acc, classifier_mlp1s5 = MLPmodel(c_vec_train,  df_train[i+'3'], c_vec_test, df_test[i+'3'])
 
     for i in ["Novelty", "Usefulness"]:
         '''MLPClassifier'''
@@ -297,7 +319,11 @@ def main():
         #Stage 1  
         print("*** MLP Classifier - One stage - "+i+"5 ***")
         c_vec_train = organizevectors(df_train)
-        c_vec_test = organizevectors(df_test)       
+        
+
+        c_vec_test = organizevectors(df_test)   
+
+
         print("*** CODE ***")
         vp_train5,vp_test5, acc, classifier_mlp1s5_vec = MLPmodel(c_vec_train, df_train[i], c_vec_test, df_test[i])
 
