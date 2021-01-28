@@ -339,6 +339,8 @@ def main():
         print("*** Stage Two - Text + Code + Metadata  - "+i+"3 ***")
 
         tp2_train3,tp2_test3, acc, classifier_mlp1s5 = MLPmodel(c_vec_train,  df_train[i+'3'], c_vec_test, df_test[i+'3'])
+        
+        
 
 if __name__ == '__main__':
   main()
