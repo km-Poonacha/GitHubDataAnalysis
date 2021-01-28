@@ -23,7 +23,7 @@ DF_REPO = pd.DataFrame()
 DF_COUNT = 0
 
 LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Rand\UserSpon_log.csv'
-headers = {"Authorization": "Bearer "+"a020b3f565c5ed50b67d73881fcc3e30b069927a"} 
+headers = {"Authorization": "Bearer "+ TOKEN } 
 
 def appendrowindf(user_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
