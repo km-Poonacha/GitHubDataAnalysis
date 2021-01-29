@@ -51,7 +51,7 @@ def run_query(user_row,user_xl):
             remaining
             resetAt
           }
-          user(login: \""""+user_row["login"]+"""\") {
+          user(login: \""""+str(user_row["login"])+"""\") {
             email
             location
             sponsorsListing {
@@ -120,7 +120,7 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    r_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatchOnly.xlsx'
+    r_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatch.xlsx'
     w_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatchOnly_Sub0121.xlsx'
     user_df = pd.read_excel(r_user_xl,error_bad_lines=False,header= 0, index = False)
     df_test = pd.DataFrame()
@@ -134,6 +134,7 @@ def main():
     df = pd.read_excel(w_user_xl,error_bad_lines=False,header= 0, index = False)
     df= df.append(DF_REPO, ignore_index = True, sort=False)
     print(df.shape[0])
+    df = df.drop(df.columns[0], 1)
     df.columns=["login", "name", "email", "company", "bio", "location",
                         "createdAt", "isHireable", "followers_totalCount", "following_totalCount","repositories_totalCount",
                         "sponsorsListing_createdAt","sponsorsListing_shortDescription","sponsorsListing_name",
