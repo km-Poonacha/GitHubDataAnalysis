@@ -6,8 +6,8 @@ Created on Wed Sep 11 17:04:10 2019
 """
 import csv
 import sys
-if "C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB" not in sys.path:
-    sys.path.append('C:\\Users\\pmedappa\\\Dropbox\\HEC\\Python\\CustomLib\\PooLIB')
+if r"C:\Users\pmedappa\Dropbox\Code\CustomLib\PooLib" not in sys.path:
+    sys.path.append(r'C:\Users\pmedappa\Dropbox\Code\CustomLib\PooLib')
     print(sys.path)
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
