@@ -74,7 +74,8 @@ def main():
 	all_urls = []
 	for user in users:
 		try:
-			client = Github('e3f8889464893411eb3ac3d4d0817f4e94633f6b')
+			TOKEN = gettoken(r"C:\Users\pmedappa\Dropbox\Code\PW\GHtoken.txt")
+			client = Github(TOKEN)
 			fname = full_name(client, user)
 			# guname = github_username(client, user)
 			# gurl = github_url(client, user)
