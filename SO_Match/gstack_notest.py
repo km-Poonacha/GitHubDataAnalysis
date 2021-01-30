@@ -3,6 +3,11 @@ import requests
 from itertools import chain, combinations
 from github import Github
 import pandas as pd
+import sys
+if r"C:\Users\pmedappa\Dropbox\Code\CustomLib\PooLib" not in sys.path:
+    sys.path.append(r'C:\Users\pmedappa\Dropbox\Code\CustomLib\PooLib')
+    print(sys.path)
+from poo_ghmodules import gettoken
 
 def xl_input():
 	df = pd.read_excel(r'C:\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\2021 Update\CleanConsolidatedSponsors_SOMatchOnly_Sub0121_nomatch_3.xlsx', encoding='ISO-8859-1')
