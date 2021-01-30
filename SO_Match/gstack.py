@@ -5,7 +5,7 @@ from github import Github
 import pandas as pd
 
 def csv_input():
-	df = pd.read_excel(r'C:\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_Send.xlsx', encoding='ISO-8859-1')
+	df = pd.read_excel(r'C:\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\githubSO.xlsx', encoding='ISO-8859-1')
 	users = df.login
 	return users
 
@@ -43,18 +43,22 @@ def stack_id(profile_link):
 
 def search_sid(subsets, gurl, company):
 	for subset in subsets:
+		print(subset)
 		url =  'https://stackoverflow.com/users?tab=Reputation&filter=all&search=' + subset
 		response = requests.get(url)
 		soup = BeautifulSoup(response.text, 'lxml')
 		profile_links = soup.select('div.user-details a')
 		profile_links = [profile_link['href'] for profile_link in profile_links if profile_link.text.lower() == subset.lower()]
+		print(profile_links)
 		for profile_link in profile_links:
 			url = 'https://stackoverflow.com' + profile_link
 			response = requests.get(url)
 			soup = BeautifulSoup(response.text, 'lxml')
 			links = soup.select('a.url')
+			print("***************",links)            
 			if links:
 				links = [link['href'] for link in links]
+				print(profile_link, ":::", links)
 				for link in links:
 					if link == gurl or link == company:
 						sid = stack_id(profile_link)
@@ -68,7 +72,7 @@ def main():
 
 	for user in users:
 		try:
-			client = Github('e61bf3bb2ec5a568e2057cfca030b4d786e3fde1')
+			client = Github('e3f8889464893411eb3ac3d4d0817f4e94633f6b')
 			fname = full_name(client, user)
 			# guname = github_username(client, user)
 			# gurl = github_url(client, user)
@@ -89,7 +93,7 @@ def main():
 
 	d = zip(users, all_ids)
 	df = pd.DataFrame(data=d)
-	df.to_csv('test.csv', encoding='utf-8-sig', index=False, sep=';', header=['github username', 'stack ID'])
+	df.to_excel(r'C:\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\githubSO_Match.xlsx', encoding='utf-8-sig', index=False, header=['github username', 'stack ID'])
 
 if __name__ == '__main__':
 	main()
