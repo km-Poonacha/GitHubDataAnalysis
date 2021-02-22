@@ -12,6 +12,7 @@ if r"C:\Users\pmedappa\Dropbox\Code\CustomLib\PooLib" not in sys.path:
 from poo_ghmodules import getGitHubapi
 from poo_ghmodules import ghpaginate
 from poo_ghmodules import ghparse_row
+from poo_ghmodules import gettoken
 
 import pandas as pd
 import numpy as np
@@ -23,7 +24,6 @@ DF_REPO = pd.DataFrame()
 DF_COUNT = 0
 
 LOG_CSV = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Rand\UserSpon_log.csv'
-headers = {"Authorization": "Bearer "+"a020b3f565c5ed50b67d73881fcc3e30b069927a"} 
 
 def appendrowindf(user_xl, row):
     """This code appends a row into the dataframe and returns the updated dataframe"""
@@ -59,6 +59,8 @@ def con_monthwise(df):
 
 def run_query(l_name,user_xl): 
     """ A simple function to use requests.post to make the API call. Note the json= section."""
+    TOKEN = gettoken(r"C:\Users\pmedappa\Dropbox\Code\PW\GHtoken.txt")
+    headers = {"Authorization": "Bearer "+ TOKEN } 
     
     query = """
 {
@@ -102,10 +104,12 @@ def run_query(l_name,user_xl):
                       }
                       totalCount
                       nodes {
+                        id 
                         number
                         title
                         createdAt
                         closedAt
+                        lastEditedAt
                         repository {
                           nameWithOwner
                           id
@@ -117,10 +121,10 @@ def run_query(l_name,user_xl):
                             name
                           }
                         }
-                        comments(first: 1) {
+                        comments(first: 100) {
                           totalCount
                         }
-                        participants(first: 1) {
+                        participants(first: 100) {
                           totalCount
                           nodes {
                             login
@@ -172,25 +176,18 @@ def run_query(l_name,user_xl):
         for issue in issues['nodes']:
             issue_row = list()
             if(issue):
-                issue_row = ghparse_row(issue,"number", "title", "createdAt", "closedAt", "repository*nameWithOwner", "repository*id",
+
+                issue_row = ghparse_row(issue,"id","number", "title", "createdAt", "closedAt", "repository*nameWithOwner", "repository*id",
                                        "repository*createdAt", "labels*totalCount", "labels*nodes", "comments*totalCount","participants*totalCount",
-                                       "participants*nodes")
-#                if user['node']['sponsorsListing']:               
-#                    user_row.append(user['node']['sponsorsListing']['createdAt'])
-#                    user_row.append(user['node']['sponsorsListing']['shortDescription'])
-#                    user_row.append(user['node']['sponsorsListing']['name'])
-#                    user_row.append(user['node']['sponsorsListing']['tiers']['totalCount'])
-#                    user_row.append(user['node']['sponsorsListing']['tiers']['edges'])
-#                    user_row.append(user['node']['sponsorshipsAsMaintainer']['totalCount'])
-#                    user_row.append(user['node']['sponsorshipsAsMaintainer']['nodes'])
-#                else: user_row.append("")
-                temp_df= temp_df.append(pd.Series(issue_row), ignore_index = True, sort=False)
+                                       "participants*nodes",prespace = 1)
+                issue_row[0] = "issue"
+                temp_df= temp_df.append(pd.Series( issue_row), ignore_index = True, sort=False)
             
-    temp_df.columns = ["number", "title", "createdAt", "closedAt", "repo_nameWithOwner", "repo_id",
+    temp_df.columns = ["type","issue_id", "number", "title", "createdAt", "closedAt", "repo_nameWithOwner", "repo_id",
                        "repo_createdAt", "labels_totalCount", "labels_nodes", "comments_totalCount","participants_totalCount",
                         "participants_nodes"]        
-    mcon_df = con_monthwise(temp_df)
-    appendrowindf(user_xl, mcon_df)        
+#    mcon_df = con_monthwise(temp_df)
+    appendrowindf(user_xl, temp_df)        
 #    con_monthwise()
     return 0
 
@@ -200,8 +197,8 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    r_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\CleanConsolidatedSponsors_SOMatch_TEST.xlsx'
-    w_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\CleanConsolidatedSponsors_SOMatch_INFO3.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatch_TEST.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatch_INFO3.xlsx'
     user_df = pd.read_excel(r_user_xl,error_bad_lines=False,header= 0, index = False)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
@@ -217,37 +214,5 @@ def main():
     df.to_excel(w_user_xl, index = False) 
     DF_COUNT = 0
     DF_REPO = pd.DataFrame()
-
-"""
-        # for p in period:
-        #     ret_val = run_query(loc, p,user_xl)         
-        for y in range(len(year)):  
-            cursor, i_m = find_i_split(loc,year[y])
-            print("Split found ", month[i_m])
-            if int(i_m) == 404: 
-                print("Ending .........")
-                return
-            for m in range(len(month[i_m])):        
-                if m != len(month[i_m])-1: 
-                    p = year[y]+'-'+month[i_m][m]+'-01..'+year[y]+'-'+month[i_m][m+1]+'-01'
-                else: 
-                    p = year[y]+'-'+month[i_m][m]+'-01..'+year[y]+'-'+'12'+'-31'
-                ret_val = run_query(loc, p,user_xl)
-
-                        
-
-        
-         
-        df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
-        if df.shape[1] > 10:
-            consolidate_sponsors = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\MS Acquire Github\Data\Sponsor\Rand\ConsolidatedSponsors.xlsx'       
-            df_con = pd.read_excel(consolidate_sponsors,error_bad_lines=False,header= 0, index = False)
-            df_con= df_con.append(df.dropna(subset=[11]), ignore_index=True)
-            # df_con.columns=["login", "name", "email", "company", "bio", "location",
-            #                            "createdAt", "isHireable", "followers_totalCount", "following_totalCount","repositories_totalCount",
-            #                            "sponsorsListing_createdAt","sponsorsListing_shortDescription","sponsorsListing_name",
-            #                            "sponsorsListing_tiers_totalCount","sponsorsListing_tiers_edges","sponsorshipsAsMaintainer_totalCount",
-            #                            "sponsorshipsAsMaintainer_nodes"]
-            df_con.to_excel(consolidate_sponsors, index = False)  
-"""    
+  
 main()
