@@ -121,7 +121,7 @@ def main():
     global DF_REPO 
     global DF_COUNT
     r_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatch.xlsx'
-    w_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatchOnly_Sub0121.xlsx'
+    w_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatchOnly_test.xlsx'
     user_df = pd.read_excel(r_user_xl,error_bad_lines=False,header= 0, index = False)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
