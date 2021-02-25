@@ -36,7 +36,7 @@ def appendrowindf(user_xl, row):
     DF_REPO= DF_REPO.append(row, ignore_index = True)
     DF_COUNT = DF_COUNT + row.shape[0]
     if DF_COUNT >= MAX_ROWS_PERWRITE :
-        df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
+        df = pd.read_excel(user_xl,header= 0)
         df= df.append(DF_REPO, ignore_index = True)
         df.to_excel(user_xl, index = False) 
         DF_COUNT = 0
@@ -60,6 +60,7 @@ def run_query1(row,user_xl,org_name):
                 location
                 twitterUsername
                 websiteUrl
+                createdAt
                 membersWithRole (first : 100 ){
                   totalCount
                   nodes {
@@ -89,10 +90,13 @@ def run_query1(row,user_xl,org_name):
         return 404        
     try:    
         org = req_json['data']['organization']
-        print(org['membersWithRole']['totalCount'])
-        print(org['pendingMembers']['totalCount'])
+        row = row.append(pd.Series(org['membersWithRole']['totalCount'], index = [105]))
+        row = row.append(pd.Series(org['pendingMembers']['totalCount'], index= [106]))
+        row = row.append(pd.Series(org['createdAt'], index= [107]))
+        row = row.append(pd.Series(org['twitterUsername'], index= [108]))
     except:
-        pass
+        row = row.append(pd.Series("", index = [105]))
+        row = row.append(pd.Series("", index= [106]))
 
     appendrowindf(user_xl, row)
 
@@ -116,19 +120,7 @@ def run_query2(row,user_xl,org_name):
                 remaining
                 resetAt
               }
-             organization(login: \""""+org_name+"""\") {
-                name
-                login
-                location
-                twitterUsername
-                websiteUrl
-                membersWithRole (first : 100 ){
-                  totalCount
-                  nodes {
-                    login
-                  }
-                }
-              }
+
               user(login:\""""+l_name+"""\") { 
                 login
                 name
@@ -137,7 +129,7 @@ def run_query2(row,user_xl,org_name):
                 company
                 email
                 twitterUsername
-                organizationVerifiedDomainEmails(login :\""""+org_name+"""\")
+
                 isHireable
                 isSiteAdmin
                 organization (login:\""""+org_name+"""\"){
@@ -228,22 +220,23 @@ def main():
     global DF_COUNT
     r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_Test.xlsx'
     w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_Test2.xlsx'
-    user_df = pd.read_excel(r_user_xl,error_bad_lines=False,header= 0, index = False)
+    user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
     
     for i,row in user_df.iterrows():
         if  ~np.isnan(row[0]):
             print("Repo ",row[0])
-            org_name= row[2]
+            org_name= str(row[2])
             run_query1(row,w_user_xl,org_name)
             
         else:
+            pass
             print(row[2])
-#            run_query2(row,w_user_xl,org_name)
+            run_query2(row,w_user_xl,org_name)
     
 #
-    df = pd.read_excel(w_user_xl,error_bad_lines=False,header= 0, index = False)
+    df = pd.read_excel(w_user_xl,header= 0)
     df= df.append(DF_REPO, ignore_index = True)
     df.to_excel(w_user_xl, index = False) 
     DF_COUNT = 0
