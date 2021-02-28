@@ -60,7 +60,6 @@ def run_query1(row,user_xl,org_name):
                 location
                 twitterUsername
                 websiteUrl
-                createdAt
                 membersWithRole (first : 100 ){
                   totalCount
                   nodes {
@@ -92,8 +91,7 @@ def run_query1(row,user_xl,org_name):
         org = req_json['data']['organization']
         row = row.append(pd.Series(org['membersWithRole']['totalCount'], index = [105]))
         row = row.append(pd.Series(org['pendingMembers']['totalCount'], index= [106]))
-        row = row.append(pd.Series(org['createdAt'], index= [107]))
-        row = row.append(pd.Series(org['twitterUsername'], index= [108]))
+        row = row.append(pd.Series(org['twitterUsername'], index= [107]))
     except:
         row = row.append(pd.Series("", index = [105]))
         row = row.append(pd.Series("", index= [106]))
@@ -185,9 +183,9 @@ def run_query2(row,user_xl,org_name):
         if user['organization']:
             print(user['organization']['name'])
             row[8] = user['organization']['name']
+            row[9] = user['organization']['login']
         if user['organizations']:
-            row[9] = user['organizations']['nodes']
-        row[10] = user['organizationVerifiedDomainEmails']
+            row[10] = user['organizations']['nodes']
         row[11] = user['email']
         row[12] = user['location']
         row[13] = user['isHireable']
@@ -218,8 +216,8 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_Test.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_Test2.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_10000.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
