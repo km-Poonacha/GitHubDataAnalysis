@@ -57,10 +57,10 @@ def get_orgname(row):
 
 
 def rules(row,w_user_xl,date,fc_date, o_name):
-    """ rule 1: If org matches the org owner listed """
-    """ rule 2: First day committers """
-    """ rule 3: First committers """
-    """ rule 4: Org affiliation of first day committers """
+    """ rule 1: If org matches the org owner listed = 1 """
+    """ rule 2: First day committers = 2"""
+    """ rule 3: First committers matched by date = 3 """
+    """ rule 4: Org affiliation linked to rule 1-3 = 4. Note: it is dependent on the listed order of committers """
     global ORG_NAME
     org_name = list()
     org_name = get_orgname(row)
@@ -97,8 +97,8 @@ def main():
     global DF_REPO 
     global DF_COUNT
     global ORG_NAME
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Test.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Test_Ext_200.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Ext.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
