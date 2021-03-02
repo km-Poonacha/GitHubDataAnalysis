@@ -41,6 +41,8 @@ def appendrowindf(user_xl, row):
 def get_orgname(row):
     """Get the org name associated with an internal user """
     org = list()
+    if  pd.notnull(row[8]): # rule 1
+        org.append(row[8].lower())        
     if pd.notnull(row[7]):
         company = row[7].replace("@", "").lower()
         org.append(company)
@@ -58,16 +60,14 @@ def rules(row,w_user_xl,date,o_name):
     org_name = list()
     org_name = get_orgname(row)
     if  pd.notnull(row[8]): # rule 1
-        row[14] = 1
-        ORG_NAME.append(row[8].lower())        
+        row[14] = 1       
         # add company
     elif row[5][:10] == date[:10]: #rule 2
         row[14] = 2        
     else:
         org_a = set(org_name)
         org_b = set(ORG_NAME)
-        org_n = set(o_name)
-        if (org_a & org_n): #rule 1 
+        if o_name in org_name: #rule 1 check if any of the owner names matched the actual owner name    
             row[14] = 1
         elif (org_a & org_b): #rule 3
             row[14] = 3
@@ -76,8 +76,9 @@ def rules(row,w_user_xl,date,o_name):
 
     
     row[15] = org_name
-    for o in org_name:
-        ORG_NAME.append(o)
+    if row[14] <3:
+        for o in org_name:
+            ORG_NAME.append(o)
         
     appendrowindf(w_user_xl, row)     
 
@@ -88,8 +89,8 @@ def main():
     global DF_REPO 
     global DF_COUNT
     global ORG_NAME
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Ext2.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Test.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Test_Ext.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
