@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import json
 import ast 
+import re
 
 MAX_ROWS_PERWRITE = 1000
 
@@ -44,18 +45,22 @@ def get_orgname(row):
     if  pd.notnull(row[8]): # rule 1
         org.append(row[8].lower())        
     if pd.notnull(row[7]):
-        company = row[7].replace("@", "").lower()
+        company = re.sub(r"[-()\"#/@;:<>{}`+=~|.!?, ]", "", row[7])
+        company = company.lower()
         org.append(company)
     if pd.notnull(row[10]):
         for o in ast.literal_eval(row[10]):
-            org.append(o['login'])    
+            o1 =  re.sub(r"[-()\"#/@;:<>{}`+=~|.!?, ]", "", o['login'])
+            o1 = o1.lower()
+            org.append(o1)    
     return org
 
 
-def rules(row,w_user_xl,date,o_name):
+def rules(row,w_user_xl,date,fc_date, o_name):
     """ rule 1: If org matches the org owner listed """
     """ rule 2: First day committers """
-    """ rule 3: Org affiliation of first day committers """
+    """ rule 3: First committers """
+    """ rule 4: Org affiliation of first day committers """
     global ORG_NAME
     org_name = list()
     org_name = get_orgname(row)
@@ -63,20 +68,23 @@ def rules(row,w_user_xl,date,o_name):
         row[14] = 1       
         # add company
     elif row[5][:10] == date[:10]: #rule 2
-        row[14] = 2        
+        row[14] = 2 
+    elif row[5][:10] == fc_date[:10]:
+        row[14] = 3 
+        # adding first commiter date 
     else:
         org_a = set(org_name)
         org_b = set(ORG_NAME)
         if o_name in org_name: #rule 1 check if any of the owner names matched the actual owner name    
             row[14] = 1
-        elif (org_a & org_b): #rule 3
-            row[14] = 3
+        elif (org_a & org_b): #rule 3.
+            row[14] = 4
         else:
             row[14] = 0
 
     
     row[15] = org_name
-    if row[14] <3:
+    if row[14] <4:
         for o in org_name:
             ORG_NAME.append(o)
         
@@ -90,12 +98,13 @@ def main():
     global DF_COUNT
     global ORG_NAME
     r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Test.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Test_Ext.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Test_Ext_200.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
     u_flag = 0
-    for i,row in user_df.iterrows():
+    first_c = 0
+    for i,row in user_df.iterrows():        
         if  ~np.isnan(row[0]):
             print("Repo: ",row[0]," Owner: ",row[2]," Type: ",row[3])
             date = row[5]
@@ -105,11 +114,15 @@ def main():
                 u_flag = 1
             else: 
                 u_flag = 0                
-                appendrowindf(w_user_xl, row)            
+                appendrowindf(w_user_xl, row)    
+                first_c = 1
         else:
             if u_flag == 1:
                 continue
-            rules(row,w_user_xl,date,o_name.lower())
+            if first_c == 1:
+                fc_date =  row[5][:10]
+                first_c = 0
+            rules(row,w_user_xl,date,fc_date,o_name.lower())
             
     df = pd.read_excel(w_user_xl,header= 0)
     df= df.append(DF_REPO, ignore_index = True)
