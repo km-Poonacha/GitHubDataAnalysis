@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 import requests
 
-MAX_ROWS_PERWRITE = 100
+MAX_ROWS_PERWRITE = 500
 
 DF_REPO = pd.DataFrame()
 DF_COUNT = 0
@@ -158,22 +158,10 @@ def run_query2(row,user_xl,org_name):
         request = requests.post('https://api.github.com/graphql', json=body, headers=headers)
         req_json = request.json()
 
-#        print(l_name," Org Count ",req_json['data']['user']['organizations']['totalCount']," Company ",req_json['data']['user']['company'] )
-#            if  int(req_json['data']['search']['userCount']) > 1000:
-#                # log if the total user count is greater than 1000
-#                with open(LOG_CSV, 'at') as logobj:                    
-#                    log = csv.writer(logobj)
-#                    l_data = list()
-#                    l_data.append("Search Results Exceeds 1000")
-#                    l_data.append(loc)
-#                    l_data.append(period)
-#                    l_data.append(req_json['data']['search']['userCount'])
-#                    log.writerow(l_data)
         print(req_json['data']['rateLimit']['remaining'])
         
     except:
         print("Error running graphql")
-        print(req_json)
         return 404
     
 
@@ -181,7 +169,6 @@ def run_query2(row,user_xl,org_name):
         user = req_json['data']['user']
         row[7] = user['company']
         if user['organization']:
-            print(user['organization']['name'])
             row[8] = user['organization']['name']
             row[9] = user['organization']['login']
         if user['organizations']:
@@ -192,20 +179,6 @@ def run_query2(row,user_xl,org_name):
     except:
         pass
 
-#        for issue in issues['nodes']:
-#            issue_row = list()
-#            if(issue):
-#
-#                issue_row = ghparse_row(issue,"id","number", "title", "createdAt", "closedAt", "repository*nameWithOwner", "repository*id",
-#                                       "repository*createdAt", "labels*totalCount", "labels*nodes", "comments*totalCount","participants*totalCount",
-#                                       "participants*nodes",prespace = 1)
-#                issue_row[0] = "issue"
-#                temp_df= temp_df.append(pd.Series( issue_row), ignore_index = True, sort=False)
-#            
-#    temp_df.columns = ["type","issue_id", "number", "title", "createdAt", "closedAt", "repo_nameWithOwner", "repo_id",
-#                       "repo_createdAt", "labels_totalCount", "labels_nodes", "comments_totalCount","participants_totalCount",
-#                        "participants_nodes"]        
-#
     appendrowindf(user_xl, row)        
 
     return 0
@@ -216,8 +189,8 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_10000.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_60000.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_60000.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
