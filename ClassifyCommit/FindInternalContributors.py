@@ -84,7 +84,7 @@ def rules(row,w_user_xl,date,fc_date, o_name):
 
     
     row[15] = org_name
-    if row[14] <4:
+    if row[14] == 1 or row[14] == 2 or row[14] == 3 :
         for o in org_name:
             ORG_NAME.append(o)
         
@@ -97,8 +97,8 @@ def main():
     global DF_REPO 
     global DF_COUNT
     global ORG_NAME
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_10000_Ext.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_Ext.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
