@@ -30,7 +30,8 @@ def appendrowindf(user_xl, row):
     global DF_REPO 
     global DF_COUNT
     DF_REPO= DF_REPO.append(row, ignore_index = True)
-    DF_COUNT = DF_COUNT + row.shape[0]
+    # note there is an issue when shape is used for series and df. 
+    DF_COUNT = DF_COUNT + 1 # use row.shape[0] for dataframe
     if DF_COUNT >= MAX_ROWS_PERWRITE :
         df = pd.read_excel(user_xl,header= 0)
         df= df.append(DF_REPO, ignore_index = True)
