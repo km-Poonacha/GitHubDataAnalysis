@@ -43,8 +43,8 @@ def appendrowindf(user_xl, row):
 def get_orgname(row):
     """Get the org name associated with an internal user """
     org = list()
-    if  pd.notnull(row[8]): # rule 1
-        org.append(row[8].lower())        
+    if  pd.notnull(row[9]): # rule 1
+        org.append(row[9].lower())        
     if pd.notnull(row[7]):
         company = re.sub(r"[-()\"#/@;:<>{}`+=~|.!?, ]", "", row[7])
         company = company.lower()
@@ -65,7 +65,7 @@ def rules(row,w_user_xl,date,fc_date, o_name):
     global ORG_NAME
     org_name = list()
     org_name = get_orgname(row)
-    if  pd.notnull(row[8]): # rule 1
+    if  pd.notnull(row[9]): # rule 1
         row[14] = 1       
         # add company
     elif row[5][:10] == date[:10]: #rule 2
