@@ -9,8 +9,8 @@ Merge 28072020_FinalCleanData_Full_Clean2 with Final_COL_MC_RepoCommit_UserInfo_
 import pandas as pd
 
 LEFT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\ClassifiedRepoCommit\UPnew28072020_FinalCleanData_Full.xlsx"
-RIGHT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\Final_COL_MC_RepoCommit_UserInfo_Ext_2.xlsx"
-MERGE_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\ClassifiedRepoCommit\08032021_MergeExt_FinalCleanData_Full_Clean2.xlsx"
+RIGHT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\Final_COL_MC_RepoCommit_UserInfo_No2013_2.xlsx"
+MERGE_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\ClassifiedRepoCommit\08032021_MergeExt_FinalCleanData_Full_Clean_No2013_2.xlsx"
 
 
 df_left = pd.read_excel(LEFT_XLSX ,header= 0)

@@ -14,8 +14,8 @@ import pandas as pd
 import numpy as np
 import ast
 
-COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_Ext_Test.xlsx"
-NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\Final_COL_MC_RepoCommit_UserInfo_Ext_Test.xlsx"
+COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\COL_MC_RepoCommit_UserInfo_Ext_No2013.xlsx"
+NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\Final_COL_MC_RepoCommit_UserInfo_No2013.xlsx"
 DT_ERROR_LOG = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\Contributors_monthwise/DT_ERROR_LOG_UserInfo_Ext.xlsx"
 
 MAX_ROWS_PERWRITE = 2000
