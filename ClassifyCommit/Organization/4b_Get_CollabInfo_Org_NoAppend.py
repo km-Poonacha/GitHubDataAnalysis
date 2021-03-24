@@ -3,6 +3,8 @@
 Created on Sat Mar 13 22:01:51 2021
 
 @author: pmedappa
+
+Updated code from 4. that includes total_month_contributions
 """
 
 
@@ -179,9 +181,9 @@ def main():
     global df_w_colab_xl
     global df_w_commit_xl
 
-    r_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\classified_google_commit_4.xlsx"
-    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\new2_classified_google_commit_4.xlsx"
-    # w_colab_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\col_classified_google_commit_3.xlsx"
+    r_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\classified_ibm_commit_1.xlsx"
+    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_1.xlsx"
+    w_colab_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\col_classified_ibm_commit_1.xlsx"
     
                    
     write_files =   ['w_commit_xl','w_colab_xl']
@@ -192,7 +194,7 @@ def main():
     df_commit.to_excel(w_commit_xl, index = False) 
 
     contributors = pd.DataFrame()
-    # contributors.to_excel(w_colab_xl , index = False) 
+    contributors.to_excel(w_colab_xl , index = False) 
     commit_df['repo_name'] = commit_df['repo_name'].fillna(method='ffill')
     for i,row in commit_df.iterrows():
         if  pd.notnull(row['org_login']):
@@ -202,24 +204,24 @@ def main():
             if len(df_commit) > 0 :
                 df_commit = parsedate(df_commit)
                 df_commit, contributors = getcollab(df_commit,w_commit_xl)
-                # contributors= find_startenddays(df_commit, contributors)
+                contributors= find_startenddays(df_commit, contributors)
 
-                # df_w_colab_xl= df_w_colab_xl.append(contributors, ignore_index = True)
+                df_w_colab_xl= df_w_colab_xl.append(contributors, ignore_index = True)
 
 
             df_commit = pd.DataFrame()
 
             df_w_commit_xl= df_w_commit_xl.append(row, ignore_index = True)
-            # df_w_colab_xl= df_w_colab_xl.append(row, ignore_index = True)
+            df_w_colab_xl= df_w_colab_xl.append(row, ignore_index = True)
         else:
             df_commit = df_commit.append(row, ignore_index = True)
             
     if len(df_commit) > 0 :
         df_commit = parsedate(df_commit)
         df_commit, contributors  = getcollab(df_commit, w_commit_xl)
-        # contributors= find_startenddays(df_commit, contributors)
+        contributors= find_startenddays(df_commit, contributors)
         
-        # df_w_colab_xl= df_w_colab_xl.append(contributors, ignore_index = True)
+        df_w_colab_xl= df_w_colab_xl.append(contributors, ignore_index = True)
 
 
 
@@ -227,7 +229,7 @@ def main():
 
     df_w_commit_xl.to_excel(w_commit_xl , index = False) 
    
-    # df_w_colab_xl.to_excel(w_colab_xl  , index = False) 
+    df_w_colab_xl.to_excel(w_colab_xl  , index = False) 
 
   
     

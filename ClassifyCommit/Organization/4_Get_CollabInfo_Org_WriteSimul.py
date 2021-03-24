@@ -77,6 +77,7 @@ def monthwise(df_commit,w_commit_xl):
                                                       'commit_authors_totalCount','commit_authoredByCommitter','commit_additions',
                                                       'commit_deletions','commit_changedFiles','commit_parents_totalCount'].mean()
     
+    df2 = pd.concat([df2,df_commit.groupby('commit_authoredDate_yearmonth')['Noveltys2p1'].count().to_frame('total_month_contributions')], axis=1)
     df2= df2.reset_index()
 
 
