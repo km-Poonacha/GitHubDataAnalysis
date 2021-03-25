@@ -17,21 +17,21 @@ import numpy as np
 
 def mergefiles():
     """ Combine commits and contributions for all the files """
-    commit_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\new2_classified_google_commit_1.xlsx',
-                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\new2_classified_google_commit_2.xlsx',
-                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\new2_classified_google_commit_3.xlsx',
-                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\new2_classified_google_commit_4.xlsx',
-                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\new2_classified_google_commit_EMPTY.xlsx']
+    commit_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_1.xlsx',
+                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_2.xlsx',
+                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_3.xlsx',
+                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_4.xlsx',
+                    r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_EMPTY.xlsx']
     
-    contri_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\month_int2_org_col_classified_google_commit_1.xlsx',
-              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\month_int2_org_col_classified_google_commit_2.xlsx',
-              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\month_int2_org_col_classified_google_commit_3.xlsx',
-              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\month_int2_org_col_classified_google_commit_4.xlsx',
-              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\month_int2_org_col_classified_google_commit_EMPTY.xlsx']    
+    contri_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\month_int2_org_col_classified_ibm_commit_1.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\month_int2_org_col_classified_ibm_commit_2.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\month_int2_org_col_classified_ibm_commit_3.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\month_int2_org_col_classified_ibm_commit_4.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\month_int2_org_col_classified_ibm_commit_EMPTY.xlsx']    
     
-    # commit_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\new2_classified_google_commit_EMPTY.xlsx']
+    # commit_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_EMPTY.xlsx']
     
-    # contri_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\month_int2_org_col_classified_google_commit_EMPTY.xlsx']  
+    # contri_files = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\month_int2_org_col_classified_ibm_commit_EMPTY.xlsx']  
     write_df = pd.DataFrame()
     combi = zip(commit_files, contri_files)
     write_df = pd.DataFrame()
@@ -118,7 +118,7 @@ def dataprep(write_df):
 def main():
     """main function"""
     
-    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\merge_month_int2_org_col_classified_google_commit_full.xlsx'
+    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Merged\merge_month_int2_org_col_classified_ibm_commit_full.xlsx'
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
     
