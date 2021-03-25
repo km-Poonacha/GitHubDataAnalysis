@@ -4,7 +4,7 @@ Created on Fri Jan 31 15:11:32 2020
 
 @author: pmedappa
 
-Get month info of the collaborators and external contributors
+Sort contributors in ascending order. This is needed to find organization affiliation in 6 
 """
 
 import openpyxl
@@ -12,9 +12,9 @@ import pandas as pd
 import numpy as np
 import ast
 
-COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int_org_col_classified_google_commit_EMPTY.xlsx"
-NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx"
-DT_ERROR_LOG = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\DT_ERROR_LOG_UserInfo_Ext.xlsx"
+COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\org_col_classified_ibm_commit_EMPTY.xlsx"
+NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx"
+DT_ERROR_LOG = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\DT_ERROR_LOG_UserInfo_Ext.xlsx"
 
 MAX_ROWS_PERWRITE = 5000
 
@@ -50,9 +50,7 @@ def sortasc(df_repom, by):
     """ Find net colab """
     df_repom = df_repom.sort_values(by=by, ascending=True)
     df_repom['rank_yearmonth'] = df_repom['contributor_start_yearmonth'].rank(method='min')
-    
-     
-     
+        
     return df_repom    
     
     
