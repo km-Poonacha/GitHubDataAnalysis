@@ -4,12 +4,12 @@ Created on Mon Mar  1 13:35:31 2021
 
 @author: pmedappa
 
-Find if contributors is internal or external 
+Find if contributors is internal or external . Ensure contributors are sorted in ascending ot their date to use rule 3.
 
-rule 1: If org matches the org listed
+rule 1: If org matches the org listed (Company, Orgnization affiliations)
 rule 2: First day committers
-rule 3: Org affiliation of first day committers ??
-rule 4: Sounds like
+rule 3: Org affiliation of committers identified from rulw 1 and 2
+
 """
 import pandas as pd
 import numpy as np
@@ -91,7 +91,7 @@ def rules(row,w_user_xl,date,fc_date, o_name):
 
     
     row['all_organizations'] = org_name
-    if row['internal_contributor'] == 1 or row['internal_contributor'] == 2 or row['internal_contributor'] == 3 :
+    if row['internal_contributor'] == 1 or row['internal_contributor'] == 2 or row['internal_contributor'] == 3 or row['internal_contributor'] == 5:
         for o in org_name:
             ORG_NAME.append(o)
         
@@ -104,8 +104,8 @@ def main():
     global DF_REPO 
     global DF_COUNT
     global ORG_NAME
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\org_col_classified_google_commit_EMPTY.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int_org_col_classified_google_commit_EMPTY.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
