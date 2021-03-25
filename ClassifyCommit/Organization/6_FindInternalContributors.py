@@ -104,8 +104,8 @@ def main():
     global DF_REPO 
     global DF_COUNT
     global ORG_NAME
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_EMPTY.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_EMPTY.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
