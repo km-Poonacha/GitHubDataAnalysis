@@ -35,7 +35,8 @@ def mergefiles():
     write_df = pd.DataFrame()
     # combi = zip(commit_files, contri_files)
     # write_df = pd.DataFrame()
-    combi = [1,'1_2',2,3,4,5,6,7,8,'EMPTY']
+    combi = [1,'1_2',2,3,4,5,'6_2',7,8,'EMPTY']
+    # combi = ['test']
     for i in combi:
         commit = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\new2_classified_microsoft_commit_'+str(i)+'.xlsx'
         contri = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\month_int2_org_col_classified_microsoft_commit_'+str(i)+'.xlsx'
@@ -67,6 +68,7 @@ def mergefiles():
          
         
         commit_df ['repo_name'] = commit_df['repo_name'].fillna(method='ffill')
+        commit_df ['repo_id'] = commit_df['repo_id'].fillna(method='ffill')
         result = commit_df.merge(contri_df,how="left", on=['repo_name', "month"])
         write_df = write_df.append(result, ignore_index = True)
         
@@ -121,12 +123,14 @@ def dataprep(write_df):
 def main():
     """main function"""
     
-    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Merged\merge_month_int2_org_col_classified_microsoft_commit_full.xlsx'
+    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Merged\merge_month_int2_org_col_classified_microsoft_commit_full_clean.xlsx'
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
     
     write_df = mergefiles()
+    write_df = write_df.drop_duplicates(subset = ['repo_id', 'month'])
     print(write_df.shape)
+
     write_df = dataprep(write_df)
 
     write_df.to_excel( merged_file , index = False)
