@@ -12,8 +12,8 @@ import pandas as pd
 import numpy as np
 import ast
 
-COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_EMPTY.xlsx"
-NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\month_int2_org_col_classified_ibm_commit_EMPTY.xlsx"
+COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_6_2.xlsx"
+NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\month_int2_org_col_classified_microsoft_commit_6_2.xlsx"
 DT_ERROR_LOG = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\DT_ERROR_LOG_UserInfo_Ext.xlsx"
 
 MAX_ROWS_PERWRITE = 20000

@@ -28,7 +28,7 @@ MAX_ROWS_PERWRITE = 5000
 DF_REPO = pd.DataFrame()
 DF_COUNT = 0
 
-LOG_CSV = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\UserSpon_log.csv'
+LOG_CSV = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\UserSpon_log.csv'
 
 def appendrowindf(user_xl, row, df_flag = 0):
     """This code appends a row into the dataframe and returns the updated dataframe"""
@@ -147,8 +147,8 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\col_classified_ibm_commit_EMPTY.xlsx'
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\org_col_classified_ibm_commit_EMPTY.xlsx'
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\col_classified_microsoft_commit_6_2.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\org_col_classified_microsoft_commit_6_2.xlsx'
     user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 

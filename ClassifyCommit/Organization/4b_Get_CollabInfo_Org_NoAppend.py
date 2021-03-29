@@ -181,9 +181,9 @@ def main():
     global df_w_colab_xl
     global df_w_commit_xl
 
-    r_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\classified_ibm_commit_EMPTY.xlsx"
-    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_EMPTY.xlsx"
-    w_colab_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\col_classified_ibm_commit_EMPTY.xlsx"
+    r_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\classified_microsoft_commit_6_2.xlsx"
+    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\new2_classified_microsoft_commit_6_2.xlsx"
+    w_colab_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\col_classified_microsoft_commit_6_2.xlsx"
     
                    
     write_files =   ['w_commit_xl','w_colab_xl']

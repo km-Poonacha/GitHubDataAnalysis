@@ -24,8 +24,8 @@ import pandas as pd
 import numpy as np
 import requests
 
-REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\ibm_EMPTY.xlsx"
-COMMIT_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\ibm_commit_EMPTY.xlsx"
+REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\microsoft_EMPTY_1.xlsx"
+COMMIT_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\microsoft_commit_EMPTY_1.xlsx"
 
 MAX_ROWS_PERWRITE = 20000
 
