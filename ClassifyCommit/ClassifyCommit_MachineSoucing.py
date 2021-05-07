@@ -29,6 +29,9 @@ LABELFULL_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\M
 TRAINSET_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\Trainset.xlsx'
 TESTSET_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\Testset.xlsx'
 
+CHECK_XL = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\ML\Testset.xlsx'
+
+
 
 def plot_learning_curve_std(estimator, X, y):
     """
@@ -134,7 +137,7 @@ def geticommit(x):
     
 def getVDF(TRAIN_XL):
     """Get data from the training sample CSV and perform various cleaning and data preprocessing"""
-    dataframe = pd.read_excel(TRAIN_XL, sep=",",error_bad_lines=False,header= 0,  encoding = "Latin1")
+    dataframe = pd.read_excel(TRAIN_XL, header= 0)
 
     # Shuffle the dataframe
     dataframe = shuffle(dataframe)
