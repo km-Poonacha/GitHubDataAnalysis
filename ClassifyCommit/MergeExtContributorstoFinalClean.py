@@ -11,7 +11,7 @@ import pandas as pd
 LEFT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\ClassifiedRepoCommit\UPnew28072020_FinalCleanData_Full.xlsx"
 # LEFT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Contributors_monthwise\Final_COL_MC_RepoCommit_UserInfo_No2013_2.xlsx"
 
-RIGHT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\new_Java_RepoCommit_Vec_class_1.xlsx"
+RIGHT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\new_Java_RepoCommit_Vec_class_full.xlsx"
 
 MERGE_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\merge_new_Java_RepoCommit_Vec_class.xlsx"
 
@@ -26,6 +26,9 @@ df_temp = df_right[['REPO_ID','month','Novelty_tcmp1','Novelty_tcmp2','Novelty_t
                      'Novelty_tcp4','Novelty_tcp5','Usefulness_tcmp1','Usefulness_tcmp2','Usefulness_tcmp3','Usefulness_tcmp4','Usefulness_tcmp5','Usefulness_tcp1',
                      'Usefulness_tcp2','Usefulness_tcp3','Usefulness_tcp4','Usefulness_tcp5','Novelty_tp1','Novelty_tp2','Novelty_tp3','Novelty_tp4','Novelty_tp5',
                      'Novelty_cp1','Novelty_cp2','Novelty_cp3','Novelty_cp4','Novelty_cp5']]
+
+
+
 df_temp['Mean_Vec_Variance'] = df_right[list_c].mean(axis = 1)
 
 df_right = pd.concat([df_temp  ,df_right[list_c]], axis=1)

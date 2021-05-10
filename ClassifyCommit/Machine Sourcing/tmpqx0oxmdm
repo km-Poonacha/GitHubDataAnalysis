@@ -113,8 +113,8 @@ def main():
     global df_w_colab_xl
     global df_w_commit_xl
 
-    r_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\Java_RepoCommit_Vec_class_4.xlsx"
-    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\new_Java_RepoCommit_Vec_class_4.xlsx"
+    r_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\Java_RepoCommit_Vec_class_3.xlsx"
+    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\new_Java_RepoCommit_Vec_class_3.xlsx"
 
     
     commit_df = pd.read_excel(r_commit_xl,header= 0)
