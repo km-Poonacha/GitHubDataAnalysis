@@ -25,8 +25,8 @@ TRAIN_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Dat
 LABELFULL_CSV = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainout.csv'
 TRAINSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Trainset.xlsx'
 TESTSET_XL = 'C:/Users/pmedappa/Dropbox/HEC/Project 5 - Roles and Coordination/Data/ML/Testset.xlsx'
-COMMIT_XLSX ="C:/Data/092019 CommitInfo/testRepoCommit1_287_1.xlsx"
-COMMIT2_XLSX ="C:/Data/092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
+COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo/testRepoCommit1_287_1.xlsx"
+COMMIT2_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo/uptestRepoCommit1_287_1.xlsx"
 
 def plot_learning_curve_std(estimator, X, y):
     """
@@ -132,7 +132,7 @@ def geticommit(x):
     
 def getVDF(TRAIN_XL):
     """Get data from the training sample CSV and perform various cleaning and data preprocessing"""
-    dataframe = pd.read_excel(TRAIN_XL, sep=",",error_bad_lines=False,header= 0,  encoding = "Latin1")
+    dataframe = pd.read_excel(TRAIN_XL)
 
     dataframe = dataframe.drop(axis=1,columns=['Commit URL', 'Sha','URL','Author Name','Author Email','Commit Date','Verification','Author Date'])
     # Shuffle the dataframe
@@ -235,7 +235,7 @@ def main():
     macc = list()
     macc_l = list()
     df_classify = pd.DataFrame()
-    df_write = pd.read_excel(COMMIT_XLSX, sep=",",error_bad_lines=False,header=0,  encoding = "Latin1")
+    df_write = pd.read_excel(COMMIT_XLSX)
     dataframe_classify = df_write.apply(geticommit, axis =1 )
     dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['Message'].str.split().str.len() )
     word_features = word_vectorizer.transform(dataframe_classify['Message'].astype(str))
