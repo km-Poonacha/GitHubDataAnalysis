@@ -25,7 +25,7 @@ The approach used to run the wrapper:
 
 ### Using cleaner.py
 
-The cleaner takes commit information from a csv (see, extracts the lines of code added and packages it into a function which can be fed into the wrapper.
+The cleaner takes commit information from a csv (see: Java_RepoCommit_sample.xlsx, row Q) , extracts the lines of code added and packages it into a function which can be fed into the wrapper.
 
 The commit patch indicates the lines of code added and deleted. /n+ indicates a line of code added and /n- indicates a line of code deleted. And the rest are lines of code that were not changed. This code extracts only the lines of code added, packages it into a function and run the wrapper.py to get the vectors. 
  
