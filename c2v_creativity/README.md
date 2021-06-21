@@ -25,5 +25,13 @@ The approach used to run the wrapper:
 
 ### Using cleaner.py
 
+The cleaner takes commit information from a csv (see, extracts the lines of code added and packages it into a function which can be fed into the wrapper.
 
+The commit patch indicates the lines of code added and deleted. /n+ indicates a line of code added and /n- indicates a line of code deleted. And the rest are lines of code that were not changed. This code extracts only the lines of code added, packages it into a function and run the wrapper.py to get the vectors. 
+ 
+Some of the identified issues (which the cleaner fixes) that creates an error with the Java parser are :
+- All import keywords
+- All @override 
+- All function definitions. The only case which works is when a function definition is within a class (need to confirm)
+- If scope is incorrect (curly brackets are not uniform)
 
