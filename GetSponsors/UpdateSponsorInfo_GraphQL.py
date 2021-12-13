@@ -32,7 +32,7 @@ def appendrowindf(user_xl, row):
     DF_REPO= DF_REPO.append(row, ignore_index = True, sort=False)
     DF_COUNT = DF_COUNT + 1
     if DF_COUNT >= MAX_ROWS_PERWRITE :
-        df = pd.read_excel(user_xl,error_bad_lines=False,header= 0, index = False)
+        df = pd.read_excel(user_xl,header= 0)
         df= df.append(DF_REPO, ignore_index = True, sort=False)
         df.to_excel(user_xl, index = False) 
         DF_COUNT = 0
@@ -120,9 +120,9 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    r_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatch.xlsx'
-    w_user_xl = r'C:\\Users\pmedappa\Dropbox\Course and Research Sharing\Research\Data\Sponsor\CleanConsolidatedSponsors_SOMatchOnly_test.xlsx'
-    user_df = pd.read_excel(r_user_xl,error_bad_lines=False,header= 0, index = False)
+    r_user_xl = r'C:\Users\pmedappa\Dropbox\Data\Sponsors\CleanConsolidatedSponsors_SOMatchOnly_Sub0121_SOMatch.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\Sponsors\CleanConsolidatedSponsors_SOMatchOnly_Sub1221_SOMatch.xlsx'
+    user_df = pd.read_excel(r_user_xl,header= 0)
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 
     
@@ -131,17 +131,18 @@ def main():
         run_query(row,w_user_xl)
     
 
-    df = pd.read_excel(w_user_xl,error_bad_lines=False,header= 0, index = False)
+    df = pd.read_excel(w_user_xl,header= 0)
     df= df.append(DF_REPO, ignore_index = True, sort=False)
     print(df.shape[0])
-    df = df.drop(df.columns[0], 1)
+    # df = df.drop(df.columns[0], 1)
     df.columns=["login", "name", "email", "company", "bio", "location",
                         "createdAt", "isHireable", "followers_totalCount", "following_totalCount","repositories_totalCount",
                         "sponsorsListing_createdAt","sponsorsListing_shortDescription","sponsorsListing_name",
                         "sponsorsListing_tiers_totalCount","sponsorsListing_tiers_edges","sponsorshipsAsMaintainer_totalCount",
                         "sponsorshipsAsMaintainer_nodes", "github username", "stack ID","stack url"
                         , "sponsorsListing_tiers_totalCount_0121","sponsorsListing_tiers_edges_0121","sponsorshipsAsMaintainer_totalCount_0121",
-                        "sponsorshipsAsMaintainer_nodes_0121"]
+                        "sponsorshipsAsMaintainer_nodes_0121", "sponsorsListing_tiers_totalCount_1221","sponsorsListing_tiers_edges_1221","sponsorshipsAsMaintainer_totalCount_1221",
+                        "sponsorshipsAsMaintainer_nodes_1221"]
 
     df.to_excel(w_user_xl, index = False) 
     DF_COUNT = 0
