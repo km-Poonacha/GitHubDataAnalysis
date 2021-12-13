@@ -84,9 +84,14 @@ def monthwise(df_commit,w_commit_xl):
     
     df_commit['lVec'] = np.array(df_commit['VECTORS'].apply(lambda x : "" if x in ("",np.nan) else dict(eval(x))['f']))
     df_commit= pd.concat([df_commit,(df_commit['lVec'].apply(pd.Series))], axis = 1)
+    
+    
     list_c = [i for i in range(0,384)]
 
     temp = df_commit.groupby('commit_month')[list_c].var()
+    print(df_commit['lVec'].values)
+    temp2 = np.cov(df_commit['lVec'].values)
+    print(temp2)
     df2 = pd.concat([df2, temp], axis=1)
     
     df2= df2.reset_index()
@@ -114,7 +119,7 @@ def main():
     global df_w_commit_xl
 
     r_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\Java_RepoCommit_Vec_class_4.xlsx"
-    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\new_Java_RepoCommit_Vec_class_4.xlsx"
+    w_commit_xl = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\new_Java_RepoCommit_Vec_class_4_TEMP.xlsx"
 
     
     commit_df = pd.read_excel(r_commit_xl,header= 0)

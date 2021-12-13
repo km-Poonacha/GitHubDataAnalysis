@@ -24,8 +24,8 @@ import pandas as pd
 import numpy as np
 import requests
 
-REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\microsoft_EMPTY_1.xlsx"
-COMMIT_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\microsoft_commit_EMPTY_1.xlsx"
+REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\facebook_EMPTY_2.xlsx"
+COMMIT_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\facebook_commit_EMPTY_2.xlsx"
 
 MAX_ROWS_PERWRITE = 20000
 
@@ -63,7 +63,7 @@ def run_query(rname, rowner):
     query = """ 
 query {
   repository(name:\""""+rname+"""\", owner:\""""+rowner+"""\") {
-    ref(qualifiedName: "main") {
+    ref(qualifiedName: "master") {
       target {
         ... on Commit {
           id
@@ -104,7 +104,7 @@ query {
             resetAt
           }
           repository(name:\""""+rname+"""\", owner:\""""+rowner+"""\") {
-            ref(qualifiedName: "main") {
+            ref(qualifiedName: "master") {
               target {
                 ... on Commit {
                   id

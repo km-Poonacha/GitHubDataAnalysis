@@ -3,6 +3,7 @@ from config import Config
 from common import common
 from interactive_predict import InteractivePredictor
 from model_base import Code2VecModelBase
+from sklearn.metrics import recall_score
 import numpy as np
 SHOW_TOP_CONTEXTS = 10
 

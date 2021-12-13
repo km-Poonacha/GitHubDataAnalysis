@@ -11,6 +11,8 @@ drop repeated repos
 Create metrics
 . Find release date
 
+****************** NOTE THE RELEASE DATES ARE NO TWORKING currectly here 
+
 """
 import pandas as pd
 import numpy as np
@@ -35,42 +37,47 @@ def mergefiles():
     write_df = pd.DataFrame()
     # combi = zip(commit_files, contri_files)
     # write_df = pd.DataFrame()
-    combi = [1]
+    combi = [1,2,3,4,'EMPTY']
     # combi = ['test']
-    for i in combi:
-        commit = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\Classified\new2_classified_facebook_commit_'+str(i)+'.xlsx'
-        contri = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\Classified\Experience\month_exp_int2_org_col_classified_facebook_commit_'+str(i)+'.xlsx'
-        print(commit,"  ", contri)
+    commit_df = pd.DataFrame()
+    for i in [1,2,3,4,'EMPTY']:
+        commit = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_'+str(i)+'.xlsx'
+        temp_df = pd.read_excel(commit,header= 0)
+        commit_df = commit_df.append(temp_df, ignore_index=True)
 
-        commit_df = pd.read_excel(commit ,header= 0)
-        contri_df = pd.read_excel(contri ,header= 0)
-        
-        contri_df ['repo_name'] = contri_df['repo_name'].fillna(method='ffill')
-        contri_df = contri_df[['repo_name','month','contributor_start_2008yearmonth','contributor_ishireable','contributor_start_date',
-                               'total_author_contributions','total_committing_contributions','total_organizations',
-                               'start_colab_count','cs_colab','start_cont_count','cs_cont','end_colab_count','end_cont_count','net_colab_count',
-                               'net_cont_count','start_intall_count','cs_intall','start_intacc_count','cs_intacc','end_intall_count','end_intacc_count',
-                               'net_intall_count','net_intacc_count','start_intall_colab_count','cs_intall_colab','end_intall_colab_count',
-                               'net_intall_colab_count','start_intacc_colab_count','cs_intacc_colab','end_intacc_colab_count','net_intacc_colab_count',
-                               'start_intall_cont_count','cs_intall_cont','end_intall_cont_count','net_intall_cont_count','start_intacc_cont_count',
-                               'cs_intacc_cont','end_intacc_cont_count','net_intacc_cont_count']]
-        
-        commit_df = commit_df.drop(columns = ['Unnamed: 0','commit_author_name','commit_author_user_email','commit_author_user_login',
-                               'commit_authoredDate','commit_authors_nodes','commit_committedDate','commit_committer_name',
-                               'commit_committer_user_email','commit_committer_user_login','commit_id','commit_message','commit_oid',
-                               'org_description','org_email','org_isVerified','org_location'
-                               ])
+    contri = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\month_coexp_exp_int2_org_col_classified_ibm_commit_full.xlsx'
+    print(commit,"  ", contri)
 
-        
-        
-        #merge dataframes
-        commit_df.rename(columns={"commit_authoredDate_yearmonth": "month"}, inplace = True)
-         
-        
-        commit_df ['repo_name'] = commit_df['repo_name'].fillna(method='ffill')
-        commit_df ['repo_id'] = commit_df['repo_id'].fillna(method='ffill')
-        result = commit_df.merge(contri_df,how="left", on=['repo_name', "month"])
-        write_df = write_df.append(result, ignore_index = True)
+
+    contri_df = pd.read_excel(contri ,header= 0)
+    
+    contri_df ['repo_name'] = contri_df['repo_name'].fillna(method='ffill')
+    contri_df = contri_df[['repo_name','month','contributor_start_2008yearmonth','contributor_ishireable','contributor_start_date',
+                           'total_author_contributions','total_committing_contributions','total_organizations',
+                           'start_colab_count','cs_colab','start_cont_count','cs_cont','end_colab_count','end_cont_count','net_colab_count',
+                           'net_cont_count','start_intall_count','cs_intall','start_intacc_count','cs_intacc','end_intall_count','end_intacc_count',
+                           'net_intall_count','net_intacc_count','start_intall_colab_count','cs_intall_colab','end_intall_colab_count',
+                           'net_intall_colab_count','start_intacc_colab_count','cs_intacc_colab','end_intacc_colab_count','net_intacc_colab_count',
+                           'start_intall_cont_count','cs_intall_cont','end_intall_cont_count','net_intall_cont_count','start_intacc_cont_count',
+                           'cs_intacc_cont','end_intacc_cont_count','net_intacc_cont_count','net_exp_count','net_exp_collab_count','net_exp_cont_count',
+                           'net_ishire','net_tot_orgs','net_tot_auth_cont','net_tot_commit_cont','net_cowork_exp']]
+    
+    commit_df = commit_df.drop(columns = ['Unnamed: 0','commit_author_name','commit_author_user_email','commit_author_user_login',
+                           'commit_authoredDate','commit_authors_nodes','commit_committedDate','commit_committer_name',
+                           'commit_committer_user_email','commit_committer_user_login','commit_id','commit_message','commit_oid',
+                           'org_description','org_email','org_isVerified','org_location'
+                           ])
+
+    
+    
+    #merge dataframes
+    commit_df.rename(columns={"commit_authoredDate_yearmonth": "month"}, inplace = True)
+     
+    
+    commit_df ['repo_name'] = commit_df['repo_name'].fillna(method='ffill')
+    commit_df ['repo_id'] = commit_df['repo_id'].fillna(method='ffill')
+    result = commit_df.merge(contri_df,how="left", on=['repo_name', "month"])
+    write_df = write_df.append(result, ignore_index = True)
         
     return write_df    
 
@@ -123,7 +130,7 @@ def dataprep(write_df):
 def main():
     """main function"""
     
-    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\Merged\merge_month_exp_int2_org_col_classified_facebook_commit_full_clean.xlsx'
+    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\merge_month_coexp_exp_int2_org_col_classified_ibm_commit_full_clean.xlsx'
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
     

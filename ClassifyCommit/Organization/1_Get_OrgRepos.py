@@ -5,6 +5,9 @@ Created on Fri Mar 12 15:49:27 2021
 @author: pmedappa
 
 Get organization specific repos and save in excel. 
+
+Failing. Check size of quesry. May need to be broaken down. 
+Removed : Issues, Pullrequests, Watchers,fundinglinks,  Labels
 """
 
 
@@ -23,7 +26,7 @@ import numpy as np
 import requests
 from time import sleep
 
-REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm.xlsx"
+REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook.xlsx"
 
 MAX_ROWS_PERWRITE = 100
 
@@ -127,21 +130,11 @@ query {
                 isTemplate
                 diskUsage
                 stargazerCount
-                issues(first :1){
-                  totalCount
-                }
-                pullRequests(first: 1) {
-                  totalCount
-                }
-                watchers(first: 1) {
-                  totalCount
-                }
+
                 owner {
                   login
                 }
-                fundingLinks {
-                  platform
-                }
+
                 
                 languages(first: 100) {
                     totalCount
@@ -155,12 +148,7 @@ query {
                     }
                 
                 
-                labels(first: 100) {
-                  totalCount
-                  nodes {
-                    name
-                  }
-                }
+
                 releases(first: 100) {
                   totalCount
                   nodes {
@@ -237,14 +225,14 @@ query {
             row.append(repo['isTemplate'])
             row.append(repo['diskUsage'])
             row.append(repo['stargazerCount'])
-            row.append(repo['issues']['totalCount'])
-            row.append(repo['pullRequests']['totalCount'])
-            row.append(repo['watchers']['totalCount'])
+            # row.append(repo['issues']['totalCount'])
+            # row.append(repo['pullRequests']['totalCount'])
+            # row.append(repo['watchers']['totalCount'])
             row.append(repo['owner']['login'])
-            if repo['fundingLinks']:
-                row.append(repo['fundingLinks'])
-            else:
-                row.append("")
+            # if repo['fundingLinks']:
+            #     row.append(repo['fundingLinks'])
+            # else:
+            #     row.append("")
                 
             row.append(repo['languages']['totalCount'])
             row.append(repo['languages']['nodes']) 
@@ -256,7 +244,7 @@ query {
                 row.append("")
                 row.append("")
                 
-            row.append(repo['labels']['nodes'])
+            # row.append(repo['labels']['nodes'])
 
             #Release info
             row.append(repo['releases']['totalCount'])
@@ -292,7 +280,7 @@ def main():
     df_test = pd.DataFrame()
     df_test.to_excel(REPO_XL, index = False) 
     
-    run_query('ibm')
+    run_query('twitter')
     
 
     df = pd.read_excel(REPO_XL,header= 0)
@@ -301,9 +289,13 @@ def main():
 
     df.columns = ['org_createdAt','org_description','org_email','org_isVerified','org_location','org_login','org_name','org_twitterUsername',
                   'repo_id','repo_name','repo_createdAt','repo_pushedAt','repo_updatedAt','repo_description','repo_forkCount','repo_isFork','repo_isMirror',
-                  'repo_isArchived','repo_isTemplate','repo_diskUsage','repo_stargazerCount','repo_issues_totalCount','repo_pullRequests_totalCount','repo_watchers_totalCount',
-                  'repo_owner_login','repo_fundingLinks','repo_languages_totalCount','repo_languages_nodes','repo_licenseInfo_name',
-                  'repo_licenseInfo_pseudoLicense', 'repo_labels_nodes','releases_totalCount','releases_nodes','releases_nodes_0_author',
+                  'repo_isArchived','repo_isTemplate','repo_diskUsage','repo_stargazerCount',
+                  # 'repo_issues_totalCount','repo_pullRequests_totalCount','repo_watchers_totalCount',
+                  'repo_owner_login',
+                  # 'repo_fundingLinks',
+                  'repo_languages_totalCount','repo_languages_nodes','repo_licenseInfo_name','repo_licenseInfo_pseudoLicense',
+                  # 'repo_labels_nodes',
+                  'releases_totalCount','releases_nodes','releases_nodes_0_author',
                   'releases_nodes_0_createdAt','releases_nodes_0_publishedAt','releases_nodes_0_updatedAt','releases_nodes_0_name',
                   'releases_nodes_0_isLatest','releases_nodes_0_description'
                   ]

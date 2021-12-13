@@ -12,8 +12,8 @@ import pandas as pd
 import numpy as np
 import ast
 
-COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\Classified\Experience\exp_int2_org_col_classified_facebook_commit_1.xlsx"
-NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\Classified\Experience\month_exp_int2_org_col_classified_facebook_commit_full.xlsx"
+COL_MC_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\exp_int2_org_col_classified_ibm_commit_full.xlsx"
+NEW_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\month_exp_int2_org_col_classified_ibm_commit_full.xlsx"
 DT_ERROR_LOG = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\DT_ERROR_LOG_UserInfo_Ext.xlsx"
 
 MAX_ROWS_PERWRITE = 20000
@@ -82,21 +82,86 @@ def getnetcolab(contri):
     df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['total_committing_contributions'].mean()], axis=1)
     df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['contributor_ishireable'].sum()], axis=1)
     
-    #added 17/09/2021
-    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['exp_counts'].mean()], axis=1)
-    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['exp_counts_cont'].mean()], axis=1)
-    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['exp_counts_collab'].mean()], axis=1)
+
     
     contri['total_organizations'] = contri['all_organizations'].str.len()
     df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['total_organizations'].sum()], axis=1)
 
     
 
-    # Aggregate contributors monthwise and find cummulative collab and contributors    
+    # Aggregate contributors monthwise and find cummulative collab and contributors 
+    
+    
+    #added 17/09/2021
+    # Find start proj experience
+    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['exp_counts'].sum().to_frame('start_exp_count')], axis=1)
+    df2['start_exp_count'] = df2['start_exp_count'].fillna(0)
+    df2 = df2.assign(cs_exp_count= df2['start_exp_count'].cumsum())
+    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['exp_counts_collab'].sum().to_frame('start_exp_collab_count')], axis=1)
+    df2['start_exp_collab_count'] = df2['start_exp_collab_count'].fillna(0)
+    df2 = df2.assign(cs_exp_collab_count= df2['start_exp_collab_count'].cumsum())
+    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['exp_counts_cont'].sum().to_frame('start_exp_cont_count')], axis=1)
+    df2['start_exp_cont_count'] = df2['start_exp_cont_count'].fillna(0)
+    df2 = df2.assign(cs_exp_cont_count= df2['start_exp_cont_count'].cumsum())
+    
+    #New ones
+    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['contributor_ishireable'].sum().to_frame('start_ishire')], axis=1)
+    df2['start_ishire'] = df2['start_ishire'].fillna(0)
+    df2 = df2.assign(cs_ishire= df2['start_ishire'].cumsum())
+
+
+    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['total_organizations'].sum().to_frame('start_tot_orgs')], axis=1)
+    df2['start_tot_orgs'] = df2['start_tot_orgs'].fillna(0)
+    df2 = df2.assign(cs_tot_orgs = df2['start_tot_orgs'].cumsum())
+
+
+    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['total_author_contributions'].sum().to_frame('start_tot_auth_cont')], axis=1)
+    df2['start_tot_auth_cont'] = df2['start_tot_auth_cont'].fillna(0)
+    df2 = df2.assign(cs_tot_auth_cont = df2['start_tot_auth_cont'].cumsum())
+
+
+    df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['total_committing_contributions'].sum().to_frame('start_tot_commit_cont')], axis=1)
+    df2['start_tot_commit_cont'] = df2['start_tot_commit_cont'].fillna(0)
+    df2 = df2.assign(cs_tot_commit_cont = df2['start_tot_commit_cont'].cumsum())
+    
+    # Find end exp
+    df2 = pd.concat([df2,contri.groupby('contributor_end_yearmonth')['exp_counts'].sum().to_frame('end_exp_count')], axis=1)
+    df2['end_exp_count'] = df2['end_exp_count'].fillna(0)
+
+    df2 = pd.concat([df2,contri.groupby('contributor_end_yearmonth')['exp_counts_collab'].sum().to_frame('end_exp_collab_count')], axis=1)
+    df2['end_exp_collab_count'] = df2['end_exp_collab_count'].fillna(0)
+
+    df2 = pd.concat([df2,contri.groupby('contributor_end_yearmonth')['exp_counts_cont'].sum().to_frame('end_exp_cont_count')], axis=1)
+    df2['end_exp_cont_count'] = df2['end_exp_cont_count'].fillna(0)
+
+    df2 = pd.concat([df2,contri.groupby('contributor_end_yearmonth')['contributor_ishireable'].sum().to_frame('end_ishire')], axis=1)
+    df2['end_ishire'] = df2['end_ishire'].fillna(0)
+
+    df2 = pd.concat([df2,contri.groupby('contributor_end_yearmonth')['total_organizations'].sum().to_frame('end_tot_org')], axis=1)
+    df2['end_tot_org'] = df2['end_tot_org'].fillna(0)
+
+    df2 = pd.concat([df2,contri.groupby('contributor_end_yearmonth')['total_author_contributions'].sum().to_frame('end_tot_auth_cont')], axis=1)
+    df2['end_tot_auth_cont'] = df2['end_tot_auth_cont'].fillna(0)
+
+    df2 = pd.concat([df2,contri.groupby('contributor_end_yearmonth')['total_committing_contributions'].sum().to_frame('end_tot_commit_cont')], axis=1)
+    df2['end_tot_commit_cont'] = df2['end_tot_commit_cont'].fillna(0)
+    
+    # Find net exp
+    df2 = df2.assign(net_exp_count = df2['cs_exp_count'] - df2['end_exp_count'].cumsum().shift(1).fillna(0))
+    df2 = df2.assign(net_exp_collab_count = df2['cs_exp_collab_count'] - df2['start_exp_collab_count'].cumsum().shift(1).fillna(0))
+    df2 = df2.assign(net_exp_cont_count = df2['cs_exp_cont_count'] - df2['end_exp_cont_count'].cumsum().shift(1).fillna(0))
+    
+    df2 = df2.assign(net_ishire = df2['cs_ishire'] - df2['end_ishire'].cumsum().shift(1).fillna(0))
+    df2 = df2.assign(net_tot_orgs = df2['cs_tot_orgs'] - df2['end_tot_org'].cumsum().shift(1).fillna(0))
+    
+    df2 = df2.assign(net_tot_auth_cont = df2['cs_tot_auth_cont'] - df2['end_tot_auth_cont'].cumsum().shift(1).fillna(0))
+    df2 = df2.assign(net_tot_commit_cont = df2['cs_tot_commit_cont'] - df2['end_tot_commit_cont'].cumsum().shift(1).fillna(0))
+    #****
+    
     df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['Collaborator'].sum().to_frame('start_colab_count')], axis=1)
     df2['start_colab_count'] = df2['start_colab_count'].fillna(0)
     df2 = df2.assign(cs_colab= df2['start_colab_count'].cumsum())
-
+    
     df2 = pd.concat([df2,contri.groupby('contributor_start_yearmonth')['Contributor'].sum().to_frame('start_cont_count')], axis=1)
     df2['start_cont_count'] = df2['start_cont_count'].fillna(0)
     df2 = df2.assign(cs_cont= df2['start_cont_count'].cumsum())
