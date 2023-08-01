@@ -9,7 +9,7 @@ Find empty repos to try with 'main' instead of 'master' branch
 import pandas as pd
 
 
-COMMIT_EMPTY = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\facebook_EMPTY.xlsx"
+COMMIT_EMPTY = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\apple_EMPTY.xlsx"
 pd.options.display.max_rows = 10
 pd.options.display.float_format = '{:.3f}'.format
     
@@ -19,7 +19,7 @@ temp_df = pd.DataFrame()
 temp_df.to_excel(COMMIT_EMPTY , index = False) 
 
 for index in file_i:
-    COMMIT_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\facebook_commit_"+str(index)+".xlsx"
+    COMMIT_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\apple_commit.xlsx"
     print(COMMIT_XL)    
     commit_df = pd.read_excel(COMMIT_XL ,header= 0)
 

@@ -38,13 +38,22 @@ DF_COUNT = 0
 #              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx'
 #              ]   
 
+R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_1.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_2.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_3.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_4.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_5.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_6_2.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_7.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_8.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_EMPTY.xlsx'
+              ]   
+
 #IBM
-R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_1.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_2.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_3.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_4.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_EMPTY.xlsx',
-             ]   
+# R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\Classified\int2_org_col_classified_apple_commit.xlsx',
+#              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\Classified\int2_org_col_classified_apple_commit_EMPTY.xlsx',
+#              ]    
+
 def appendrowindf(user_xl, row, df_flag = 0):
     """This code appends a row into the dataframe and returns the updated dataframe"""
     global DF_REPO 
@@ -71,10 +80,10 @@ def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
-    r_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\exp_int2_org_col_classified_ibm_commit_full.xlsx'
-    cooccurance_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\cooccurance.xlsx'
+    r_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\Experience\exp_int2_org_col_classified_microsoft_commit_full.xlsx'
+    cooccurance_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\Experience\cooccurance.xlsx'
 
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\coexp_exp_int2_org_col_classified_ibm_commit_full.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\Experience\coexp_exp_int2_org_col_classified_microsoft_commit_full.xlsx'
     user_df = pd.DataFrame()
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 

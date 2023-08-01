@@ -25,28 +25,31 @@ LOG_CSV = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specif
 # R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\Classified\int2_org_col_classified_facebook_commit_1.xlsx'
 #              ]   
 
-#google
-# R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int2_org_col_classified_google_commit_1.xlsx',
-#              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int2_org_col_classified_google_commit_2.xlsx',
-#              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int2_org_col_classified_google_commit_3.xlsx',
-#              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int2_org_col_classified_google_commit_4.xlsx',
-#              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\int2_org_col_classified_google_commit_EMPTY.xlsx'
-#              ]   
+#microsoft
+R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_1.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_1_2.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_2.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_3.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_4.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_5.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_6_2.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_7.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_8.xlsx',
+              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\int2_org_col_classified_microsoft_commit_EMPTY.xlsx'
+              ]   
 
-#IBM
-R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_1.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_2.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_3.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_4.xlsx',
-             r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\int2_org_col_classified_ibm_commit_EMPTY.xlsx',
-             ]   
+#Apple
+# R_USER_XL = [r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\Classified\int2_org_col_classified_apple_commit.xlsx',
+#              r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\Classified\int2_org_col_classified_apple_commit_EMPTY.xlsx',
+
+#              ]   
  
 def main():
     """Main function"""   
     global DF_REPO 
     global DF_COUNT
     
-    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\exp_int2_org_col_classified_ibm_commit_full.xlsx'
+    w_user_xl = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\Experience\exp_int2_org_col_classified_microsoft_commit_full.xlsx'
     user_df = pd.DataFrame()
     df_test = pd.DataFrame()
     df_test.to_excel(w_user_xl, index = False) 

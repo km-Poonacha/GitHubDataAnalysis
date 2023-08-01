@@ -25,8 +25,8 @@ TRAIN_SET = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\Class
 TEST_SET = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\Classifier 66 62\Testset.xlsx'
 LABELFULL_CSV = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\ML/Trainout.csv'
 
-COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\facebook_commit_1.xlsx"
-COMMIT2_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook\Classified\classified_facebook_commit_1.xlsx"
+COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\apple_commit_EMPTY.xlsx"
+COMMIT2_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\Classified\classified_apple_commit_EMPTY.xlsx"
 
 
 def plot_learning_curve_std(estimator, X, y):

@@ -26,7 +26,7 @@ import numpy as np
 import requests
 from time import sleep
 
-REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\facebook.xlsx"
+REPO_XL = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple.xlsx"
 
 MAX_ROWS_PERWRITE = 100
 
@@ -280,7 +280,7 @@ def main():
     df_test = pd.DataFrame()
     df_test.to_excel(REPO_XL, index = False) 
     
-    run_query('twitter')
+    run_query('apple')
     
 
     df = pd.read_excel(REPO_XL,header= 0)

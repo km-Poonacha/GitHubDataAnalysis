@@ -1,0 +1,95 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jan  2 10:30:42 2019
+
+@author: kmpoo
+
+This code built on earlier code uses an existing trainset to classify commits (no randomization).
+"""
+
+import pandas as pd
+import numpy as np
+import ast
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.utils import shuffle #To shuffle the dataframe
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
+from scipy import sparse
+import matplotlib.pyplot as plt
+from sklearn.model_selection import learning_curve
+import gensim
+from scipy.spatial import distance
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from nltk.tokenize import word_tokenize
+
+
+DATA_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\GIMFA_Panel_Exp_CEM5_Center_SR.xlsx"
+COMMIT2_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\Vec_google_commit_1.xlsx"
+VAR_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Classified\VecVar_google_commit_1.xlsx"
+
+
+
+def main():
+    pd.options.display.max_rows = 10
+    pd.options.display.float_format = '{:.3f}'.format
+    
+    df_vv = pd.read_excel(COMMIT_XLSX,header=0)
+    repo_ids = df_c['repo_id'].unique()
+    df_c['repo_id'] = df_c['repo_id'].fillna(method='ffill')
+    write_df = pd.DataFrame()
+    write_var = pd.DataFrame()
+    for row in repo_ids:
+        print("Repo: ",row)
+        repo_id = row
+        temp_df = df_c[df_c.repo_id == row]
+        if len(temp_df) < 2:
+            continue
+        # model = gensim.models.Word2Vec(temp_df['commit_message'], size=100)
+        # word_vectorizer = vectordsc(temp_df['commit_message'] )
+        temp_df = parsedate(temp_df)
+        
+        tagged_data = [TaggedDocument(words=word_tokenize(_d.lower()), tags=[str(i)]) for i, _d in enumerate(temp_df['commit_message'].astype(str))]
+        model = initialize_D2V(tagged_data,50,0.025)
+        max_epochs = 20
+        model = trainD2V(tagged_data,model,max_epochs)
+       
+        model.save("d2v.model")
+        print("Model Saved")
+
+        print(" Comits ",temp_df.shape[0])
+       
+        ym_l = temp_df['commit_2008yearmonth'].unique()
+        ym_l = ym_l[~np.isnan(ym_l)]
+
+        for ym in ym_l:
+            print("ym: ",ym)
+            ym_df = temp_df[temp_df['commit_2008yearmonth'] == ym].reset_index()           
+            vec = np.empty((0, 50))                        
+            for index, row2 in ym_df.iterrows():
+                v1 = model.infer_vector(word_tokenize(str(row2['commit_message']).lower()))
+                vec = np.vstack((vec, v1))
+          
+            ym_df['docvec'] =  pd.Series(vec.tolist())
+
+            # ym_df = ym_df.assign(docvec = pd.Series(vec.tolist()))
+            # print(ym_df['docvec'])
+            var = vec.var(axis = 0)
+
+            print(row,ym,var.mean())
+            write_var = pd.concat([write_var, pd.DataFrame([[repo_id,ym,var.mean()]], columns=["repo_id","yearmonth2008","vec_variance"])], 
+                                          ignore_index=True)
+            # temp_df ['word_vec'] =  temp_df ['word_vec'].todense()
+            # df2 = temp_df.groupby('commit_2008yearmonth')['docvec'].var()
+   
+            write_df = write_df.append(ym_df, ignore_index = True)
+    write_df  =  write_df.assign(nWords = lambda x : x['commit_message'].astype(str).str.split().str.len() )
+    write_var.to_excel(VAR_XLSX)
+    
+    print( write_var.shape[0])
+    write_df.to_excel(COMMIT2_XLSX)   
+
+
+if __name__ == '__main__':
+  main()
+  

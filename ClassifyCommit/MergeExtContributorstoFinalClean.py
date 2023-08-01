@@ -13,7 +13,7 @@ LEFT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\ClassifiedRepoCom
 
 RIGHT_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\new_Java_RepoCommit_Vec_class_full.xlsx"
 
-MERGE_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\merge_new_Java_RepoCommit_Vec_class.xlsx"
+MERGE_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\JavaSampling\Classified\merge_new_Java_RepoCommit_Vec_class2.xlsx"
 
 
 df_left = pd.read_excel(LEFT_XLSX ,header= 0)
@@ -29,7 +29,8 @@ df_temp = df_right[['REPO_ID','month','Novelty_tcmp1','Novelty_tcmp2','Novelty_t
 
 
 
-df_temp['Mean_Vec_Variance'] = df_right[list_c].mean(axis = 1)
+df_temp['Mean_Vec'] = df_right[list_c].mean(axis = 1)
+df_temp['Vec_Variance'] = 1- df_right[list_c].var(axis = 1)
 
 df_right = pd.concat([df_temp  ,df_right[list_c]], axis=1)
 

@@ -10,14 +10,15 @@ import pandas as pd
 
 import ast 
 
-merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\merge_month_int2_org_col_classified_commit_full_GIF.xlsx'
+merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\GIMFA_Panel_Exp_CEM3_Center2.xlsx'
 
-updated_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\merge_month_int2_org_col_classified_commit_full_GIF_re2.xlsx'
+updated_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\GIMFA_Panel_Exp_CEM3_Center_SR.xlsx'
 
 pd.options.display.max_rows = 10
 pd.options.display.float_format = '{:.3f}'.format
 
 merg_df = pd.read_excel(merged_file ,header= 0)
+
 write_df = pd.DataFrame()
 'releases_nodes'
 

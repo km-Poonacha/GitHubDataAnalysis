@@ -40,12 +40,13 @@ def mergefiles():
     combi = [1,2,3,4,'EMPTY']
     # combi = ['test']
     commit_df = pd.DataFrame()
-    for i in [1,2,3,4,'EMPTY']:
-        commit = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\new2_classified_ibm_commit_'+str(i)+'.xlsx'
+    for i in [1,'1_2',2,3,4,5,'6_2',7,8,'EMPTY']:
+        commit = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\new2_classified_microsoft_commit_'+str(i)+'.xlsx'
+        print(commit)
         temp_df = pd.read_excel(commit,header= 0)
         commit_df = commit_df.append(temp_df, ignore_index=True)
 
-    contri = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\ibm\Classified\Experience\month_coexp_exp_int2_org_col_classified_ibm_commit_full.xlsx'
+    contri = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\microsoft\Classified\Experience\month_coexp_exp_int2_org_col_classified_microsoft_commit_full.xlsx'
     print(commit,"  ", contri)
 
 
@@ -92,13 +93,13 @@ def dataprep(write_df):
      'releases_nodes_0_description','releases_nodes_0_isLatest',
      'releases_nodes_0_name','releases_nodes_0_publishedAt','releases_nodes_0_updatedAt','releases_totalCount','repo_createdAt',
      'repo_description','repo_diskUsage','repo_forkCount','repo_fundingLinks','repo_id','repo_isArchived','repo_isFork','repo_isMirror',
-     'repo_isTemplate','repo_issues_totalCount','repo_labels_nodes','repo_languages_nodes','repo_languages_totalCount','repo_licenseInfo_name',
+     'repo_isTemplate','repo_issues_totalCount','repo_languages_nodes','repo_languages_totalCount','repo_licenseInfo_name',
      'repo_licenseInfo_pseudoLicense','repo_owner_login','repo_pullRequests_totalCount','repo_pushedAt','repo_stargazerCount','repo_updatedAt',
      'repo_watchers_totalCount','first_release']]  =  write_df[['org_createdAt','org_login','org_name','org_twitterUsername','releases_nodes','releases_nodes_0_author','releases_nodes_0_createdAt',
      'releases_nodes_0_description','releases_nodes_0_isLatest',
      'releases_nodes_0_name','releases_nodes_0_publishedAt','releases_nodes_0_updatedAt','releases_totalCount','repo_createdAt',
      'repo_description','repo_diskUsage','repo_forkCount','repo_fundingLinks','repo_id','repo_isArchived','repo_isFork','repo_isMirror',
-     'repo_isTemplate','repo_issues_totalCount','repo_labels_nodes','repo_languages_nodes','repo_languages_totalCount','repo_licenseInfo_name',
+     'repo_isTemplate','repo_issues_totalCount','repo_languages_nodes','repo_languages_totalCount','repo_licenseInfo_name',
      'repo_licenseInfo_pseudoLicense','repo_owner_login','repo_pullRequests_totalCount','repo_pushedAt','repo_stargazerCount','repo_updatedAt',
      'repo_watchers_totalCount','first_release']].fillna(method='ffill')
     
@@ -130,7 +131,7 @@ def dataprep(write_df):
 def main():
     """main function"""
     
-    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\merge_month_coexp_exp_int2_org_col_classified_ibm_commit_full_clean.xlsx'
+    merged_file = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\Merged\merge_month_coexp_exp_int2_org_col_classified_microsoft_commit_full_clean.xlsx'
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
     
