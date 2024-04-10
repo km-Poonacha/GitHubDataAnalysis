@@ -25,8 +25,8 @@ TRAIN_SET = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023\
 TEST_SET = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023\Testset.xlsx'
 LABELFULL_CSV = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023\Trainout.csv'
 
-COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\apple_commit_EMPTY.xlsx"
-COMMIT2_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\2023\apple\classified_apple_commit_EMPTY.xlsx"
+COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Research\3_Project 3 - Roles and Coordination\Editables\RR1\Test_sample.xlsx"
+COMMIT2_XLSX =r"C:\Users\pmedappa\Dropbox\Research\3_Project 3 - Roles and Coordination\Editables\RR1\Class_Test_sample.xlsx"
 
 
 def plot_learning_curve_std(estimator, X, y):
@@ -298,8 +298,8 @@ def main():
         del acuracy[:] 
         del macc[:] 
         #Stage 1  
-        print("*** MLP Classifier - One stage - "+i+"5 ***")
-        p_train5,p_test5, acc, classifier_mlp1s5 = MLPmodel(train_x, df_train[i], test_x, df_test[i]) #classify on description
+        print("*** MLP Classifier - First stage - "+i+"5 ***")
+        p_train5,p_test5, acc, classifier_mlp1s5 = RFCmodel(train_x, df_train[i], test_x, df_test[i]) #classify on description
         #Stage 2
         df_train_prob = pd.DataFrame(p_train5, columns = [i+'p1',i+'p2',i+'p3',i+'p4',i+'p5'])
         train_x_s2 = pd.concat([df_train_prob,df_train['commit_changedFiles'],df_train['commit_additions'],df_train['commit_deletions'],df_train['commit_parents_totalCount'],df_train['nWords']], axis=1)
@@ -309,7 +309,6 @@ def main():
         p_train_s2,p_test_s2, acc, classifier_mlp2s5 = MLPmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
         acuracy.append(["MLP Classifier - Two stage - "+i+"5", float(acc),classifier_mlp1s5, classifier_mlp2s5])
         print("MLP Classifier - Two stage - "+i+"5 ", acc)
-
 
         print("*** MLP Classifier - One stage - "+i+"3 ***")
         p_train3,p_test3, acc, classifier_mlp1s3 = MLPmodel(train_x, df_train[i+'3'], test_x, df_test[i+'3'])
@@ -339,6 +338,8 @@ def main():
         print("MAX ACCURACY - = ",macc)
         macc_l.append([macc[0],macc[1],macc[2]]) 
 
+
+    
     for i in ["CommitType_feature","CommitType_bug","CommitType_doc","CommitType_peer","CommitType_process","CommitType_test"]:
         '''MLPClassifier'''
         print("************ MLP Classifier *************")

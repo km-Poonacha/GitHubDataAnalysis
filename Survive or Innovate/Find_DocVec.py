@@ -5,6 +5,10 @@ Created on Wed Jan  2 10:30:42 2019
 @author: kmpoo
 
 This code built on earlier code uses an existing trainset to classify commits (no randomization).
+
+
+
+
 """
 
 import pandas as pd
@@ -12,108 +16,27 @@ import numpy as np
 import ast
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.utils import shuffle #To shuffle the dataframe
-from sklearn.model_selection import train_test_split
+
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 
-import matplotlib.pyplot as plt
-from sklearn.model_selection import learning_curve
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from nltk.tokenize import word_tokenize
 
-
-TRAIN_CSV = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023/Label_Full.xlsx'
+TRAIN_Full= r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023/Label_Full.xlsx'
 TRAIN_SET = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023\Train_Clean Final.xlsx'
 TEST_SET = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023\Testset.xlsx'
 LABELFULL_CSV = r'C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Classifiers\2023\Trainout.csv'
 
-COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\apple_commit_EMPTY.xlsx"
-COMMIT2_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\Organization_Specific\apple\Classified\classified_apple_commit_EMPTY.xlsx"
+# COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Research\3_Project 3 - Roles and Coordination\Editables\RR1\Test_sample.xlsx"
+CLASS_COMMIT_XLSX =r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\SI_2023\Class_Commit_6001_6570.xlsx"
 
+VAR_XLSX = r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo\SI_2023\var_Commit_6001_6570.xlsx"
 
-def plot_learning_curve_std(estimator, X, y):
-    """
-    Generate a simple plot of the test and training learning curve.
-
-    Parameters
-    ----------
-    estimator : object type that implements the "fit" and "predict" methods
-        An object of that type which is cloned for each validation.
-
-    title : string
-        Title for the chart.
-
-    X : array-like, shape (n_samples, n_features)
-        Training vector, where n_samples is the number of samples and
-        n_features is the number of features.
-
-    y : array-like, shape (n_samples) or (n_samples, n_features), optional
-        Target relative to X for classification or regression;
-        None for unsupervised learning.
-
-    ylim : tuple, shape (ymin, ymax), optional
-        Defines minimum and maximum yvalues plotted.
-
-    cv : int, cross-validation generator or an iterable, optional
-        Determines the cross-validation splitting strategy.
-        Possible inputs for cv are:
-          - None, to use the default 3-fold cross-validation,
-          - integer, to specify the number of folds.
-          - :term:`CV splitter`,
-          - An iterable yielding (train, test) splits as arrays of indices.
-
-        For integer/None inputs, if ``y`` is binary or multiclass,
-        :class:`StratifiedKFold` used. If the estimator is not a classifier
-        or if ``y`` is neither binary nor multiclass, :class:`KFold` is used.
-
-        Refer :ref:`User Guide <cross_validation>` for the various
-        cross-validators that can be used here.
-
-    n_jobs : int or None, optional (default=None)
-        Number of jobs to run in parallel.
-        ``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.
-        ``-1`` means using all processors. See :term:`Glossary <n_jobs>`
-        for more details.
-
-    train_sizes : array-like, shape (n_ticks,), dtype float or int
-        Relative or absolute numbers of training examples that will be used to
-        generate the learning curve. If the dtype is float, it is regarded as a
-        fraction of the maximum size of the training set (that is determined
-        by the selected validation method), i.e. it has to be within (0, 1].
-        Otherwise it is interpreted as absolute sizes of the training sets.
-        Note that for classification the number of samples usually have to
-        be big enough to contain at least one sample from each class.
-        (default: np.linspace(0.1, 1.0, 5))
-        
-        ref: https://chrisalbon.com/machine_learning/model_evaluation/plot_the_learning_curve/
-    """
-    train_sizes, train_scores, test_scores = learning_curve( RandomForestClassifier(), 
-                                                            X, 
-                                                            y,
-                                                            # Number of folds in cross-validation
-                                                            cv= 5,
-                                                            # Evaluation metric
-                                                            scoring='accuracy',
-                                                            # Use all computer cores
-                                                            n_jobs=1, 
-                                                            # 50 different sizes of the training set
-                                                            train_sizes=np.linspace(0.001, 1.0, 5))
-    
-    # Create means and standard deviations of training set scores
-    train_mean = np.mean(train_scores, axis=1)
-    
-    # Create means and standard deviations of test set scores
-    test_mean = np.mean(test_scores, axis=1)
-    
-    # Draw lines
-    plt.plot(train_sizes, train_mean, '--', color="#111111",  label="Training score")
-    plt.plot(train_sizes, test_mean, color="#111111", label="Cross-validation score")
-        
-    # Create plot
-    plt.title("Learning Curve")
-    plt.xlabel("Training Set Size"), plt.ylabel("Accuracy Score"), plt.legend(loc="best")
-    plt.tight_layout()
-    plt.show()
-    
-
+COMMIT_XLSX_LIST =[
+                   r"C:\Users\pmedappa\Dropbox\Data\092019 CommitInfo/RepoCommit6001_6570_1.xlsx"]
+                                        
+ 
 def getnoelements(x):
     """ Parse str represetation of python object into a list and return lenght"""
     no_parents = len(ast.literal_eval(x))
@@ -121,9 +44,8 @@ def getnoelements(x):
 
 def geticommit(x):
     """Find commit with code and file changes"""
-    if pd.isna(x['repo_id']) and x['commit_changedFiles'] > 0 and x['commit_message']:
-        if x['commit_additions'] > 0 or  x['commit_deletions'] > 0:
-            return pd.Series([x['commit_oid'],x['commit_authors_totalCount'],x['commit_message'],x['commit_additions'],x['commit_deletions'],x['commit_parents_totalCount'],x['commit_changedFiles']], index=['commit_oid', 'commit_authors_totalCount','commit_message','commit_additions','commit_deletions','commit_parents_totalCount','commit_changedFiles'])
+    if pd.isna(x['PINDEX']) and x['MAIN_LANGUAGE']:
+        return pd.Series([x['REPO_ID'],x['PUSHED_DATE'],x['MAIN_LANGUAGE'],x['NO_LANGUAGES'],x['SCRIPT_SIZE'],x['STARS'],x['SUBSCRIPTIONS']], index=['commit_oid', 'commit_authors_totalCount','commit_message','commit_additions','commit_deletions','commit_parents_totalCount','commit_changedFiles'])
         
     return pd.Series([np.NaN,np.NaN,np.NaN,np.NaN,np.NaN,np.NaN,np.NaN], index=['commit_oid','commit_authors_totalCount','commit_message','commit_additions','commit_deletions','commit_parents_totalCount','commit_changedFiles'])
     
@@ -187,14 +109,14 @@ def getVDF(TRAIN_CSV):
 
     dataframe = dataframe.drop(axis=1,columns=['Type of Commit (Primary)','Optional Type of Commit (Secondary)'])
     # Find number of parents
-    dataframe['Parents'] = dataframe['Parents'].map(getnoelements)
-    # Convert the number of lines of code into nChanges, nAdditions, nDeletions
+    dataframe['commit_parents_totalCount'] = dataframe['commit_parents_totalCount'].map(getnoelements)
+    # Convert the number of lines of code into nChanges, commit_additions, commit_deletions
     # Get total number of changes
     dataframe = dataframe.assign(nChanges = lambda x : x['Lines of Code Changed'].str.split(':').str.get(1).str.split(',').str.get(0) )
     # Get total number of additions
-    dataframe = dataframe.assign(nAdditions = lambda x : x['Lines of Code Changed'].str.split(':').str.get(2).str.split(',').str.get(0) )
+    dataframe = dataframe.assign(commit_additions = lambda x : x['Lines of Code Changed'].str.split(':').str.get(2).str.split(',').str.get(0) )
     # Get total number of deletions
-    dataframe = dataframe.assign(nDeletions = lambda x : x['Lines of Code Changed'].str.split(':').str.get(3).str.split('}').str.get(0) )
+    dataframe = dataframe.assign(commit_deletions = lambda x : x['Lines of Code Changed'].str.split(':').str.get(3).str.split('}').str.get(0) )
     # Create three class labeld for novelty and usefulness
     conditions = [
         (dataframe['Novelty'] > 3),
@@ -241,7 +163,7 @@ def MLPmodel(train_x, train_y, test_x, test_y, LCurve = False):
     p_test = n.predict_proba(test_x)
     acc = n.score(test_x,test_y)
     print("accuracy is = ",  acc)
-    if LCurve: plot_learning_curve_std(nn, train_x, train_y)
+
     return p_train, p_test, acc, n
 
 def RFCmodel(train_x, train_y, test_x, test_y, LCurve = False):
@@ -252,24 +174,128 @@ def RFCmodel(train_x, train_y, test_x, test_y, LCurve = False):
     print("accuracy of rfc is = ", acc)
     p_train = r.predict_proba(train_x)
     p_test = r.predict_proba(test_x)
-    if LCurve: plot_learning_curve_std(rfc, train_x, train_y)
+
     return p_train, p_test, acc, r
+
+def initialize_D2V(tagged_data,vec_size,alpha):
+    model = Doc2Vec(vector_size=vec_size,
+                    alpha=alpha, 
+                    min_alpha=0.00025,
+                    min_count=1,
+                    dm =1)
+      
+    model.build_vocab(tagged_data)  
+    return model
+
+def trainD2V(tagged_data,model,max_epochs):  
+    for epoch in range(max_epochs):
+        print('iteration {0}'.format(epoch))
+        model.train(tagged_data,
+                    total_examples=model.corpus_count,
+                    epochs=model.epochs
+                    )
+        # decrease the learning rate
+        model.alpha -= 0.0002
+        # fix the learning rate, no decay
+        model.min_alpha = model.alpha
+    return model
+
+def parsedate(df_commit):
+    """Split date into year month and day columns, aggregate month strating from 2008-01-01"""
+
+    #Commit date
+
+    df_commit['commit_year'] = pd.to_numeric(df_commit['OWNER'].str.split('-').str[0])
+    df_commit['commit_month'] = pd.to_numeric(df_commit['OWNER'].str.split('-').str[1])
+    
+    df_commit['commit_2008yearmonth'] = (df_commit['commit_year'] - 2008) *12 + df_commit['commit_month']         
+
+    return df_commit    
+
+
+def doc2vec(df_write):
+    df_c = df_write
+    repo_ids = df_c['repo_id'].unique()
+    df_c['repo_id'] = df_c['repo_id'].fillna(method='ffill')
+    df_c = df_c[df_c['PINDEX'].isnull()]
+    write_df = pd.DataFrame()
+    write_var = pd.DataFrame()
+    for row in repo_ids:
+        print("Repo: ",row)
+        repo_id = row
+        temp_df = df_c[df_c.repo_id == row]
+        if len(temp_df) < 2:
+            continue
+        # model = gensim.models.Word2Vec(temp_df['commit_message'], size=100)
+        # word_vectorizer = vectordsc(temp_df['commit_message'] )
+        temp_df = parsedate(temp_df)
+        
+        tagged_data = [TaggedDocument(words=word_tokenize(_d.lower()), tags=[str(i)]) for i, _d in enumerate(temp_df['MAIN_LANGUAGE'].astype(str))]
+        model = initialize_D2V(tagged_data,50,0.025)
+        max_epochs = 20
+        model = trainD2V(tagged_data,model,max_epochs)
+       
+        model.save("d2v.model")
+        print("Model Saved")
+
+        print(" Comits ",temp_df.shape[0])
+       
+        ym_l = temp_df['commit_2008yearmonth'].unique()
+        ym_l = ym_l[~np.isnan(ym_l)]
+
+        for ym in ym_l:
+            print("ym: ",ym)
+            ym_df = temp_df[temp_df['commit_2008yearmonth'] == ym].reset_index()           
+            vec = np.empty((0, 50))                        
+            for index, row2 in ym_df.iterrows():
+                v1 = model.infer_vector(word_tokenize(str(row2['MAIN_LANGUAGE']).lower()))
+                vec = np.vstack((vec, v1))
+          
+            ym_df['docvec'] =  pd.Series(vec.tolist())
+
+            # ym_df = ym_df.assign(docvec = pd.Series(vec.tolist()))
+            # print(ym_df['docvec'])
+            var = vec.var(axis = 0)
+
+            print(row,ym,var.mean())
+            write_var = pd.concat([write_var, pd.DataFrame([[repo_id,ym,var.mean()]], columns=["repo_id","yearmonth2008","vec_variance"])], 
+                                          ignore_index=True)
+            # temp_df ['word_vec'] =  temp_df ['word_vec'].todense()
+            # df2 = temp_df.groupby('commit_2008yearmonth')['docvec'].var()
+   
+            write_df = write_df.append(ym_df, ignore_index = True)
+    write_df  =  write_df.assign(nWords = lambda x : x['MAIN_LANGUAGE'].astype(str).str.split().str.len() )
+    write_var.to_excel(VAR_XLSX)
+    df2 = pd.DataFrame()
+    df2 = write_df.groupby(['repo_id','commit_2008yearmonth'])['Noveltys2p1','Noveltys2p2','Noveltys2p3','Usefulnesss2p1',
+                                                      'Usefulnesss2p2','Usefulnesss2p3','CommitType_features2p1',
+                                                      'CommitType_features2p2','CommitType_bugs2p1','CommitType_bugs2p2',
+                                                      'CommitType_docs2p1','CommitType_docs2p2','CommitType_peers2p1',	
+                                                      'CommitType_peers2p2','CommitType_processs2p1','CommitType_processs2p2',	
+                                                      'CommitType_tests2p1','CommitType_tests2p2',
+                                                     ].mean()    
+    print( write_var.shape[0])
+    df2.to_excel(CLASS_COMMIT_XLSX)   
+
 
 def main():
     pd.options.display.max_rows = 10
     pd.options.display.float_format = '{:.3f}'.format
-    !vector_dataframe, vector_dataframe_sd = getVDF(TRAIN_CSV)
+    # vector_dataframe, vector_dataframe_sd = getVDF(TRAIN_CSV)
     # Save the full labeled data sample post processing in CSV
     # vector_dataframe.to_csv(LABELFULL_CSV)
     #Split vector data frame into training and test samples
     # df_train, df_test = train_test_split(vector_dataframe, test_size=0.2)
     df_train = pd.read_excel(TRAIN_SET,header= 0)
     df_test = pd.read_excel(TEST_SET,header= 0)
-
+    vector_dataframe = pd.read_excel(TRAIN_Full,header= 0)
     #Reset the indices for merging other features later on
+
+    df_train = df_train.dropna(subset=['Description'])
+    df_test = df_test.dropna(subset=['Description'])
+    vector_dataframe = vector_dataframe.dropna(subset=['Description'])
     df_train=df_train.reset_index()
     df_test = df_test.reset_index()
-
     #Convert description text into a vetor of features. Train_x,test_x are in sparse matrix format
     train_x, test_x, word_vectorizer = vectordsc(vector_dataframe['Description'], df_train['Description'], df_test['Description'] )
     acuracy = list()
@@ -278,16 +304,25 @@ def main():
     df_classify = pd.DataFrame()
     df_write = pd.DataFrame()
 
-    df_write = pd.read_excel(COMMIT_XLSX,header=0)
-    print(COMMIT_XLSX," rows ",df_write.shape[0])
-
-    dataframe_classify = df_write.apply(geticommit, axis =1 )
-
-    dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['commit_message'].astype(str).str.split().str.len() )
-    print(dataframe_classify)
-    word_features = word_vectorizer.transform(dataframe_classify['commit_message'].astype(str))
+    for COMMIT_XLSX in COMMIT_XLSX_LIST:
+            print(COMMIT_XLSX)
+            df = pd.read_excel(COMMIT_XLSX,header=0)
+            df = df.drop(['LICENCE_NAME','REPO_ID.1'], axis=1)
+            df_write = pd.concat([df_write, df])
+            # df_write['PINDEX'] = df_write['PINDEX'].fillna(df_write['REPO_ID'])
+            df_write['repo_id'] = np.where(df_write.PINDEX.notnull(), df_write['REPO_ID'] , np.nan)
+            print(df_write.shape)
     
 
+    print(" rows ",df_write.shape[0])
+    df_write = df_write[~df_write['NO_LANGUAGES'].isin(['Not Found'])]
+    df_write = df_write[~df_write['SCRIPT_SIZE'].isin(['Not Found'])]
+    dataframe_classify = df_write.apply(geticommit, axis =1 )
+    print(dataframe_classify.shape)
+    dataframe_classify = dataframe_classify.assign(nWords = lambda x : x['commit_message'].astype(str).str.split().str.len() )
+    print(dataframe_classify.shape)
+    
+    word_features = word_vectorizer.transform(dataframe_classify['commit_message'].astype(str))
 
     for i in ["Novelty", "Usefulness"]:
         '''MLPClassifier'''
@@ -295,28 +330,27 @@ def main():
         del acuracy[:] 
         del macc[:] 
         #Stage 1  
-        print("*** MLP Classifier - One stage - "+i+"5 ***")
-        p_train5,p_test5, acc, classifier_mlp1s5 = MLPmodel(train_x, df_train[i], test_x, df_test[i]) #classify on description
+        print("*** MLP Classifier - First stage - "+i+"5 ***")
+        p_train5,p_test5, acc, classifier_mlp1s5 = RFCmodel(train_x, df_train[i], test_x, df_test[i]) #classify on description
         #Stage 2
-        df_train_prob = pd.DataFrame(p_train5, columns = ['p1','p2','p3','p4','p5'])
-        train_x_s2 = pd.concat([df_train_prob,df_train['Files Changed'],df_train['nAdditions'],df_train['nDeletions'],df_train['Parents'],df_train['nWords']], axis=1)
-        df_test_prob = pd.DataFrame(p_test5, columns = ['p1','p2','p3','p4','p5'])
-        test_x_s2 = pd.concat([df_test_prob,df_test['Files Changed'],df_test['nAdditions'],df_test['nDeletions'],df_test['Parents'],df_test['nWords']], axis=1)
+        df_train_prob = pd.DataFrame(p_train5, columns = [i+'p1',i+'p2',i+'p3',i+'p4',i+'p5'])
+        train_x_s2 = pd.concat([df_train_prob,df_train['commit_changedFiles'],df_train['commit_additions'],df_train['commit_deletions'],df_train['commit_parents_totalCount'],df_train['nWords']], axis=1)
+        df_test_prob = pd.DataFrame(p_test5, columns = [i+'p1',i+'p2',i+'p3',i+'p4',i+'p5'])
+        test_x_s2 = pd.concat([df_test_prob,df_test['commit_changedFiles'],df_test['commit_additions'],df_test['commit_deletions'],df_test['commit_parents_totalCount'],df_test['nWords']], axis=1)
         print("*** MLP Classifier - Two stage - "+i+"5 ***")
         p_train_s2,p_test_s2, acc, classifier_mlp2s5 = MLPmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
         acuracy.append(["MLP Classifier - Two stage - "+i+"5", float(acc),classifier_mlp1s5, classifier_mlp2s5])
         print("MLP Classifier - Two stage - "+i+"5 ", acc)
-
 
         print("*** MLP Classifier - One stage - "+i+"3 ***")
         p_train3,p_test3, acc, classifier_mlp1s3 = MLPmodel(train_x, df_train[i+'3'], test_x, df_test[i+'3'])
         acuracy.append(["MLP Classifier - One stage - "+i+"3", float(acc), classifier_mlp1s3])
         
         #Stage 2
-        df_train_prob = pd.DataFrame(p_train3, columns = ['p1','p2','p3'])
-        train_x_s2 = pd.concat([df_train_prob,df_train['Files Changed'],df_train['nAdditions'],df_train['nDeletions'],df_train['Parents'],df_train['nWords']], axis=1)
-        df_test_prob = pd.DataFrame(p_test3, columns = ['p1','p2','p3'])
-        test_x_s2 = pd.concat([df_test_prob,df_test['Files Changed'],df_test['nAdditions'],df_test['nDeletions'],df_test['Parents'],df_test['nWords']], axis=1)
+        df_train_prob = pd.DataFrame(p_train3, columns = [i+'p1',i+'p2',i+'p3'])
+        train_x_s2 = pd.concat([df_train_prob,df_train['commit_changedFiles'],df_train['commit_additions'],df_train['commit_deletions'],df_train['commit_parents_totalCount'],df_train['nWords']], axis=1)
+        df_test_prob = pd.DataFrame(p_test3, columns = [i+'p1',i+'p2',i+'p3'])
+        test_x_s2 = pd.concat([df_test_prob,df_test['commit_changedFiles'],df_test['commit_additions'],df_test['commit_deletions'],df_test['commit_parents_totalCount'],df_test['nWords']], axis=1)
         print("*** MLP Classifier - Two stage - "+i+"3 ***")
         p_train_s2,p_test_s2, acc, classifier_mlp2s3 = MLPmodel(train_x_s2, df_train[i+'3'], test_x_s2, df_test[i+'3'], LCurve = False)
         acuracy.append(["MLP Classifier - Two stage - "+i+"3", float(acc),classifier_mlp1s3, classifier_mlp2s3])
@@ -336,6 +370,8 @@ def main():
         print("MAX ACCURACY - = ",macc)
         macc_l.append([macc[0],macc[1],macc[2]]) 
 
+
+    
     for i in ["CommitType_feature","CommitType_bug","CommitType_doc","CommitType_peer","CommitType_process","CommitType_test"]:
         '''MLPClassifier'''
         print("************ MLP Classifier *************")
@@ -345,10 +381,10 @@ def main():
         print("*** MLP Classifier - One stage - "+i+" ***")
         p_train5,p_test5, acc, classifier_mlp1s5 = MLPmodel(train_x, df_train[i], test_x, df_test[i]) #classify on description
         #Stage 2
-        df_train_prob = pd.DataFrame(p_train5, columns = ['p1','p2'])
-        train_x_s2 = pd.concat([df_train_prob,df_train['Files Changed'],df_train['nAdditions'],df_train['nDeletions'],df_train['Parents'],df_train['nWords']], axis=1)
-        df_test_prob = pd.DataFrame(p_test5, columns = ['p1','p2'])
-        test_x_s2 = pd.concat([df_test_prob,df_test['Files Changed'],df_test['nAdditions'],df_test['nDeletions'],df_test['Parents'],df_test['nWords']], axis=1)
+        df_train_prob = pd.DataFrame(p_train5, columns = [i+'p1',i+'p2'])
+        train_x_s2 = pd.concat([df_train_prob,df_train['commit_changedFiles'],df_train['commit_additions'],df_train['commit_deletions'],df_train['commit_parents_totalCount'],df_train['nWords']], axis=1)
+        df_test_prob = pd.DataFrame(p_test5, columns = [i+'p1',i+'p2'])
+        test_x_s2 = pd.concat([df_test_prob,df_test['commit_changedFiles'],df_test['commit_additions'],df_test['commit_deletions'],df_test['commit_parents_totalCount'],df_test['nWords']], axis=1)
         print("*** MLP Classifier - Two stage - "+i+" ***")
         p_train_s2,p_test_s2, acc, classifier_mlp2s5 = MLPmodel(train_x_s2, df_train[i], test_x_s2, df_test[i], LCurve = False)
         acuracy.append(["MLP Classifier - Two stage - "+i, float(acc),classifier_mlp1s5, classifier_mlp2s5])
@@ -372,7 +408,9 @@ def main():
     print(df_write.shape[0],df_classify.shape[0])
     df_write = pd.concat([df_write,df_classify], axis=1)
     print(df_write.shape[0])
-    df_write.to_excel(COMMIT2_XLSX)   
+    print("Finding vectors")
+    doc2vec(df_write)
+
 
 
 if __name__ == '__main__':

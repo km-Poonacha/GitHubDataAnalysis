@@ -142,6 +142,8 @@ def main():
    
             write_df = write_df.append(ym_df, ignore_index = True)
     write_df  =  write_df.assign(nWords = lambda x : x['commit_message'].astype(str).str.split().str.len() )
+    
+    
     write_var.to_excel(VAR_XLSX)
     
     print( write_var.shape[0])
